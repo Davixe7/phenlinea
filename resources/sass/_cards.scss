@@ -1,0 +1,27 @@
+.default-content {
+  border-radius: 3px;
+  background: #fff;
+  padding: 15px 20px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 7px 1px rgba(0,0,0,.1);
+}
+.content-header {
+  display: flex;
+  margin-bottom: 10px;
+  .title {
+    margin-bottom: 0;
+  }
+  .date {
+    font-size: .95em;
+    display: block;
+    color: #9f9f9f;
+  }
+  .options-dropdown i.material-icons {
+    cursor: pointer;
+    font-size: 1.25em;
+    color: #9f9f9f;
+  }
+}
+.description {
+  margin-bottom: 10px;
+}

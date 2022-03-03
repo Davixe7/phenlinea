@@ -1,0 +1,258 @@
+// Fonts
+
+@import 'variables';
+@import '~bootstrap/scss/bootstrap';
+@import 'cards';
+@import '_material-icons';
+@import 'navbar';
+
+h1,h2,h3,h4 {
+  color: #000;
+  margin-bottom: 10px;
+}
+
+.col-xl, .col-xl-auto, .col-xl-12, .col-xl-11, .col-xl-10, .col-xl-9, .col-xl-8,
+.col-xl-7, .col-xl-6, .col-xl-5, .col-xl-4, .col-xl-3, .col-xl-2, .col-xl-1,
+.col-lg, .col-lg-auto, .col-lg-12, .col-lg-11, .col-lg-10, .col-lg-9, .col-lg-8,
+.col-lg-7, .col-lg-6, .col-lg-5, .col-lg-4, .col-lg-3, .col-lg-2, .col-lg-1,
+.col-md, .col-md-auto, .col-md-12, .col-md-11, .col-md-10, .col-md-9,
+.col-md-8, .col-md-7, .col-md-6, .col-md-5, .col-md-4, .col-md-3,
+.col-md-2, .col-md-1, .col-sm, .col-sm-auto, .col-sm-12,
+.col-sm-11, .col-sm-10, .col-sm-9, .col-sm-8, .col-sm-7,
+.col-sm-6, .col-sm-5, .col-sm-4, .col-sm-3, .col-sm-2,
+.col-sm-1, .col, .col-auto, .col-12, .col-11, .col-10, .col-9, .col-8, .col-7, 
+.col-6, .col-5, .col-4, .col-3, .col-2, .col-1 {
+  padding: 0 15px !important;
+}
+
+.form-control.material {
+  border: none;
+  border-bottom: 1px solid #000;
+  border-radius: 0;
+  padding-left: 0;
+}
+
+// Bootstrap Override
+.container {
+  padding: 0 15px;
+}
+.form-group {
+  margin-bottom: 10px;
+}
+
+body {
+  font-family: "Roboto";
+  font-size: 14px;
+}
+#app {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #f8fafc 150px, #4b7094 150px, #4b7094);
+  background: #f8fafc;
+}
+#app > .container {
+  border-radius: 10px;
+  padding: 20px;
+}
+h1 {
+  font-size: 1.85em;
+  margin-bottom: 0;
+}
+input[type=search].form-control {
+  font-size: 1em;
+  border-radius: 20px;
+  padding: 0 20px;
+  border-radius: 20px;
+  border: 1px solid #dee2e6;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+}
+.fab-container {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+i.material-icons {
+  vertical-align: middle;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;  
+}
+.card-header {
+  background: #fff;
+}
+.card-header h4 {
+  margin-bottom: 0;
+}
+
+.page-title {
+  display: flex;
+  flex-flow: column nowrap;
+  margin-bottom: 10px;
+  h1 {
+    margin-bottom: 10px;
+  }
+  @media (min-width: 768px) {
+    flex-flow: row nowrap;
+    align-items: center;
+    h1 {
+      margin-bottom: 0;
+    }
+  }
+}
+.page-title .search-form {
+  margin-left: auto;
+}
+
+// Tables
+.table {
+  margin-bottom: 0;
+}
+.table-wrap {
+  max-height: 245px;
+}
+.table tr td {
+  font-size: 1em;
+  vertical-align: middle;
+}
+.table thead th {
+  border-radius: 2px;
+  border-bottom-width: 1px;
+  font-size: 1em;
+}
+.table thead th:first-child {
+  border-radius: 2px;
+  border-left: 1px solid #dee2e6;
+}
+.table thead th:last-child {
+  border-radius: 2px;
+  border-right: 1px solid #dee2e6;
+}
+
+// Form Pages
+
+.form-col {
+  border-left: 2px solid #eee;
+}
+.form-section {
+  border-bottom: 1px dashed #dee2e6;
+  margin-bottom: 10px;
+  padding-bottom: 15px;
+}
+.form-section h4 {
+  font-size: 1.2em;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+}
+.form-section h4 i.material-icons,
+.form-section label i.material-icons {
+  margin-right: 7px;
+}
+.form-section label {
+  font-weight: 500;
+  font-size: 1em;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  margin-bottom: 0;
+}
+
+// Custom InputGroup
+.custom-input-group {
+  width: 75%;
+  display: inline-flex;
+  flex-flow: row nowrap;
+}
+.custom-input-group > input.form-control {
+  font-size: .9em;
+  border-radius: 0;
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
+  border-right: none;
+  font-size: .9em;
+  flex: 1 1 auto;
+}
+.custom-input-group .input-group-append,
+.custom-input-group .input-group-append .input-group-text {
+  padding: 0;
+  border: none;
+  border-radius: 0;
+}
+.custom-input-group .input-group-append select.form-control {
+  font-size: .9em;
+  border-radius: 0;
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+}
+.form-section .btn-light {
+  text-transform: uppercase;
+  font-size: .8em;
+  margin-left: 5px;
+  font-weight: 500;
+  vertical-align: top;
+}
+
+.ledbulb {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4CAF50;
+  border: 5px solid rgba(189, 245, 189, 1);
+  box-sizing: content-box;
+}
+.dropdown-toggler {
+  cursor: pointer;
+}
+// Pills
+.pill {
+  display: inline-flex;
+  align-items: center;
+  color:#646464;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 0 10px 10px 0;
+  margin-left: -5px;
+  padding: 5px 15px 5px 10px;
+  border-radius: 20px;
+  border: 1px solid #e0e0e0;
+  background: #fff;
+}
+.pill .material-icons {
+  margin-right: 5px;
+}
+.pill.selected {
+  background: blue;
+  color: #fff;
+}
+.pill.pill-sm {
+  padding: 3px 10px 3px 8px;
+  font-size: .85em;
+  margin: 0 10px 5px 0;
+  i.material-icons {
+    font-size: 1.25em;
+  }
+}
+
+.well {
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 3px;
+  margin-bottom: 10px;
+}
+.preloader {
+  animation: rotate .5s infinite linear;
+  margin-right: 10px;
+}
+@keyframes rotate {
+  from { transform: rotateZ(0) }
+  to { transform: rotateZ(360deg) }
+}

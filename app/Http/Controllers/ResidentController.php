@@ -17,7 +17,7 @@ class ResidentController extends Controller
   * @return \Illuminate\Http\Response
   */
   public function __construct(){
-    // $this->authorizeResource(Resident::class, 'resident');
+    
   }
 
   public function index()

@@ -18,7 +18,7 @@ class UserPolicy
   * @return mixed
   */
 
-  public function index($user)
+  public function viewAny($user)
   {
     return (Auth::guard('web')->check() || Auth::guard('api')->check()) ?: false;
   }

@@ -24,7 +24,7 @@ class PorteriaPolicy
     }
   }
   
-  public function index($user)
+  public function viewAny($user)
   {
     $driver = auth()->getDefaultDriver();
     if( in_array($driver, ['web', 'api']) ){

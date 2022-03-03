@@ -17,7 +17,10 @@ class FreelancerPolicy
      * @param  \App\Freelancer  $freelancer
      * @return mixed
      */
-     
+    public function viewAny(){
+      return true;
+    }
+
     public function before($user){
       if( auth()->guard('web')->check() ){
         return true;

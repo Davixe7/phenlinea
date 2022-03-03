@@ -17,7 +17,11 @@ class ExtensionPolicy
      * @param  \App\Extension  $extension
      * @return mixed
      */
-    
+
+    public function viewAny(){
+      return !auth()->user()->admin_id;
+    }
+
     public function view($user, Extension $extension)
     {
       return $user->extensions()->find( $extension->id );

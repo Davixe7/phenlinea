@@ -28,6 +28,10 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
       'solvencia'   => 'string',
       'sms_enabled' => 'integer'
   ];
+
+  public function getEmailForVerification(){
+    return $this->contact_email;
+  }
   
   public function sendEmailVerificationNotification(){
     $this->notify( new VerifyPhone() );

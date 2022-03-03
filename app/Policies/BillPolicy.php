@@ -16,6 +16,10 @@ class BillPolicy
      * @param  \App\User  $user
      * @return mixed
      */
+
+    public function viewAny(){
+      return true;
+    }
     
     public function create($user)
     {

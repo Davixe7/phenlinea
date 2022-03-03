@@ -77,7 +77,7 @@ Route::middleware('auth')->get('user', 'Auth\UserController@index');
  * Application Admin Routes
 */
 
-Auth::routes(['verify'=>true]);
+//Auth::routes(['verify'=>true]);
 Route::post('phone/verify', 'PhoneVerificationController@verifyPhone')->name('verifyphone');
 Route::view('email/verify', 'auth.verify')->name('confirmphone');
 

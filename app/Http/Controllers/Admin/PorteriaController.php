@@ -22,7 +22,6 @@ class PorteriaController extends Controller
   
   public function index()
   {
-    $this->authorize('index', Porteria::class);
     return view('super.porterias.index');
   }
   

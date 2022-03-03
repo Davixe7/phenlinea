@@ -17,6 +17,11 @@ class ProductPolicy
      * @param  \App\Product  $product
      * @return mixed
      */
+
+    public function viewAny(){
+      return true;
+    }
+     
     public function view($user, Product $product)
     {
         //

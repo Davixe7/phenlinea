@@ -13,10 +13,6 @@ class DocController extends Controller
 {
     use Uploads;
     
-    public function __construct(){
-      // $this->authorizeResource(Post::class, 'post');
-    }
-    
     /**
      * Display a listing of the resource.
      *

@@ -17,6 +17,11 @@ class PetitionPolicy
      * @param  \App\Petition  $petition
      * @return mixed
      */
+
+    public function viewAny(){
+      return true;
+    }
+
     public function view($user, Petition $petition)
     {
       return $user->petitions()->find( $petition->id )->get();

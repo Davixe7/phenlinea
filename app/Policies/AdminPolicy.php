@@ -21,7 +21,7 @@ class AdminPolicy
     }
   }
 
-  public function index($user)
+  public function viewAny($user)
   {
     if( Auth::guard('freelancer')->check() ){
       return true;

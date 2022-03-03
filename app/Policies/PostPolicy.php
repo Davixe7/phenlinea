@@ -16,7 +16,11 @@ class PostPolicy
      * @param  \App\User  $user
      * @return mixed
      */
-    
+
+    public function viewAny(){
+      return true;
+    }
+
     public function create($user)
     {
       return in_array( auth()->getDefaultDriver(), ['admin', 'api-admin'] );

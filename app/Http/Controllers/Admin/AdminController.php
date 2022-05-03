@@ -23,7 +23,6 @@ class AdminController extends Controller
 
   public function index()
   {
-    $this->authorize('index', Admin::class);
     return view('super.admins.index');
   }
 

@@ -9,6 +9,7 @@ use App\Events\BulkSmsSent;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\SmsResource;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
@@ -93,7 +94,7 @@ class SmsController extends Controller
   }
   
   public function history(Request $request){
-    $log = Auth::user() ? Auth::user()->logs->load('extension:id,name') : null;
+    $log = Auth::user() ? SmsResource::collection( Auth::user()->logs->load('extension:id,name') ) : null;
     if( $request->expectsJson() ){
       return response()->json(['data'=>$log]);
     }

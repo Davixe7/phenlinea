@@ -19,7 +19,7 @@ class ExtensionPolicy
      */
 
     public function viewAny(){
-      return !auth()->user()->admin_id;
+      return true;
     }
 
     public function view($user, Extension $extension)

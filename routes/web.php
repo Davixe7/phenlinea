@@ -77,7 +77,7 @@ Route::middleware('auth')->get('user', 'Auth\UserController@index');
  * Application Admin Routes
 */
 
-//Auth::routes(['verify'=>true]);
+Auth::routes(['verify'=>true]);
 Route::post('phone/verify', 'PhoneVerificationController@verifyPhone')->name('verifyphone');
 Route::view('email/verify', 'auth.verify')->name('confirmphone');
 
@@ -162,7 +162,7 @@ Route::middleware(['auth:admin,porteria', 'phoneverified', 'suspended'])->group(
   Route::get('novelties/list', 'NoveltyController@list')->name('novelties.list');
   Route::put('novelties/{novelty}/markasread', 'NoveltyController@markAsRead')->name('novelties.markAsRead')->middleware('can:markAsRead,App\Novelty');
   Route::get('sms', function(){
-    $log = auth()->user()->notifications()->whereType('bulk')->orderBy('created_at', 'DESC')->get();
+    $log = \App\Http\Resources\NotificationResource::collection(auth()->user()->notifications()->whereType('bulk')->orderBy('created_at', 'DESC')->get());
     $extensions = auth()->user()->extensions;
     return view('admin.sms.index', ['log' => $log, 'extensions' => $extensions]);
   })->name('sms.index');

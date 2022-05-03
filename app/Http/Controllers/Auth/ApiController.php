@@ -85,7 +85,7 @@ class ApiController extends Controller
       'password' => $request->password
     ];
     
-    $extension = Extension::where('_email', $request->email)->first();
+    $extension = Extension::where('_email', $request->email)->firstOrFail();
     $resident  = $extension->residents()->where('dni', $request->password)->first();
     
     if( $resident && $user = $resident->extension ){

@@ -2,7 +2,7 @@
   <div class="create-store">
     <div class="card">
       <div class="card-header">
-        <div v-if="commerce && commerce.id" class="col-md-6 text-right d-flex align-items-center justify-content-end">
+        <div v-if="false" class="col-md-6 text-right d-flex align-items-center justify-content-end">
           <b>{{ password }}</b>
           <div class="options-dropdown">
             <div class="dropdown">

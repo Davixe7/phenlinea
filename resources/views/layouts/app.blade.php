@@ -12,14 +12,28 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,600,700" rel="stylesheet">
   <style>
+    .form-label {
+        font-size: .95em;
+        display: block;
+        margin-bottom: .55em !important;
+    }
+    
+    .form-control.form-control-lg {
+        font-weight: 400;
+        height: initial;
+        padding: .5em .9em;
+        margin-bottom: .9em;
+        border: 1px solid rgba(0, 0, 0, 0.42);
+        border-radius: 4px;
+    }
     .btn {
-      border-radius: 2px;
+      border-radius: 4px;
       font-size: 1em;
       font-weight: 500;
-      text-transform: uppercase;
     }
 
     .btn-primary {
+      color: #fff;
       background: #5397d4;
     }
 
@@ -34,15 +48,7 @@
     }
 
     .card {
-      border: none;
-      border-radius: 2px;
-      box-shadow: 0 1px 2px 1px rgba(0, 0, 0, .15);
-    }
-
-    .btn {
-      border: none;
-      border-radius: 2px;
-      box-shadow: 0 1px 2px 1px rgba(0, 0, 0, .15);
+      border-radius: 8px;
     }
 
     .btn-primary.btn-circle i {

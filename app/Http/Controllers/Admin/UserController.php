@@ -16,13 +16,11 @@ class UserController extends Controller
 
   public function index()
   {
-    $this->authorize('index', User::class);
     return view('super.users.index');
   }
 
   public function list()
   {
-    $this->authorize('index', User::class);
     return UserResource::collection( User::all() );
   }
 

@@ -16,6 +16,12 @@ class Notification extends Model
         'count',
     ];
     
+    protected $dates = [
+        'date'
+    ];
+    
+    protected $dateFormat = 'Y-m-d H:m:s';
+    
     protected $casts = [
         'count' => 'Number'
     ];

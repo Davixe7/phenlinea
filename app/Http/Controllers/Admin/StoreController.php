@@ -72,10 +72,11 @@ class StoreController extends Controller
         'pictures'  => $this->upload($request, 'pictures'),
         'category'  => $request->category,
         'schedule'  => json_decode($request->schedule),
-        'password'  => bcrypt($password)
+        'password'  => bcrypt($password),
+        '_password' => $password
       ]);
       
-      return new StoreResource( $store );
+      return redirect()->route('admin.stores.edit', $store->id);
     }
 
     /**
@@ -120,7 +121,7 @@ class StoreController extends Controller
         'schedule'  => json_decode($request->schedule) ?: $store->schedule
       ]);
       
-      return new StoreResource( $store );
+      return redirect()->route('admin.stores.edit', $store->id);
     }
 
     /**

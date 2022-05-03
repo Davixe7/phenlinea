@@ -20,7 +20,7 @@ class UserPolicy
 
   public function viewAny($user)
   {
-    return (Auth::guard('web')->check() || Auth::guard('api')->check()) ?: false;
+    return (Auth::guard('web')->check() || Auth::guard('api')->check()) ? true : false;
   }
 
   public function view(User $user, User $model)

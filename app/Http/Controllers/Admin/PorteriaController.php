@@ -27,7 +27,6 @@ class PorteriaController extends Controller
   
   public function list(Request $request)
   {
-    $this->authorize('index', Porteria::class);
     $porterias = Porteria::all();
     return PorteriaResource::collection( $porterias->load('admin:id,name') );
   }

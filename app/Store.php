@@ -4,14 +4,18 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Store extends Authenticatable
+class Store extends Authenticatable implements HasMedia
 {
+  use InteractsWithMedia;
+  
   protected $fillable = [
     'name', 'description', 'nit',
     'phone_1', 'phone_2', 'email',
     'address', 'lat', 'lng',
-    'logo', 'pictures', 'category', 'schedule', '_email', 'api_token','password','_password'
+    'category', 'schedule', '_email', 'api_token','password','_password'
   ];
   
   protected $appends = ['qr', 'profile_picture', 'permalink'];
@@ -19,10 +23,15 @@ class Store extends Authenticatable
   protected $hidden = ['created_at', 'updated_at'];
   
   protected $casts = [
-    'logo' => 'array',
     'schedule' => 'array',
-    'pictures' => 'array'
   ];
+  
+  public function registerMediaCollections(): void
+  {
+    $this
+    ->addMediaCollection('logo')
+    ->singleFile();
+  }
   
   public function menu(){
     return $this->hasMany('App\Product');

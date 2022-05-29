@@ -123,6 +123,23 @@ Route::name('admin.')->prefix('admin')->middleware('auth:web')->group(function()
 
   Route::get('admins/{admin}/edit-permissions', 'Admin\AdminController@editPermissions')->name('admins.edit-permissions');
   Route::put('admins/{admin}/update-permissions', 'Admin\AdminController@updatePermissions')->name('admins.update-permissions');
+  
+  Route::get('quota-sms', function(Request $request){
+    $admins = App\Admin
+    ::select(['id', 'name'])
+    ->withCount([
+        'notifications' => function($query)use($request){
+            $query
+            ->whereType('bulk')
+            ->select(DB::raw('SUM(count) as total'))
+            ->whereBetween('date', [$request->dateFrom, $request->dateTo]);
+        }
+    ])
+    ->orderBy('name')
+    ->get();
+    
+    return view('super.smsquota', compact('admins'));
+})->name('smsQuota');
 });
 
 //Main application routes

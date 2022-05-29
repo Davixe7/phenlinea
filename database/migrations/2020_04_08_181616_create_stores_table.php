@@ -25,8 +25,6 @@ class CreateStoresTable extends Migration
       $table->decimal('lat', 8, 6)->nullable();
       $table->decimal('lng', 9, 6)->nullable();
       $table->text('address');
-      $table->text('logo')->nullable();
-      $table->text('pictures')->nullable();
       $table->string('category')->nullable();
       $table->text('schedule')->nullable();
       

@@ -34,7 +34,7 @@
             </div>
             <div class="form-group">
               <label class="form-label" for="description">Descripción</label>
-              <textarea class="form-control form-control-lg" name="description"></textarea>
+              <textarea class="form-control form-control-lg" name="description" required></textarea>
             </div>
         </div>
       </div>
@@ -45,7 +45,7 @@
             <div class="card-body">
                 <div class="form-group">
                   <label class="form-label" for="category">Categoría</label>
-                  <select class="form-control form-control-lg" name="category">
+                  <select class="form-control form-control-lg" name="category" required>
                     @foreach( ['Comidas', 'Ferreterías', 'Carnicerías', 'Supermercados', 'Licores', 'Legumbrerias', 'Tiendas', 'Otros'] as $category )
                         <option value="{{ $category }}">{{ $category }}</option>
                     @endforeach
@@ -55,7 +55,7 @@
                     <label class="form-label">
                         Foto de perfil
                     </label>
-                    <input class="form-control" type="file" name="logo">
+                    <input class="form-control" type="file" name="logo" required>
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary w-100 text-white justify-center">

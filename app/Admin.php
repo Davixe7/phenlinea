@@ -23,7 +23,7 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
 
   protected $hidden   = ['password', 'created_at', 'updated_at'];
   protected $without = ['extensions'];
-  protected $appends = ['solvencia', 'month_sms_count'];
+  protected $appends = ['solvencia'];
   protected $casts = [
       'solvencia'   => 'string',
       'sms_enabled' => 'integer'

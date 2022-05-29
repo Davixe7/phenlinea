@@ -31,9 +31,19 @@ class StoreController extends Controller
     
     public function update(Store $store, Request $request)
     {
-      $uploadedLogo = $this->upload($request, 'logo');
-      $uploadedLogo = array_shift( $uploadedLogo );
-      $updatedPictures = $this->upload($request, 'pictures');
+      //$uploadedLogo = $this->upload($request, 'logo');
+    //$uploadedLogo = array_shift( $uploadedLogo );
+    //$updatedPictures = $this->upload($request, 'pictures');
+    
+    if( $request->hasFile('logo') ){
+        $store->addMedia( $request->file('logo') )->toMediaCollection('logo');
+    }
+    
+    if( $request->hasFile('pictures') ){
+        foreach( $request->file('pictures') as $picture ){
+            $store->addMedia( $picture )->toMediaCollection('pictures');
+        }
+    }
       
       $store->update([
         'nit'       => $request->nit ?: $store->nit,
@@ -42,12 +52,10 @@ class StoreController extends Controller
         'phone_1'   => $request->phone_1 ?: $store->phone_1,
         'email'     => $request->email ?:  $store->email,
         
-        'lat'       => $request->lat ?: $store->lat,
-        'lng'       => $request->lng ?: $store->lng,
+        'lat'       => $request->lat && $request->lat != 'null' ? $request->lat : $store->lat,
+        'lng'       => $request->lng && $request->lng != 'null' ? $request->lng : $store->lng,
         'address'   => $request->address ?: $store->address,
         
-        'logo'      => $uploadedLogo ?: $store->logo,
-        'pictures'  => array_merge( $updatedPictures, $store->pictures ),
         'category'  => $request->category ?: $store->category,
         'schedule'  => json_decode($request->schedule) ?: $store->schedule
       ]);

@@ -33,7 +33,7 @@
             <v-list-item-group color="primary">
               <v-list-item v-for="(item, i) in results" :key="i" :href="item.permalink" style="text-decoration: none !important;">
                 <v-list-item-avatar v-if="item.logo">
-                  <v-img :src="'/'+item.logo.url"/>
+                  <v-img :src="item.logo.url"/>
                 </v-list-item-avatar>
                 <v-list-item-content>
                   <v-list-item-title v-html="item.name"></v-list-item-title>

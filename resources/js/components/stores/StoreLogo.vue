@@ -31,7 +31,7 @@ export default {
         this.parseFile()
       }
       if(!this.logo) return null
-      if(this.logo.url) return '/' + this.logo.url
+      if(this.logo.url) return this.logo.url
     }
   },
   methods:{

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Resources\Store as StoreResource;
 
 class HomeController extends Controller
 {
@@ -40,7 +41,8 @@ class HomeController extends Controller
           return view('super.users.index');
           break;
         case 'store':
-          return view('commerce.profile', ['commerce'=>$user->load('menu.pictures')]);
+          $store = new StoreResource($user->load('menu.pictures'));
+          return view('commerce.profile', ['commerce'=>$store]);
           break;
       }
     }

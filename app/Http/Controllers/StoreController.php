@@ -18,14 +18,14 @@ class StoreController extends Controller
      */
     public function index()
     {
-      $stores = Store::all();
+      $stores = StoreResource::collection( Store::all() );
       return view('public.stores', ['stores'=>$stores]);
     }
     
     public function show(Store $store)
     {
-      $store = $store->load('menu.pictures');
-      $menu = $store->menu;
+      $menu  = $store->menu;
+      $store = new StoreResource($store->load('menu.pictures'));
       return view('public.menu', ['store'=>$store,'menu'=>$menu]);
     }
     

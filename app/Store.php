@@ -38,23 +38,21 @@ class Store extends Authenticatable implements HasMedia
   }
   
   public function getQrAttribute(){
-    $path = public_path("qr/store_{$this->id}_qr.svg");
-    if( !is_file( $path ) ){
-      \QrCode::size(500)
-        ->format('svg')
-        ->generate( $this->permalink, $path);
-    }
-    return [
-      'path' => $path,
-      'url'  => url("qr/store_{$this->id}_qr.svg")
-    ];
+    // $path = public_path("qr/store_{$this->id}_qr.svg");
+    // if( !is_file( $path ) ){
+    //   \QrCode::size(500)
+    //     ->format('svg')
+    //     ->generate( $this->permalink, $path);
+    // }
+    // return [
+    //   'path' => $path,
+    //   'url'  => url("qr/store_{$this->id}_qr.svg")
+    // ];
+    return [];
   }
   
   public function getProfilePictureAttribute(){
-    if( $this->pictures && count($this->pictures) ){
-      return $this->pictures[0];
-    }
-    return null;
+    return $this->getFirstMedia('profile_picture');
   }
   
   public function getPermalinkAttribute(){

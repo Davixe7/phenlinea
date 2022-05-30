@@ -12,7 +12,7 @@ export default {
     url: ''
   }},
   mounted(){
-    if( this.pic.url ){ this.url = '/' + this.pic.url; return }
+    if( this.pic.url ){ this.url = this.pic.url; return }
     let that = this
     let fr = new FileReader()
     fr.onload = function(e){

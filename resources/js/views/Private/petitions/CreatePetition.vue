@@ -81,12 +81,9 @@
 </template>
 
 <script>
-import MultipleFilesInput from './../MultipleFilesInput.vue'
-import PicturesList from './../PicturesList.vue'
 import CoolLightBox from 'vue-cool-lightbox'
-import Tag from './../Tag.vue'
 export default {
-  components: { Tag, MultipleFilesInput, PicturesList, CoolLightBox },
+  components: { CoolLightBox },
   name: 'CreatePetition',
   data(){ return {
     title: '',

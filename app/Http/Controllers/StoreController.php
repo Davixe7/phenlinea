@@ -64,12 +64,15 @@ class StoreController extends Controller
     }
     
     public function deletepicture(Request $request, Store $store){
-      $pictures = collect($store->pictures)->filter(function($p) use ($request) {
-        return $p['path'] != $request->picture;
-      });
-      $store->pictures = $pictures;
-      $store->save();
-      return response()->json(['data'=>$pictures->toArray()]);
+      $pictures = $store->getMedia('pictures');
+      $picture = 
+      $pictures->filter(function($p) use($request) {
+        return $p->original_url == $request->picture;
+      })->shift();
+
+      $picture->delete();
+      
+      return response()->json(['data' => $pictures->toArray()]);
     }
     
     public function resetPassword(Store $store, Request $request){

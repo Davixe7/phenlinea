@@ -165,9 +165,10 @@ export default {
   }},
   methods:{
     deletePicture(picture){
-      let data = { _method: 'PUT', picture:picture.path }
-      axios.post(`${this.url}${this.commerce.id}/pictures`, data).then(response=>{
-        this.storePictures = Object.values(response.data.data)
+      let data = { _method: 'PUT', picture:picture.url }
+      axios.post(`${this.url}${this.commerce.id}/pictures`, data)
+      .then(response=>{
+        this.storePictures = this.storePictures.filter(f=>f.url != picture.url)
       })
     },
     update(){

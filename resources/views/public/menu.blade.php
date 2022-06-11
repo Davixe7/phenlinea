@@ -32,7 +32,13 @@
                 <store-profile :commerce="{{json_encode( $store )}}"></store-profile>
               </div>
               <div class="col-md-9">
-                <store-menu :menu="{{json_encode( $menu )}}" :commerce="{{json_encode( $store )}}"/>
+                  @if( count($menu) )
+                    <store-menu :menu="{{json_encode( $menu )}}" :commerce="{{json_encode( $store )}}"/>
+                  @else
+                    <div class="alert alert-info">
+                        Este comercio no ha registrado productos aún
+                    </div>
+                  @endif
               </div>
             </div>
           @else

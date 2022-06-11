@@ -3,6 +3,7 @@
     <v-card class="mx-auto store-profile-card">
       <v-carousel :height="274">
         <v-carousel-item
+          v-if="commerce.logo"
           :height="274"
           :aspect-ratio="1/1"
           :src="commerce.logo.url"

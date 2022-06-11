@@ -6,6 +6,7 @@ use App\Store;
 use Illuminate\Http\Request;
 use App\Traits\Uploads;
 use App\Http\Resources\Store as StoreResource;
+use App\Http\Resources\MediaResource;
 use Illuminate\Support\Facades\Hash;
 
 class StoreController extends Controller
@@ -64,12 +65,17 @@ class StoreController extends Controller
     }
     
     public function deletepicture(Request $request, Store $store){
-      $pictures = collect($store->pictures)->filter(function($p) use ($request) {
-        return $p['path'] != $request->picture;
-      });
-      $store->pictures = $pictures;
-      $store->save();
-      return response()->json(['data'=>$pictures->toArray()]);
+      $pictures = $store->getMedia('pictures');
+      $picture = 
+      $pictures->filter(function($p) use($request) {
+        return $p->original_url == $request->picture;
+      })->shift();
+
+      if( $picture ){
+        $picture->delete();
+      }
+      
+      return response()->json(['data'=> $request->picture, 'message'=>'Picture deleted successfully']);
     }
     
     public function resetPassword(Store $store, Request $request){

@@ -34,8 +34,8 @@
           </v-toolbar>
         </template>
         <template v-slot:item.main_picture="{ item }">
-          <div class="table-avatar" v-if="item.main_picture">
-            <img :src="item.main_picture.url">
+          <div class="table-avatar" v-if="item.pictures && item.pictures.length">
+            <img :src="item.pictures[0].url">
           </div>
         </template>
         <template v-slot:item.actions="{ item }">

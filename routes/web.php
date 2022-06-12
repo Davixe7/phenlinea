@@ -41,6 +41,7 @@ Route::get('consultar-factura', 'FacturaController@byCode')->name('facturas.quer
 Route::get('ver-factura/{factura}', 'FacturaController@show');
 
 Route::resource('products', 'ProductController');
+Route::delete('/products/{product}/deletePicture', 'ProductController@deletePicture');
 
 Route::get('sms/log', 'API\SmsController@history')->name('sms.log');
 Route::post('admins/{admin}/sendpassword', 'AdminController@sendPasswordSms');

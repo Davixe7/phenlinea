@@ -16,7 +16,7 @@
     <div class="form-group panel" v-if="model.id && model.pictures.length">
       <label for="#">Galería actual</label>
       <div class="well">
-        <pics-list :pictures="model.pictures" :endpoint="'/attachments'" @removePic="removePic"/>
+        <pics-list :pictures="model.pictures" @removePic="removeUploadedPic"/>
       </div>
     </div>
     
@@ -53,6 +53,12 @@ export default {
     removePic(pic){
       let picIndex = this.pictures.indexOf(pic)
       this.pictures.splice( picIndex, 1 )
+    },
+    removeUploadedPic(pic){
+        let picIndex = this.pictures.indexOf(pic)
+        let data = {_method:'DELETE', picture: pic.url}
+        axios.post('/products/'+this.product.id+'/deletePicture', data)
+        .then(response=>this.model.pictures.splice( picIndex, 1 ))
     },
     loadData(){
       this.saving = true

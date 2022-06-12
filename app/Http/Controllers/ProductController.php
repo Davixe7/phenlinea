@@ -7,6 +7,8 @@ use App\Store;
 use App\Attachment;
 use Illuminate\Http\Request;
 use App\Traits\Uploads;
+use App\Http\Resources\ProductResource;
+use App\Http\Resources\MediaResource;
 
 class ProductController extends Controller
 {
@@ -42,16 +44,13 @@ class ProductController extends Controller
         'store_id'    => auth()->user()->id
       ]);
       
-      $attachments = $this->upload($request, 'pictures');
-      foreach($attachments as $picture){
-        Attachment::create([
-          'url' => $picture['url'],
-          'path' => $picture['path'],
-          'product_id' => $product->id
-        ]);
+      if( $request->hasFile('pictures') ){
+          foreach( $request->file('pictures') as $picture ){
+              $product->addMedia( $picture )->toMediaCollection('pictures');
+          }
       }
       
-      return response()->json(['data'=>$product->load('pictures')]);
+      return new ProductResource( $product );
     }
 
     /**
@@ -70,6 +69,12 @@ class ProductController extends Controller
         'category_id' => $request->category_id
       ]);
       
+      if( $request->hasFile('pictures') ){
+          foreach( $request->file('pictures') as $picture ){
+              $product->addMedia( $picture )->toMediaCollection('pictures');
+          }
+      }
+      
       return response()->json(['data'=>$product]);
     }
 
@@ -83,5 +88,17 @@ class ProductController extends Controller
     {
       $product->delete();
       return response()->json(['data'=>"Producto $product->id eliminado exitosamente"]);
+    }
+    
+    public function deletePicture(Request $request, Product $product){
+        $picture = $product->getMedia('pictures')->filter(function($f){
+            return $f->original_url == request()->picture;
+        })->shift();
+        
+        if( $picture ){
+            $picture->delete();
+        }
+        
+        return new MediaResource($picture);
     }
 }

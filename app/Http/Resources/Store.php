@@ -17,6 +17,7 @@ class Store extends JsonResource
         $store = parent::toArray($request);
         $store['logo'] = new MediaResource( $this->getFirstMedia('logo') );
         $store['pictures'] = MediaResource::collection( $this->getMedia('pictures') );
+        $store['menu']     = ProductResource::collection( $this->whenLoaded('menu') );
         return $store;
     }
 }

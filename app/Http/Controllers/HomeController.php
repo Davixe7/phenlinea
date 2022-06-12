@@ -41,7 +41,7 @@ class HomeController extends Controller
           return view('super.users.index');
           break;
         case 'store':
-          $store = new StoreResource($user->load('menu.pictures'));
+          $store = new StoreResource($user->load('menu'));
           return view('commerce.profile', ['commerce'=>$store]);
           break;
       }

@@ -70,10 +70,9 @@
 
 <script>
   import Loading from 'vue-loading-overlay';
-  import MultipleFilesInput from './../MultipleFilesInput'
-  import PicturesList from './../PicturesList'
+
   export default {
-    components: {Loading, MultipleFilesInput, PicturesList},
+    components: {Loading},
     props: { post: {type: Object, default: ()=>{} } },
     name: 'CreatePost',
     data(){ return {

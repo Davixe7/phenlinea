@@ -40,10 +40,7 @@
 </template>
 
 <script>
-import MultipleFilesInput from './../MultipleFilesInput.vue'
-import PicturesList from './../PicturesList.vue'
 export default {
-  components: {MultipleFilesInput, PicturesList},
   props: {
     extension: {
       type: Object,

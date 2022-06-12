@@ -73,9 +73,7 @@
 </template>
 
 <script>
-import SearchForm from './../SearchForm.vue'
 export default {
-  components: { SearchForm },
   name: 'Census',
   data(){
     return {

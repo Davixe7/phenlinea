@@ -79,11 +79,10 @@
 
 <script>
 import CreatePorteria from './CreatePorteria.vue'
-import SearchForm from './../SearchForm.vue'
 
 export default {
   name: 'Porterias',
-  components: { CreatePorteria, SearchForm },
+  components: { CreatePorteria },
   data(){
     return {
       porteriaToEdit: null,

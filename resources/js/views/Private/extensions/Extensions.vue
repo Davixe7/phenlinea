@@ -136,14 +136,8 @@
 </template>
 
 <script>
-import CreateExtension from './CreateExtension.vue'
-import Messages from './Messages.vue'
-import Payments from './../admins/Payments.vue'
-import SearchForm from './../SearchForm.vue'
-
 export default {
   name: 'Extensions',
-  components: { CreateExtension, Payments, Messages, SearchForm },
   data(){
     return {
       user: null,

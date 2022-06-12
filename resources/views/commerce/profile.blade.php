@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,30 +17,34 @@
     }
   </style>
 </head>
+
 <body>
-<main class="pb-4">
-  <div id="app" data-app>
-    <v-app>
-      <v-main>
-        <commerce-navbar  :commerce="{{ json_encode($commerce) }}" class="mb-4"></commerce-navbar>
-        <div class="container">
-          <commerce-profile :commerce="{{ json_encode($commerce) }}"></commerce-profile>
-        </div>
-      </v-main>
-    </v-app>
-    <footer>
-    <div classs="container">
-        <div class="row">
+  <main class="pb-4">
+    <div id="app" data-app>
+      <v-app>
+        <v-main>
+          <public-store-navbar :commerce="{{ json_encode($commerce) }}" class="mb-4">
+          </public-store-navbar>
+          <div class="container">
+            <store-account-profile :commerce="{{ json_encode($commerce) }}">
+            </store-account-profile>
+          </div>
+        </v-main>
+      </v-app>
+      <footer>
+        <div classs="container">
+          <div class="row">
             <div class="col-lg-6 ml-auto">
-                <a href="#">
-                    ¿Quieres una tienda como esta? | Contáctanos
-                </a>
+              <a href="#">
+                ¿Quieres una tienda como esta? | Contáctanos
+              </a>
             </div>
+          </div>
         </div>
+      </footer>
     </div>
-</footer>
-  </div>
-</main>
-<script src="{{ mix('js/app.js') }}" defer></script>
+  </main>
+  <script src="{{ mix('js/app.js') }}" defer></script>
 </body>
+
 </html>

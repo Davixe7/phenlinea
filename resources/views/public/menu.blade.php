@@ -24,16 +24,16 @@
   <div id="app" data-app>
     <v-app>
       <v-main>
-        <commerce-navbar :commerce="{{ json_encode($store) }}" class="mb-4"></commerce-navbar>
+        <public-store-navbar :commerce="{{ json_encode($store) }}" class="mb-4"></public-store-navbar>
         <div class="container">
           @if( $store->status == 'active' )
             <div class="row">
               <div class="col-md-3">
-                <store-profile :commerce="{{json_encode( $store )}}"></store-profile>
+                <public-store-profile :commerce="{{json_encode( $store )}}"/>
               </div>
               <div class="col-md-9">
                   @if( count($menu) )
-                    <store-menu :menu="{{json_encode( $menu )}}" :commerce="{{json_encode( $store )}}"/>
+                    <public-store-menu :menu="{{json_encode( $menu )}}" :commerce="{{json_encode( $store )}}"/>
                   @else
                     <div class="alert alert-info">
                         Este comercio no ha registrado productos aún

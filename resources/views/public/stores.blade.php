@@ -16,7 +16,7 @@
   <div id="app" data-app>
     <v-app>
       <v-main>
-        <commerce-navbar :commerce="null" class="mb-4"></commerce-navbar>
+        <public-store-navbar :commerce="null" class="mb-4"></public-store-navbar>
         <div class="container">
           <public-stores :stores="{{ json_encode( $stores ) }}"/>
         </div>

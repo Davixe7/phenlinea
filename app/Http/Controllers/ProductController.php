@@ -40,7 +40,7 @@ class ProductController extends Controller
         'name'        => $request->name,
         'description' => $request->description,
         'price'       => $request->price,
-        'category_id' => $request->category_id,
+        'category_id' => $request->category_id ?: 1,
         'store_id'    => auth()->user()->id
       ]);
       
@@ -66,7 +66,7 @@ class ProductController extends Controller
         'name'        => $request->name,
         'description' => $request->description,
         'price'       => $request->price,
-        'category_id' => $request->category_id
+        'category_id' => $request->category_id ?: 1
       ]);
       
       if( $request->hasFile('pictures') ){

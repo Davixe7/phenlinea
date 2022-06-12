@@ -80,7 +80,11 @@ export default {
     updateProduct(){
       let data = this.loadData()
       data.append('_method', 'PUT')
-      axios.post(`/products/${this.model.id}`, data).then(response=>{
+      this.pictures.forEach((picture, i)=>{
+        data.append(`pictures[${i}]`, picture)
+      })
+      axios.post(`/products/${this.model.id}`, data)
+      .then(response=>{
         this.$toasted.show('Producto actualizado!',{'position':'bottom-center'})
         this.$emit('updated', response.data.data)
         this.setProduct()

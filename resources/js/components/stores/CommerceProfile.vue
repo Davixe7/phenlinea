@@ -17,7 +17,7 @@
         />
         <v-text-field outlined
           label="URL"
-          :value="commerce.permalink" :icon-append="link" readonly>
+          :value="commerce.permalink" :icon-append="'link'" readonly>
         </v-text-field>
         <v-btn href="/stores/get-qr" block dark>Descargar</v-btn>
       </div>

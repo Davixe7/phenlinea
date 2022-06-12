@@ -35,7 +35,7 @@
               "
               :elevation="0"
             >
-              <v-img max-height="260" :src="item.avatar"> </v-img>
+              <v-img v-if="item.pictures && item.pictures.length" max-height="260" :src="item.pictures[0].url"/>
               <v-card-title
                 style="
                   font-size: 1rem;
@@ -60,7 +60,7 @@
           <v-carousel-item
             v-for="(picture, i) in selectedItem.pictures"
             :key="i"
-            :src="'/' + picture.url"
+            :src="picture.url"
             reverse-transition="fade-transition"
             transition="fade-transition"
           ></v-carousel-item>

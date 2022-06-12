@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Traits\Uploads;
 use App\Http\Resources\Store as StoreResource;
 use App\Http\Resources\MediaResource;
+use App\Http\Resources\ProductResource;
 use Illuminate\Support\Facades\Hash;
 
 class StoreController extends Controller
@@ -25,8 +26,8 @@ class StoreController extends Controller
     
     public function show(Store $store)
     {
-      $menu  = $store->menu;
-      $store = new StoreResource($store->load('menu.pictures'));
+      $menu  = ProductResource::collection($store->menu);
+      $store = new StoreResource($store->load('menu'));
       return view('public.menu', ['store'=>$store,'menu'=>$menu]);
     }
     

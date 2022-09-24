@@ -3,9 +3,10 @@
 namespace App\Listeners;
 
 use App\Events\DeliveryOrderReceived;
+use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Facades\Storage;
 
 class SendDeliverySMSNotification
 {
@@ -13,49 +14,36 @@ class SendDeliverySMSNotification
     {
         $apto   = $event->extension->name;
         $admin  = $event->extension->admin->name;
-      
-        $url = "http://sms.puntodigitalip.com/Api/rest/message";
-        $user ="PHENLINEA";
-        $password = '1234567';
-        
         $sms = "Encomienda recibida. En porteria acabamos de recibir un paquete para el apto " . $apto . " de " . $admin . " Por favor pasar a recogerlo. https://phenlinea.com";
-        $post['text'] = $sms;
-        $post['from'] = "PHenlinea";
-        $post['parts'] = 2;
-        $post['to'] = [];
-        
+
+        $data = [
+          "message"      => null,
+          "type"         => "text",
+          "instance_id"  => '632CE66281C2B',
+          "access_token" => '3f8b18194536bdafa301c662dc9caa4c',
+        ];
+        $data['message'] = $sms;
+      
         if( $event->extension->phone_1 ){
             $post['to'][] = "57" . $event->extension->phone_1;
+            $data['number'] = "57" . $event->extension->phone_1;
         }
         if( $event->extension->phone_2 ){
             $post['to'][] = "57" . $event->extension->phone_2;
+            $data['number'] = "57" . $event->extension->phone_2;
         }
-        
-        $receivers = $post['to'];
-        $post = json_encode($post);
-        
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-        curl_setopt($ch, CURLOPT_HTTPHEADER,[
-            "Accept: application/json",
-            "Authorization: Basic ".base64_encode("{$user}:{$password}")
+
+        $client = new Client([
+          'base_uri' => 'http://asistbot.com/api/send.php',
+          'verify' => false
         ]);
-        $result = curl_exec ($ch);
-        $result = json_decode( $result );
         
-        if( is_array( $result ) ){
-            $result = $result[0];
+        $response = $client->request('POST', '', ['query' => $data]);
+
+        if( $response->getStatusCode() == '200' ){
+          Storage::disk('local')->append('whatsapp.log', implode(",", $data));
+          return;
         }
-        
-        if( $result && property_exists($result, 'accepted') && $result->accepted ){
-            $receivers = implode(',', $receivers);
-            Storage::disk('local')->append('sms_log.txt', "$sms $receivers");
-            return;
-        }
-        $now = now();
-        Storage::disk('local')->append('sms_log.txt', "{$now} Error al enviar sms $sms");
+        Storage::disk('local')->append('whatsapp.log', "Error");
     }
 }

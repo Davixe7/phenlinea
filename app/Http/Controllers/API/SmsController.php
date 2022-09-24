@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Notification;
-use App\Events\DeliveryOrderReceived;
+use App\Jobs\ProcessDelivery;
 use App\Events\GlobalNotificationSent;
 use App\Events\BulkSmsSent;
 
@@ -30,7 +30,13 @@ class SmsController extends Controller
         //abort(400, 'La extensión no tiene números de teléfono validos para notificación');
     }
     
-    event( new DeliveryOrderReceived( $extension ) );
+    if( $extension->phone_1 && $extension->phone_1[0] == '3'){
+        ProcessDelivery::dispatch($extension, "57" . $extension->phone_1);
+    }
+    if( $extension->phone_2 && $extension->phone_2[0] == '3'){
+        ProcessDelivery::dispatch($extension, "57" . $extension->phone_2);
+    }
+    
     $this->storeNotification($request, $extension->id, 'delivery');
     return response()->json(['data'=>['message' => 'Notificacion enviada'] ]);
   }

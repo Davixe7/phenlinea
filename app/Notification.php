@@ -23,7 +23,7 @@ class Notification extends Model
     protected $dateFormat = 'Y-m-d H:m:s';
     
     protected $casts = [
-        'count' => 'Number'
+        'count' => 'integer'
     ];
     
     public function extension(){

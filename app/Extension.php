@@ -38,10 +38,10 @@ class Extension extends Authenticatable
   ];
   
   protected $casts    = [
-    'has_deposit'     => 'Integer',
-    'has_own_parking' => 'Integer',
-    'vehicles'        => 'Array',
-    'phones'          => 'Array'
+    'has_deposit'     => 'integer',
+    'has_own_parking' => 'integer',
+    'vehicles'        => 'array',
+    'phones'          => 'array'
   ];
   
   protected $appends = [

@@ -228,12 +228,20 @@
                     Citofonía
                 </h4>
                 <div class="form-group">
-                    <label for="line1" title="requerido">Línea 1 <span class="text-red">*</span></label>
+                    <label for="line1" title="requerido">
+                        Línea 1 <span class="text-red">*</span>
+                        <img src="/img/icons8-whatsapp.svg" style="width: 20px; height: 20px; margin-left: auto;">
+                    </label>
                     <input type="tel" class="form-control" :class="{'is-invalid':errors.phone_1}" maxlength="10" minlength="10" v-model="phone_1" required>
                     <div v-if="errors.phone_1" class="invalid-feedback">{{ errors.phone_1[0] }}</div>
                 </div>
                 <div class="form-group">
-                    <label for="line1">Línea 2</label>
+                    <label for="line1">
+                        <span>
+                            Línea 2
+                        </span>
+                        <img src="/img/icons8-whatsapp.svg" style="width: 20px; height: 20px; margin-left: auto;">
+                    </label>
                     <input type="tel" class="form-control" :class="{'is-invalid':errors.phone_2}" maxlength="10" minlength="10" v-model="phone_2">
                     <div v-if="errors.phone_2" class="invalid-feedback">{{ errors.phone_2[0] }}</div>
                 </div>

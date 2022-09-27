@@ -3,23 +3,27 @@
 namespace App\Jobs;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\Middleware\WithoutOverlapping;
 
 use App\Extension;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Storage;
 
-class ProcessDelivery implements ShouldQueue
+class ProcessDeliveries implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public $tries = 3;
+    public $maxExceptions = 2;
+    public $backoff = 3;
     
     protected $extension;
     protected $number;
-
+    
     /**
      * Create a new job instance.
      *
@@ -66,15 +70,5 @@ class ProcessDelivery implements ShouldQueue
           return;
         }
         Storage::disk('local')->append('whatsapp.log', "Error");
-    }
-    
-    /**
-     * Get the middleware the job should pass through.
-     *
-     * @return array
-     */
-    public function middleware()
-    {
-      return [new WithoutOverlapping(1234, 10)];
     }
 }

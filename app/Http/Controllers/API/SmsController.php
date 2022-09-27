@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Notification;
-use App\Jobs\ProcessDelivery;
+use App\Jobs\ProcessDeliveries;
 use App\Events\GlobalNotificationSent;
 use App\Events\BulkSmsSent;
 
@@ -31,10 +31,10 @@ class SmsController extends Controller
     }
     
     if( $extension->phone_1 && $extension->phone_1[0] == '3'){
-        ProcessDelivery::dispatch($extension, "57" . $extension->phone_1);
+        ProcessDeliveries::dispatch($extension, "57" . $extension->phone_1);
     }
     if( $extension->phone_2 && $extension->phone_2[0] == '3'){
-        ProcessDelivery::dispatch($extension, "57" . $extension->phone_2);
+        ProcessDeliveries::dispatch($extension, "57" . $extension->phone_2);
     }
     
     $this->storeNotification($request, $extension->id, 'delivery');

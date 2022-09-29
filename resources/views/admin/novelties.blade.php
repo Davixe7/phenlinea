@@ -38,9 +38,8 @@
   </div>
   @else
   <div>
-    <h1>Novedades</h1>
-    <div class="row">
-      <div class="table-responsive col-lg-8 novelties-table">
+  <h1>Novedades</h1>
+      <div class="table-responsive">
         @if( $novelties->count() )
         <table class="table">
           <thead>
@@ -68,7 +67,6 @@
         <div class="alert alert-info">No hay Novedades para mostrar</div>
         @endif
       </div>
-    </div>
   </div>
   @endif
 </div>

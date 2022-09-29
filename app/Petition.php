@@ -9,7 +9,7 @@ class Petition extends Model
   protected $fillable = ['extension_id', 'title', 'description', 'email', 'phone', 'status', 'pictures'];
   protected $hidden   = ['updated_at'];
   protected $casts    = [
-    "pictures" => "Array"
+    "pictures" => "array"
   ];
   
   public function admin(){

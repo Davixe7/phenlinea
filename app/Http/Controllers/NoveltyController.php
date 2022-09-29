@@ -8,9 +8,9 @@ use Illuminate\Http\Request;
 
 class NoveltyController extends Controller {
 
-    public function __construct(){
-      $this->middleware('modules:news');
-    }
+    // public function __construct(){
+    //   $this->middleware('modules:news');
+    // }
     /**
      * Display a listing of the resource.
      *
@@ -18,33 +18,8 @@ class NoveltyController extends Controller {
      */
     public function index()
     {
-      return view('admin.novelties.index');
-    }
-    
-    public function list()
-    {
-      return NoveltyResource::collection( auth()->user()->novelties()->orderBy('created_at', 'desc')->get() );
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
+      $novelties = auth()->user()->novelties()->orderBy('created_at', 'desc')->get();
+      return view('admin.novelties', compact('novelties'));
     }
 
     /**
@@ -55,18 +30,7 @@ class NoveltyController extends Controller {
      */
     public function show(Novelty $novelty)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Novelty  $novelty
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Novelty $novelty)
-    {
-        //
+      return view('admin.novelties', compact('novelty'));
     }
 
     /**

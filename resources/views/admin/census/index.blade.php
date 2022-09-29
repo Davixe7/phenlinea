@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-  <div class="container" style="background: #fff; padding-top: 15px; padding-bottom: 15px; border-radius: 5px;">
+  <div class="container">
     <census/>
   </div>
 @endsection

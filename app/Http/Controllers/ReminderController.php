@@ -25,26 +25,16 @@ class ReminderController extends Controller
      */
     public function index()
     {
+      $reminders = auth()->user()->reminders()->orderBy('created_at', 'DESC')->get();
       switch (auth()->getDefaultDriver()) {
         case 'admin':
-          return view('admin.reminders.index');
+          $extensions = auth()->user()->extensions;
+          return view('admin.reminders', compact('reminders', 'extensions'));
           break;
         case 'extension':
-          $reminders = auth()->user()->reminders()->orderBy('created_at', 'DESC')->get();
           return view('resident.reminders', ['reminders'=>$reminders]);
           break;
       }
-    }
-    
-    public function list(Request $request)
-    {
-      $reminders = auth()->user()->reminders()->extension( $request->extension )->orderBy('created_at', 'DESC')->get();
-      return ReminderResource::collection( $reminders );
-    }
-    
-    public function create()
-    {
-      return view('posts.create');
     }
     
     /**
@@ -63,7 +53,7 @@ class ReminderController extends Controller
         'pictures'     => $this->upload($request, 'pictures'),
       ]);
       
-      return new ReminderResource( $reminder );
+      return redirect()->route('reminders.index')->with(['message' => 'Notificación registrada con éxito']);
     }
 
     /**
@@ -104,7 +94,8 @@ class ReminderController extends Controller
     public function destroy(Reminder $reminder)
     {
       $reminder->delete();
-      return response()->json(['data'=>'Reminder' . $reminder->id . ' deleted successfuly']);
+      return redirect()->route('reminders.index')->with(['message' => 'Notificación eliminada con éxito']);
+      // return response()->json(['data'=>'Reminder' . $reminder->id . ' deleted successfuly']);
     }
     
     public function deletePicture(Request $request, Reminder $reminder){

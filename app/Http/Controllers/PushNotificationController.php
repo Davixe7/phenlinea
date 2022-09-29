@@ -24,7 +24,7 @@ class PushNotificationController extends Controller
   public function create(){
     $extensions = Auth::user()->extensions()->whereHas('device_tokens')->get();
     $logs       = Auth::user()->push_notification_logs()->orderBy('created_at', 'DESC')->get();
-    return view('push_notifications', compact('extensions', 'logs'));
+    return view('admin.messages.push_notifications', compact('extensions', 'logs'));
   }
   
   public function store(Request $request)

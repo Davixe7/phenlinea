@@ -24,24 +24,15 @@ class BillController extends Controller
   public function index()
   {
     $role = auth()->getDefaultDriver();
+    $data = ['bills' => auth()->user()->bills];
     switch ($role) {
       case 'admin':
-        return view('admin.bills.index');
+        return view('admin.bills', $data);
         break;
       default:
-        return view('resident.bills');
+        return view('resident.bills', $data);
         break;
     }
-  }
-  
-  public function list()
-  {
-    return BillResource::collection( auth()->user()->bills );
-  }
-  
-  public function create()
-  {
-    return view('bills.create');
   }
   
   /**
@@ -58,7 +49,7 @@ class BillController extends Controller
       'url'          => $request->url
     ]);
     
-    return new BillResource( $bill );
+    return redirect()->route('bills.index')->with(['message'=>'Enlace registrado exitosamente']);
   }
   
   /**
@@ -98,6 +89,6 @@ class BillController extends Controller
   public function destroy(Bill $bill)
   {
     $bill->delete();
-    return response()->json(['data'=>'Bill ' . $bill->id . ' deleted successfuly']);
+    return redirect()->route('bills.index')->with(['message'=>'Enlace ' . $bill->id . ' eliminado exitosamente']);
   }
 }

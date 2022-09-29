@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Post as PostResource;
-use App\Http\Requests\StorePost;
 use App\Post;
 use App\Traits\Uploads;
 
@@ -18,23 +17,16 @@ class DocController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
     public function index()
     {
       $role = auth()->getDefaultDriver();
+      $docs = auth()->user()->posts()->whereType('doc')->get();
+      
       if( $role == 'admin' ){
-        return view('admin.docs.index');
+        return view('admin.docs', ['docs' => $docs]);
       }
-      return view('resident.docs');
-    }
-    
-    public function list()
-    {
-      return PostResource::collection( auth()->user()->posts()->whereType('doc')->get() );
-    }
-    
-    public function create()
-    {
-      return view('admin.posts.create');
+      return view('resident.docs', ['docs' => $docs]);
     }
     
     /**
@@ -52,8 +44,12 @@ class DocController extends Controller
         'attachments' => $this->upload($request, 'attachments'),
         'type' => 'doc'
       ]);
-      
-      return new PostResource( $post );
+
+      if( $request->expectsJson() ){
+        return new PostResource( $post );
+      }
+
+      return redirect()->route('docs.index')->with(['message'=>'Manual guardado con éxito']);
     }
 
     /**
@@ -93,10 +89,13 @@ class DocController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Post $post)
+    public function destroy(Request $request, Post $post)
     {
       $post->delete();
-      return response()->json(['data'=>'Post' . $post->id . ' deleted successfuly']);
+      if( $request->expectsJson() ){
+        return response()->json(['data'=>'Post' . $post->id . ' deleted successfuly']);
+      }
+      return redirect()->route('docs.index')->with(['message'=>'Manual eliminado con éxito']);
     }
     
     public function deleteAttachment(Request $request, Post $post){

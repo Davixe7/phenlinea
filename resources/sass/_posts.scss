@@ -1,0 +1,36 @@
+.post-card {
+  margin-bottom: 1em;
+}
+
+h2 {
+  font-size: 1.2em;
+  margin-bottom: 0;
+}
+
+.post-description {
+  margin-bottom: .75em;
+}
+
+.post-date {
+  font-size: .85em;
+  font-weight: 500;
+  margin-bottom: .5em;
+}
+
+.post-pictures {
+  height: 250px;
+  background-size: cover;
+  cursor: pointer;
+  margin-bottom: 1em;
+}
+
+.post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1em;
+}
+
+.post-header .dropdown-toggle::after {
+  display: none !important;
+}

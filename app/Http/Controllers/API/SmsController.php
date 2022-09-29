@@ -12,9 +12,23 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\SmsResource;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use App\Http\Resources\NotificationResource;
+
+use GuzzleHttp\Client;
 
 class SmsController extends Controller
 {
+  public function index(){
+    if( auth()->user()->wa_instance_id == null ){
+      return view('admin.messages.create-instance');
+    }
+
+    $log = NotificationResource::collection(auth()->user()->notifications()->whereType('bulk')->orderBy('created_at', 'DESC')->get());
+    $extensions = auth()->user()->extensions;
+
+    return view('admin.messages.index', ['log' => $log, 'extensions' => $extensions]);
+  }
+
   public function notifyDelivery(Request $request){
     $extension = Auth::user()->extensions()->name( $request->name )->firstOrFail();
     //if( $request->expectsJson() ){
@@ -104,7 +118,7 @@ class SmsController extends Controller
     if( $request->expectsJson() ){
       return response()->json(['data'=>$log]);
     }
-    return view('admin.sms.log', ['log'=>$log]);
+    return view('admin.messages.log', ['log'=>$log]);
   }
   
   public function concatExtensionsNumbers($extensions, $receiverType){
@@ -129,21 +143,22 @@ class SmsController extends Controller
     return $numbers;
   }
   
-  public function dep_concatExtensionsNumbers($extensions, $receiverType){
-    $numero = '';
-    if( $receiverType == 'extensions' ){
-      foreach( $extensions as $e ){
-        if( $e->phone_1 ) { $numero .= $e->phone_1 . ','; }
-        if( $e->phone_2 ) { $numero .= $e->phone_2 . ','; }
-        if( $e->phone_3 ) { $numero .= $e->phone_3 . ','; }
-        if( $e->phone_4 ) { $numero .= $e->phone_4 . ','; }
-      }
-    }else {
-      foreach( $extensions as $e){
-        $numero .= $e->owner_phone . ',';
-      }
+  public function generateInstance(){
+    $client = new Client([
+      'base_uri' => 'https://asistbot.com/api/createinstance.php?access_token=3f8b18194536bdafa301c662dc9caa4c',
+      'verify' => false
+    ]);
+
+    $response = $client->request('POST');
+
+    if( $response->getStatusCode() == '200' ){
+      $data        = json_decode( $response->getBody() );
+      $instance_id = property_exists($data, 'instance_id') ? $data->instance_id : null;
+      auth()->user()->update(['wa_instance_id' => $instance_id]);
+
+      return response()->json(['data' => $instance_id]);
     }
-    return $numero;
+    return response()->json(['data'=>'Error al crear la instancia']);
   }
   
 }

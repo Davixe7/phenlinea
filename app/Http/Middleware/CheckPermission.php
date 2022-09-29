@@ -20,10 +20,12 @@ class CheckPermission
             $admin = auth()->user()->admin_id
                     ? auth()->user()->admin
                     : auth()->user();
+
+                    return $next( $request );
                 
-            if($admin &&  $admin->modules()->whereSlug($module)->first() ){
-                return $next( $request );
-            }
+            // if($admin &&  $admin->modules()->whereSlug($module)->first() ){
+            //     return $next( $request );
+            // }
         }
 
         return redirect()->route('modules.disabled');

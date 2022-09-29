@@ -29,7 +29,7 @@ class HomeController extends Controller
       
       switch ($driver) {
         case 'extension':
-          return view('resident.home');
+          return view('resident.home', ['posts'=>auth()->user()->posts()->whereType('post')->get()]);
           break;
         case 'freelancer':
           return view('admins.referrals');

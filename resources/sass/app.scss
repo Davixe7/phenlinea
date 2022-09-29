@@ -1,5 +1,4 @@
 // Fonts
-
 @import 'variables';
 @import '~bootstrap/scss/bootstrap';
 @import 'cards';
@@ -34,7 +33,7 @@ h1,h2,h3,h4 {
 
 // Bootstrap Override
 .container {
-  padding: 0 15px;
+  padding: 0 15px !important;
 }
 .form-group {
   margin-bottom: 10px;
@@ -49,13 +48,9 @@ body {
   background: linear-gradient(to bottom, #f8fafc 150px, #4b7094 150px, #4b7094);
   background: #f8fafc;
 }
-#app > .container {
-  border-radius: 10px;
-  padding: 20px;
-}
 h1 {
   font-size: 1.85em;
-  margin-bottom: 0;
+  margin-bottom: 1rem;
 }
 input[type=search].form-control {
   font-size: 1em;
@@ -256,3 +251,4 @@ i.material-icons {
   from { transform: rotateZ(0) }
   to { transform: rotateZ(360deg) }
 }
+@import 'posts';

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Post as PostResource;
-use App\Http\Requests\StorePost;
 use App\Post;
 use App\Traits\Uploads;
 
@@ -28,19 +27,9 @@ class PostController extends Controller
       $posts = ['posts' => auth()->user()->posts()->where('type', 'post')->orderBy('created_at', 'DESC')->get()];
       $role = auth()->getDefaultDriver();
       if( $role == 'admin' ){
-        return view('admin.posts.index', $posts);
+        return view('admin.posts', $posts);
       }
       return view('posts._index', $posts);
-    }
-    
-    public function list()
-    {
-      return PostResource::collection( auth()->user()->posts()->whereType('post')->get() );
-    }
-    
-    public function create()
-    {
-      return view('admin.posts.create');
     }
     
     /**

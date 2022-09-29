@@ -2,42 +2,42 @@
 @section('content')
 <div class="container">
   <h1>Cartelera</h1>
-  <div class="row">
-    <div class="col-lg-6">
-      <div class="card">
+  <ul class="row" style="list-style-type: none; padding: 0;">
+    @foreach( $posts as $post )
+    <li class="col-lg-4">
+      <div class="card post-card">
         <div class="card-body">
-          <div class="form-section-title">
-            CREAR PUBLICACIÓN
+          <div class="post-header">
+            <h2>{{ $post->title }}</h2>
           </div>
-          <form action="">
-            <div class="mb-3">
-              <input
-                placeholder="Título"
-                type="text"
-                class="form-control"
-                name="title"
-                required>
+          @if( is_array($post->pictures) && count($post->pictures) )
+          <div class="post-pictures" style="background-image: url({{ $post->pictures[0]['url'] }})"></div>
+          @endif
+          <div class="post-date" style="text-transform: capitalize;">
+            {{ $post->created_at->formatLocalized('%d %B %Y %H:%M') }}
+          </div>
+          <div class="post-description">
+            {{ $post->description }}
+          </div>
+          @if( $post->attachments && count($post->attachments) )
+          <small>
+            Archivos adjuntos
+          </small>
+          <div class="d-flex">
+            @foreach( $post->attachments as $attachment )
+            <div>
+              <a href="{{ $attachment['url'] }}" target="blank">
+                {{ $attachment['name'] }}
+              </a>
             </div>
-            <div class="mb-3">
-              <textarea
-                placeholder="Escribe aquí"
-                rows="7"
-                class="form-control"
-                name="body"
-                required></textarea>
-            </div>
-            <div class="mb-3">
-              <input type="file" class="form-control" name="attachment" multiple>
-            </div>
-            <div class="d-flex justify-content-end">
-              <button class="btn btn-primary" type="submit">
-                Publicar
-              </button>
-            </div>
-          </form>
+            @endforeach
+          </div>
+          @endif
         </div>
       </div>
-    </div>
-  </div>
+    </li>
+    @endforeach
+  </ul>
+</div>
 </div>
 @endsection

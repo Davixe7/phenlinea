@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth\Extension;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\AdminLoginResource as AdminResource;
+use Illuminate\Validation\ValidationException;
 use App\Http\Resources\UnitsLogin as UnitsResource;
 use App\Http\Resources\Extension as ExtensionResource;
 use Illuminate\Http\Request;
@@ -49,8 +49,8 @@ class LoginController extends Controller
     }
 
     public function showLoginForm(){
-      $units = UnitsResource::collection( \App\Admin::all() );
-      return view('resident.login', ['units'=>$units]);
+      $admins = UnitsResource::collection( \App\Admin::all() );
+      return view('resident.auth.login', ['admins'=>$admins]);
     }
     
     public function extensionslist(Admin $admin){
@@ -69,17 +69,31 @@ class LoginController extends Controller
     protected function guard(){
       return auth()->guard('extension');
     }
+
+    protected function sendFailedLoginResponse(Request $request)
+    {
+      throw ValidationException::withMessages([
+        'extension' => 'Número de apartamento o contraseña incorrectos',
+        'password'  => 'Número de apartamento o contraseña incorrectos',
+      ]);
+    }
     
     public function login(Request $request)
     {
-        $this->validateLogin($request);
+        $request->validate([
+          'admin_id'  => 'required',
+          'extension' => 'required',
+          'password'  => 'required',
+        ]);
         
-        $extension = \App\Extension::findOrFail( $request->extension_id );
-        $resident  = $extension->residents()->where('dni', $request->password)->first();
-    
-        if( $resident ){
-          auth()->guard('extension')->login( $extension );
-          return $this->sendLoginResponse($request);
+        $extension = \App\Extension::whereName( $request->extension )->where('admin_id', $request->admin_id)->first();
+
+        if( $extension ){
+          $resident  = $extension->residents()->where('dni', $request->password)->first();
+          if( $resident ){
+            auth()->guard('extension')->login( $extension );
+            return $this->sendLoginResponse($request);
+          }
         }
 
         // If the login attempt was unsuccessful we will increment the number of attempts

@@ -22,18 +22,27 @@ class CreateExtensionsTable extends Migration
       $table->string('password');
       
       $table->string('name', 20)->nullable();
+      $table->string('owner_name')->nullable();
       $table->string('phone_1');
       $table->string('phone_2')->nullable();
       $table->string('phone_3')->nullable();
       $table->string('phone_4')->nullable();
-      
+
+      $table->string('emergency_contact')->nullable();
+      $table->string('emergency_contact_name')->nullable();
       $table->string('owner_phone')->nullable();
-      $table->integer('pets_count')->nullable()->default(0);
+      $table->string('email')->nullable();
+      
+      
+      $table->boolean('has_own_parking')->default(true)->nullable();
       $table->string('parking_number1')->nullable();
       $table->string('parking_number2')->nullable();
-      $table->json('vehicles')->nullable();
+
       $table->boolean('has_deposit')->default(0);
-      $table->string('email')->nullable();
+
+      $table->integer('pets_count')->nullable()->default(0);
+      $table->json('vehicles')->nullable();
+      $table->text('observation')->nullable();
       
       $table->string('api_token', 80)->unique()->nullable()->default(null);
       $table->unsignedBigInteger('admin_id')->nullable();

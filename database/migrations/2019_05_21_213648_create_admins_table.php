@@ -17,6 +17,8 @@ class CreateAdminsTable extends Migration
       $table->bigIncrements('id');
       $table->timestamps();
       $table->rememberToken();
+      $table->timestamp('email_verified_at')->nullable();
+      $table->string('phone_verification', 6)->nullable();
 
       $table->string('email')->unique();
       $table->string('password');
@@ -34,6 +36,7 @@ class CreateAdminsTable extends Migration
       $table->unsignedInteger('status')->default(1);
       
       $table->string('api_token', 60)->nullable()->default(null);
+      $table->string('wa_instance_id')->nullable();
       $table->boolean('sms_enabled')->default(0);
       
       $table->string('picture')->nullable();

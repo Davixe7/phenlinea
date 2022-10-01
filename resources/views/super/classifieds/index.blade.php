@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.super')
 @section('content')
 <div class="container">
   <ads-table :locations="{{json_encode( $states )}}" :ads="{{ json_encode( $ads ) }}"/>

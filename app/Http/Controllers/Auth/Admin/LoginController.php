@@ -26,7 +26,7 @@ class LoginController extends Controller
      * @var string
      */
 
-     protected $redirectTo = '/census';
+     protected $redirectTo = '/extensions';
 
     /**
      * Create a new controller instance.
@@ -44,7 +44,7 @@ class LoginController extends Controller
         return redirect('/census');
       }
 
-      return view('admin.login');
+      return view('login');
     }
 
     protected function guard(){

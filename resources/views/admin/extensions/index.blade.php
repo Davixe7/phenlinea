@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
   <div class="container">
-    <census/>
+    <extensions :items="{{ json_encode( $extensions ) }}"/>
   </div>
 @endsection

@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -13,7 +12,6 @@ use App\Notifications\PasswordResetNotificationSms;
 class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
 {
   use Notifiable;
-  //protected $appends = ['extensions_count'];
 
   protected $fillable = [
     'name',

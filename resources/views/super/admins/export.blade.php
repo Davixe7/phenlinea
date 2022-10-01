@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.super')
 @section('content')
   <div class="container" style="box-shadow: none;">
     <div class="col-md-5 mx-auto">

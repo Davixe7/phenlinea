@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.super')
   @section('styles')
     <style>
       .dasboard-section-title {

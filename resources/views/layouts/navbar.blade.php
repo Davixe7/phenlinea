@@ -24,13 +24,7 @@
           <a class="nav-link" href="{{ route('admin.porterias.index') }}">Porterias</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{{ route('admin.freelancers.index') }}">Freelancers</a>
-        </li>
-        <li class="nav-item">
           <a class="nav-link" href="{{ route('admin.admins.export') }}">Exportar</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{{ route('admin.stores.index') }}">Comercios</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{{ route('admin.invoices.upload') }}">Facturas</a>
@@ -77,7 +71,7 @@
               SMS <span class="caret"></span>
             </a>
             <div class="dropdown-menu dropdown-menu-right">
-              <a class="dropdown-item" href="{{ route('sms.index') }}">Enviar SMS</a>
+              <a class="dropdown-item" href="{{ route('messages.index') }}">Enviar SMS</a>
               <a class="dropdown-item" href="{{ route('sms.log') }}">Historico</a>
             </div>
           </li>

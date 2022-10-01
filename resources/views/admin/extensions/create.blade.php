@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
   <div class="container">
-    <create-census :extension-id="null"/>
+    <create-extension :extension-id="null"/>
   </div>
 @endsection

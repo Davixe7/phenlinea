@@ -258,15 +258,15 @@
             </div>
             
             <div class="text-right">
-              <v-btn dark v-if="!editing" @click="storeCensus()" :loading="loading">
+              <button class="btn btn-secondary w-100 text-center" dark v-if="!editing" @click="storeCensus()" :loading="loading">
                   Registrar Extensión
-              </v-btn>
+              </button>
               <a v-if="editing" href="/extensions" class="btn btn-link">
                   Terminar
               </a>
-              <v-btn dark v-if="editing" @click="updateCensus()" :loading="loading">
+              <button dark v-if="editing" class="btn btn-secondary w-100 text-center" @click="updateCensus()" :loading="loading">
                   Actualizar
-              </v-btn>
+              </button>
             </div>
           </div>
         </div>

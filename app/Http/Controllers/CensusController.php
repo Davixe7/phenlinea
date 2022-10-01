@@ -18,7 +18,7 @@ class CensusController extends Controller
      */
     public function index()
     {
-      return view('admin.census.index');
+      return view('admin.extensions.index');
     }
 
     /**
@@ -28,11 +28,11 @@ class CensusController extends Controller
     */
     public function create()
     {
-      return view('admin.census.create');
+      return view('admin.extensions.create');
     }
 
     public function edit(Request $request, Extension $extension){
-      return view('admin.census.edit', ['extension_id'=>$extension->id]);
+      return view('admin.extensions.edit', ['extension_id'=>$extension->id]);
     }
 
     /**

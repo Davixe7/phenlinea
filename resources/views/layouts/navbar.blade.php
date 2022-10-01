@@ -46,7 +46,7 @@
         @endif
         @if( Auth::guard('admin')->check() )
           <li class="nav-item">
-            <a class="nav-link" href="{{ route('census.index') }}">Extensiones</a>
+            <a class="nav-link" href="{{ route('extensions.index') }}">Extensiones</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{{ route('posts.index') }}">Cartelera</a>
@@ -103,7 +103,7 @@
             <a class="nav-link" href="{{ route('reminders.index') }}">Notificaciones</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ route('petitions.create') }}">Solicitudes</a>
+            <a class="nav-link" href="{{ route('petitions.index') }}">Solicitudes</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{{ route('bills.index') }}">Enlaces</a>

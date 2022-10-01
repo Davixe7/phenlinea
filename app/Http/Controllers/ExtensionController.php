@@ -26,7 +26,7 @@ class ExtensionController extends Controller
   public function index()
   {
     $this->authorize('index', Extension::class);
-    return view('admin.census.index');
+    return view('admin.extensions.index');
   }
   
   public function list(Request $request)

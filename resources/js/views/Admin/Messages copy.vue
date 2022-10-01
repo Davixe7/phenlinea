@@ -53,46 +53,37 @@
                 {{ selected.length }}
               </div>
               
-              <button
+              <v-btn dark
                 v-if="extensions && extensions.length"
                 @click="sendMessage"
-                class="btn btn-secondary w-100">
+                class="w-100">
                 Enviar
-              </button>
+              </v-btn>
             </form>
           </v-card-text>
         </v-card>
       </div>
       <div class="col-lg-6">
-        <div class="table-responsive">
-          <table class="table">
-            <thead>
-              <th>
-                Enviado el
-              </th>
-              <th>
-                Cuerpo del mensaje
-              </th>
-              <th>
-                Cantidad
-              </th>
-            </thead>
-            <tbody>
-              <tr v-for="message in messages" :key="message.id">
-                <td>
-                  {{ message.created_at }}
-                </td>
-                <td>
-                  {{ message.content }}
-                </td>
-                <td>
-                  {{ message.count }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="counters">
+        <v-card>
+        <v-card-title>
+          Historial de SMS
+          <v-spacer></v-spacer>
+          <v-text-field
+            class="p-0 m-0"
+            v-model="search"
+            append-icon="search"
+            label="Buscar..."
+            single-line
+            hide-details
+          ></v-text-field>
+        </v-card-title>
+        <v-data-table
+          :headers="headers"
+          :items="items"
+          :search="search"
+        ></v-data-table>
+      </v-card>
+      <div class="counters">
           <div class="hero-counter">
             <div class="count">
               {{ messagesCount }}
@@ -106,10 +97,10 @@
               100 COP
             </div>
             <div class="label">
-              Precio SMS por Móvil
+              Precio SMS por M贸vil
             </div>
           </div>
-        </div>
+      </div>
       </div>
     </div>
   </div>
@@ -133,7 +124,14 @@ export default {
       selected: [],
       isValid: false,
       extensiones: null,
-      messages: [],
+      items: [],
+      
+      search: '',
+      headers: [
+        {text: 'Enviado el', align: 'start', sortable: true, value:'created_at'},
+        {text: 'Cuerpo del Mensaje', align: 'center', sortable: true, value:'content'},
+        {text: 'Cantidad', align: 'end', sortable: true, value:'count'},
+      ],
       types: {
         'delivery': 'encomienda',
         'admin':    'administracion',
@@ -143,7 +141,7 @@ export default {
   },
   computed:{
     messagesCount(){
-      return this.messages.reduce((sum, item)=>{
+      return this.items.reduce((sum, item)=>{
         return Number(sum) + Number(item.count)
       }, 0)
     },
@@ -181,7 +179,7 @@ export default {
           receiver: this.selected
         }
         axios.post('/bulk', data).then(response=>{
-          this.messages.push( response.data.data )
+          this.items.push( response.data.data )
           this.$toasted.success('Mensaje masivo enviado exitosamente', {position:'bottom-left'})
           this.clearForm()
         },error=>{
@@ -196,7 +194,7 @@ export default {
     }
   },
   mounted(){
-    this.messages = [...this.log]
+    this.items = [...this.log]
     this.extensiones = [...this.extensions]
   }
 }

@@ -35,7 +35,7 @@ class HomeController extends Controller
           return view('admins.referrals');
           break;
         case 'admin':
-          return view('admin.census.index');
+          return view('admin.extensions.index');
           break;
         case 'web':
           return view('super.users.index');

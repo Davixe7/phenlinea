@@ -18,7 +18,8 @@
     </div>
     <div
       v-if="results && results.length"
-      id="extensions-table-wrap" class="table-responsive">
+      id="extensions-table-wrap"
+      class="table-responsive">
       <table class="table">
         <thead>
           <th>Apto.</th>

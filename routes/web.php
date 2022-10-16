@@ -1,4 +1,4 @@
- <?php
+<?php
 use Illuminate\Http\Request;
 use App\Http\Resources\VisitPorteria;
 use App\Extension;
@@ -97,7 +97,6 @@ Route::name('admin.')->prefix('admin')->middleware('auth:web')->group(function()
   Route::get('admins/list', 'Admin\AdminController@list')->name('admins.list');
   Route::get('porterias/list', 'Admin\PorteriaController@list')->name('porterias.list');
   Route::get('freelancers/list', 'Admin\FreelancerController@list')->name('freelancers.list');
-  Route::get('slides/list', 'Admin\SlideController@list')->name('slides.list');
 
   Route::resource('users', 'Admin\UserController');
   Route::resource('admins', 'Admin\AdminController');
@@ -105,7 +104,6 @@ Route::name('admin.')->prefix('admin')->middleware('auth:web')->group(function()
   Route::resource('porterias', 'Admin\PorteriaController');
   Route::resource('extensions', 'ExtensionController');
   Route::resource('freelancers', 'Admin\FreelancerController');
-  Route::resource('slides', 'Admin\SlideController');
   Route::resource('stores', 'Admin\StoreController');
   Route::put('stores/{store}/update-status', 'Admin\StoreController@updateStatus');
   Route::resource('classifieds', 'Admin\ClassifiedController');
@@ -177,22 +175,17 @@ Route::middleware(['auth:admin,porteria', 'phoneverified', 'suspended'])->group(
   Route::resource('extensions', 'ExtensionController');
   Route::get('extensions/list', 'ExtensionController@list')->name('extensions.list');
   Route::get('novelties', 'NoveltyController@index')->name('novelties.index');
-  Route::get('novelties/list', 'NoveltyController@list')->name('novelties.list');
+  Route::get('novelties/{novelty}', 'NoveltyController@show')->name('novelties.show');
   Route::put('novelties/{novelty}/markasread', 'NoveltyController@markAsRead')->name('novelties.markAsRead')->middleware('can:markAsRead,App\Novelty');
-  Route::get('sms', function(){
-    $log = \App\Http\Resources\NotificationResource::collection(auth()->user()->notifications()->whereType('bulk')->orderBy('created_at', 'DESC')->get());
-    $extensions = auth()->user()->extensions;
-    return view('admin.sms.index', ['log' => $log, 'extensions' => $extensions]);
-  })->name('sms.index');
+  Route::get('sms', 'API\SmsController@index')->name('sms.index');
 });
 
 Route::middleware(['auth:admin,extension', 'phoneverified', 'suspended'])->group(function(){
-  Route::get('posts/list', 'PostController@list')->name('posts.list');
+  Route::post('messages/generate-instance', 'API\SmsController@generateInstance')->name('messages.createInstance');
   Route::put('posts/{post}/deletepicture', 'PostController@deletePicture')->name('posts.deletepicture');
   Route::put('posts/{post}/deleteattachment', 'PostController@deleteAttachment')->name('posts.deleteattachment');
   Route::resource('posts', 'PostController');
 
-  Route::get('docs/list', 'DocController@list');
   Route::resource('docs', 'DocController')->parameters(['docs'=>'post'])->middleware('modules:documents');
 
   Route::get('petitions/list', 'PetitionController@list')->name('petitions.list');
@@ -200,11 +193,9 @@ Route::middleware(['auth:admin,extension', 'phoneverified', 'suspended'])->group
   Route::resource('petitions', 'PetitionController');
 
   Route::put('reminders/{reminder}/deletepicture', 'ReminderController@deletePicture')->name('reminders.deletepicture');
-  Route::get('reminders/list', 'ReminderController@list')->name('reminders.list');
   Route::resource('reminders', 'ReminderController');
 
   Route::put('bills/{bill}/deletepicture', 'BillController@deletePicture')->name('bills.deletepicture');
-  Route::get('bills/list', 'BillController@list')->name('bills.list');
   Route::resource('bills', 'BillController');
 
   Route::get('facturas/{factura}', 'FacturaController@show')->name('factura.show');

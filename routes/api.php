@@ -1,5 +1,6 @@
 <?php
 
+use App\Invoice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 /*
@@ -12,6 +13,12 @@ use Illuminate\Support\Facades\Auth;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::middleware('auth:api')->group(function(){
+  Route::get('invoices', 'API\InvoiceController@index');
+  Route::get('invoices/{invoice:number}', 'API\InvoiceController@show');
+  Route::put('invoices/{invoice:number}/pay', 'API\InvoiceController@pay');
+});
 
 Route::middleware('auth')->get('/user', function (Request $request) {
     return $request->user();
@@ -51,6 +58,7 @@ Route::group(['middleware'=>['auth:api-porteria']], function(){
    Route::get('history',         'API\SmsController@history');
 });
 
+Route::post('login', 'Auth\ApiController@login');
 Route::post('admin-login', 'Auth\ApiController@adminLogin');
 Route::post('store-login', 'Auth\ApiController@storeLogin');
 Route::post('porteria-login', 'Auth\ApiController@porteriaLogin');

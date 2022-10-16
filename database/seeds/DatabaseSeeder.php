@@ -7,6 +7,7 @@ use App\User;
 use App\Payment;
 use App\Porteria;
 use App\Visit;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class DatabaseSeeder extends Seeder
@@ -18,26 +19,26 @@ class DatabaseSeeder extends Seeder
    */
   public function run()
   {
-    $modules = [
-      'Censo'                  => 'census',
-      'Cartelera'              => 'posts',
-      'Censo'                  => 'census',
-      'Facturación Residentes' => 'residents_billing',
-      'Manuales & Documentos'  => 'documents',
-      'Mensajería de Texto'    => 'sms',
-      'Notificaciones'         => 'notifications',
-      'Novedades'              => 'news',
-      'Pagos'                  => 'payment_links',
-      'Solicitudes'            => 'requests',
-      'Visitas'                => 'visits'
-    ];
+    // $modules = [
+    //   'Censo'                  => 'census',
+    //   'Cartelera'              => 'posts',
+    //   'Censo'                  => 'census',
+    //   'Facturación Residentes' => 'residents_billing',
+    //   'Manuales & Documentos'  => 'documents',
+    //   'Mensajería de Texto'    => 'sms',
+    //   'Notificaciones'         => 'notifications',
+    //   'Novedades'              => 'news',
+    //   'Pagos'                  => 'payment_links',
+    //   'Solicitudes'            => 'requests',
+    //   'Visitas'                => 'visits'
+    // ];
 
-    foreach ($modules as $name => $slug) {
-      \App\Module::create([
-        'name' => $name,
-        'slug' => $slug
-      ]);
-    }
+    // foreach ($modules as $name => $slug) {
+    //   \App\Module::create([
+    //     'name' => $name,
+    //     'slug' => $slug
+    //   ]);
+    // }
     DB::unprepared(file_get_contents(storage_path('app/ddbb.sql')));
   }
 }

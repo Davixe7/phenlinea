@@ -12,6 +12,7 @@ use Illuminate\Queue\SerializesModels;
 use App\Extension;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 
 class ProcessDeliveries implements ShouldQueue
 {
@@ -51,7 +52,7 @@ class ProcessDeliveries implements ShouldQueue
         $sms   .= "Servicio prestado por Phenlinea.com"; 
 
         $data = [
-          "instance_id"  => '632CE66281C2B',
+          "instance_id"  => '6336107796D94',
           "access_token" => '3f8b18194536bdafa301c662dc9caa4c',
           "type"         => "text",
           "message"      => $sms,
@@ -66,9 +67,20 @@ class ProcessDeliveries implements ShouldQueue
         $response = $client->request('POST', '', ['query' => $data]);
 
         if( $response->getStatusCode() == '200' ){
-          Storage::disk('local')->append('whatsapp.log', implode(",", $data) . "\n");
+          Storage::disk('local')->append('whatsapp.log', now() . " Delivery sent " . $data['number'] . "\n");
           return;
         }
         Storage::disk('local')->append('whatsapp.log', "Error");
     }
+    
+    /**
+     * Get the middleware the job should pass through.
+     *
+     * @return array
+     *
+    *public function middleware()
+    *{
+    *return [(new WithoutOverlapping('whatsapp'))->releaseAfter(5)];
+    *}
+    */
 }

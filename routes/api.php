@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 
 Route::middleware('auth:api')->group(function(){
   Route::get('invoices', 'API\InvoiceController@index');
+  Route::get('invoices/search', 'API\InvoiceController@search');
   Route::get('invoices/{invoice:number}', 'API\InvoiceController@show');
   Route::put('invoices/{invoice:number}/pay', 'API\InvoiceController@pay');
 });

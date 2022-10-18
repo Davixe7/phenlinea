@@ -18,7 +18,7 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
   protected $fillable = [
     'name', 'email', 'password', 'contact_email', 'nit', 'sms_enabled',
     'phone', 'phone_2', 'address', 'referer_id','status', 'picture',
-     'phone_verification'
+     'phone_verification', 'whatsapp_instance_id', 'whatsapp_status'
   ];
 
   protected $hidden   = ['password', 'created_at', 'updated_at'];

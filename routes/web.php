@@ -15,6 +15,9 @@ use GuzzleHttp\Client;
 |
 */
 
+Route::get('test', function(Request $request){ dd( implode(';', $request->all()) ); });
+Route::middleware('auth:admin')->get('whatsapp', 'WhatsappController@index')->name('whatsapp.index');
+
 Route::get('servicios', function(){
     $stores = App\Store::all();
     return view('public.stores', ['stores'=>$stores]);

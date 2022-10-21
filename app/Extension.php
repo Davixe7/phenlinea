@@ -4,9 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Extension extends Authenticatable
+class Extension extends Authenticatable implements HasMedia
 {
+  use InteractsWithMedia;
   protected $fillable = [
     'name',
     'password',

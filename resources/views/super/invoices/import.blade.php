@@ -64,18 +64,26 @@
         @if( $invoices && $invoices->count() )
         <table class="table">
           <thead>
+            <th>Numero</th>
             <th>NIT</th>
             <th>Unidad</th>
-            <th>Total</th>
+            <th>Estado</th>
+            <th>Total</th> 
           </thead>
           <tbody>
             @foreach( $invoices as $invoice )
             <tr>
               <td>
+                {{ $invoice->number }}
+              </td>
+              <td>
                 {{ $invoice->admin->nit }}
               </td>
               <td>
                 {{ $invoice->admin->name }}
+              </td>
+              <td>
+                {{ $invoice->status }}
               </td>
               <td>
                 {{ $invoice->total }}

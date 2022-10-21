@@ -17,10 +17,6 @@ use Illuminate\Queue\Middleware\WithoutOverlapping;
 class ProcessDeliveries implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    public $tries = 3;
-    public $maxExceptions = 2;
-    public $backoff = 3;
     
     protected $extension;
     protected $number;
@@ -73,7 +69,7 @@ class ProcessDeliveries implements ShouldQueue
         
         $response = $client->post('send.php', ['query' => $data]);
         if( $response->getStatusCode() == '200' ){
-          Storage::disk('local')->append('whatsapp.log', now() . " Delivery sent " . $this->number . ' ' . $this->media->original_url ?: '' . "\n");
+          Storage::disk('local')->append('whatsapp.log', now() . " Delivery sent " . $this->number . "\n");
           return;
         }
         Storage::disk('local')->append('whatsapp.log', "Error");

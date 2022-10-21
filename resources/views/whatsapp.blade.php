@@ -67,6 +67,7 @@
       </div>
     </div>
     <div class="col-lg-6">
+      <a href="{{ route('whatsapp.logout') }}">Cerrar sesión</a>
       <div class="table-responsive">
         <textarea id="message" placeholder="Escribe un mensaje" rows="10" name="message" class="form-control mb-3" required>Lorem ipsum dolor sit amet</textarea>
         <div class="d-flex justify-content-end">

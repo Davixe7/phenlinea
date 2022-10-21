@@ -13,19 +13,17 @@ class WhatsappController {
         if( !$extension->admin_id == auth()->user()->admin_id ){
             abort('404', 'No tiene una extensión asociada con el número especificado');
         }
+        
         $media = null;
-        $phones[] = '57' . $extension->phone_1;
-        if( $extension->phone_2 ){
-            $phones[] = '57' . $extension->phone_2;
-        }
         
         if( $request->hasFile('media') ){
             $file = $request->file('media');
             $media = $extension->addMedia( $file )->toMediaCollection('deliveries');
         }
         
-        foreach( $phones as $phone ){
-            ProcessDeliveries::dispatch($extension, $phone, $media);
+        ProcessDeliveries::dispatch($extension, '57' . $extension->phone_1, $media);
+        if( $extension->phone_2 ){
+            ProcessDeliveries::dispatch($extension, '57' . $extension->phone_2, $media);
         }
         
         return response()->json(['data'=>'Message sent successfully']);

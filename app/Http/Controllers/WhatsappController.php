@@ -70,38 +70,42 @@ class WhatsappController extends Controller
 
     $response = $this->client->post('setwebhook.php', ['query' => [
       'enable'       => 'true',
-      'instance_id'  => auth()->user()->whatsapp_instance_id,
+      'instance_id'  => $instance_id,
       'access_token' => '3f8b18194536bdafa301c662dc9caa4c',
       'webhook_url'  => route('whatsapp.hook')
     ]]);
 
-    if ($response->getStatusCode() != '200' || json_decode($response->getBody())->message == 'Instance ID Invalidated') {
-      auth()->user()->update(['whatsapp_instance_id' => null, 'whatsapp_status' => 'offline']);
-      return redirect()->route('whatsapp.index');
-    }
-
     $response = $this->getQrCode();
     $data = json_decode($response->getBody(), true);
+    
     if (array_key_exists('base64', $data)) {
       return view('whatsapp', ['base64' => $data['base64']]);
     }
     return redirect()->route('whatsapp.index');
   }
+  
+  public function logout(){
+      $response = $this->client->post('reboot.php', ['query' => [
+        'access_token' => '3f8b18194536bdafa301c662dc9caa4c',
+        'instance_id'  => auth()->user()->whatsapp_instance_id
+      ]]);
+      auth()->user()->update(['whatsapp_status' => 'offline', 'whatsapp_instance_id' => null]);
+      return redirect()->route('whatsapp.index');
+  }
 
-  /**
-   * Show the form for creating a new resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
-  public function logHook(Request $request)
+  public function hook(Request $request)
   {
+    if( $request->event == 'state' || $request->event == 'ready' ){
+        $data = json_encode($request->all());
+        Storage::append('hook.log', $data);
+    }
+    
     if ($request->event == 'state') {
       Admin::where('whatsapp_instance_id', $request->instance_id)->update(['whatsapp_status' => 'offline', 'whatsapp_instance_id' => null]);
     } else {
       Admin::where('whatsapp_instance_id', $request->instance_id)->update(['whatsapp_status' => 'online']);
     }
-    $data = json_encode($request->all());
-    Storage::append('file.log', $data);
+    return 'ok';
   }
 
   public function sendMessage(Request $request)

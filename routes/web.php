@@ -15,9 +15,11 @@ use GuzzleHttp\Client;
 |
 */
 
+Route::get('whatsapp/hook', 'WhatsappController@hook')->name('whatsapp.hook');
+Route::post('whatsapp/hook', 'WhatsappController@hook')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 Route::middleware('auth:admin')->get('whatsapp', 'WhatsappController@index')->name('whatsapp.index');
+Route::middleware('auth:admin')->get('whatsapp/logout', 'WhatsappController@logout')->name('whatsapp.logout');
 Route::middleware('auth:admin')->post('whatsapp/send', 'WhatsappController@sendMessage')->name('whatsapp.send');
-Route::get('post', 'WhatsappController@logHook')->name('whatsapp.hook');
 
 Route::get('servicios', function(){
     $stores = App\Store::all();

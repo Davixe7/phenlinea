@@ -17,8 +17,7 @@ class InvoiceUser extends JsonResource
     return [
       'name'  => $this->name,
       'email' => $this->contact_email,
-      'nit'   => $this->nit,
-      'phone' => $this->phone
+      'nit'   => $this->nit
     ];
   }
 }

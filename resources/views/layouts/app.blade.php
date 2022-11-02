@@ -12,6 +12,9 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,600,700" rel="stylesheet">
   <style>
+    .navbar.bg-dark {
+      background: #4b7094 !important;
+    }
     .table-responsive {
       border-radius: 5px;
       background: #fff;

@@ -3,7 +3,7 @@
 @else
   <nav class="navbar navbar-expand-md navbar-light shadow-sm">
 @endif
-  <div class="container">
+  <div class="container p-0">
     <a class="navbar-brand" href="{{ url('/') }}">
       PHEnlinea
     </a>
@@ -12,7 +12,7 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
+      <ul class="navbar-nav mr-auto" style="align-items: center;">
         @if( Auth::guard('web')->check() )
         <li class="nav-item">
           <a class="nav-link" href="{{ route('admin.users.index') }}">SuperUsuarios</a>
@@ -48,21 +48,21 @@
           <li class="nav-item">
             <a class="nav-link" href="{{ route('census.index') }}">Extensiones</a>
           </li>
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a class="nav-link" href="{{ route('posts.index') }}">Cartelera</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{{ route('docs.index') }}">Manuales & Doc.</a>
-          </li>
-          <li class="nav-item">
+          </li> -->
+          <!-- <li class="nav-item">
             <a class="nav-link" href="{{ route('reminders.index') }}">MSJ Apt</a>
-          </li>
-          <li class="nav-item">
+          </li> -->
+          <!-- <li class="nav-item">
             <a class="nav-link" href="{{ route('bills.index') }}">Enlaces</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{{ route('petitions.index') }}">Solicitudes</a>
-          </li>
+          </li> -->
           <li class="nav-item">
             <a class="nav-link" href="{{ route('novelties.index') }}">Novedades</a>
           </li>
@@ -72,19 +72,10 @@
           <li class="nav-item">
             <a class="nav-link" href="/push">MSJ App</a>
           </li>
-          <li class="nav-item dropdown">
-            <a id="smsDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" v-pre>
-              SMS <span class="caret"></span>
-            </a>
-            <div class="dropdown-menu dropdown-menu-right">
-              <a class="dropdown-item" href="{{ route('sms.index') }}">Enviar SMS</a>
-              <a class="dropdown-item" href="{{ route('sms.log') }}">Historico</a>
-            </div>
-          </li>
-
-          <li class="nav-item dropdown">
-            <a id="facturasDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" v-pre>
-              Facturas <span class="caret"></span>
+          <li class="nav-item">
+            <a id="facturasDropdown" class="nav-link" href="{{ route('invoices.index') }}" v-pre>
+              Facturas | <img src="https://corbanca.com.co/wp-content/uploads/2022/06/pse.png" style="width: 100px;">
+              <!-- <span class="caret"></span> -->
             </a>
             <div class="dropdown-menu dropdown-menu-right">
               <a class="dropdown-item" href="{{ route('invoices.index') }}">Mis facturas</a>

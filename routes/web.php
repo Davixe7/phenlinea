@@ -91,7 +91,7 @@ Route::get('admins/{admin}/payments', 'AdminController@payments')->name('admins.
 Route::get('ads', 'AdController@index')->name('ads.index');
 Route::get('clasificados', 'AdController@index');
 
-Route::name('admin.')->prefix('admin')->middleware('auth:web')->group(function(){
+Route::name('admin.')->prefix('admin')->middleware(['auth:web', 'role:Super'])->group(function(){
   // Get JSON Resources for VueJS Components
   Route::get('users/list', 'Admin\UserController@list')->name('users.list');
   Route::get('admins/list', 'Admin\AdminController@list')->name('admins.list');

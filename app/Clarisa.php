@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Cache;
 
 class Clarisa
 {
+  //https://pos.clarisa.co:8443/seguridad/rest/api/v1/login/
+  //"https://pos.clarisa.co:8443/reportes/rest/api/v1/pdf/factura?nit={$nit}&numeroFactura={$number}"
   public static $username = 'contabilidad@phenlinea.com';
   public static $password = '1020449531icpa';
   public static $nit      = '901394830';
@@ -18,7 +20,7 @@ class Clarisa
 
       $requestLogin = $http->request(
         'POST',
-        'https://pos.clarisa.co:8443/seguridad/rest/api/v1/login/',[
+        'https://csi.clarisa.co:8443/seguridad/rest/api/v1/login/',[
           "json"=>[
             "usuario"     => self::$username,
             "contrasenia" => self::$password,
@@ -35,9 +37,11 @@ class Clarisa
     $http  = new Client(['headers'=>["Content-Type" => "application/json"]]);
     $token = self::getToken();
     $nit = self::$nit;
+    $url = "https://csi.clarisa.co:8443/reportes/rest/api/v1/pdf/factura?numeroFactura={$number}&nit={$nit}";
+    
     $requestInvoice = $http->request(
       'GET',
-      "https://pos.clarisa.co:8443/reportes/rest/api/v1/pdf/factura?nit={$nit}&numeroFactura={$number}",
+      $url,
       [
         "headers" => [
           'Authorization' => $token,

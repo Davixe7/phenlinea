@@ -78,7 +78,7 @@ Route::post('porterias/logout', 'Auth\Porteria\LoginController@logout')->name('p
 Route::post('freelancers/logout', 'Auth\Freelancer\LoginController@logout')->name('freelancers.logout');
 Route::post('extensions/logout', 'Auth\Extension\LoginController@logout')->name('extensions.logout');
 
-Route::get('home', 'HomeController@index')->middleware('phoneverified')->name('home');
+Route::get('home', 'HomeController@index')->middleware(['phoneverified', 'auth:web,admin,extension'])->name('home');
 
 Route::middleware('auth')->get('user', 'Auth\UserController@index');
 
@@ -122,6 +122,7 @@ Route::name('admin.')->prefix('admin')->middleware(['auth:web', 'role:Super'])->
   Route::put('stores/{store}/resetpassword/', 'Admin\StoreController@resetpassword');
   Route::get('export/admins', 'ExportController@exportAdmins')->name('admins.export');
 
+  Route::put('invoices/{invoice}', 'Admin\InvoiceController@update')->name('invoices.update');
   Route::get('invoices/upload', 'Admin\InvoiceController@upload')->name('invoices.upload');
   Route::post('invoices/import', 'Admin\InvoiceController@import')->name('invoices.import');
 

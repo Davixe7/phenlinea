@@ -1,4 +1,28 @@
 @extends('layouts.app')
+
+@section('styles')
+<style>
+  .pill {
+      display: inline-block;
+      padding: .25rem .75rem;
+      font-size: .8rem;
+      font-weight: 400;
+      background: lightgray;
+      color: #242424;
+      border: none;
+      text-transform: capitalize;
+  }
+  .pill-pagado {
+      background: lightgreen;
+      color: green;
+  }
+  .pill-vencido {
+      background: #fdb2b2;
+      color: #dd0808;
+  }
+</style>
+@endsection
+
 @section('content')
 <div class="container">
   <div class="row">
@@ -11,18 +35,33 @@
             <th>Fecha</th>
             <th>Total</th>
             <th>Estado</th>
+            <th>Fecha de pago</th>
             <th>Acciones</th>
           </thead>
           <tbody>
-            @foreach( $invoices as $i )
+            @foreach( $invoices as $invoice )
             <tr>
-              <td>{{ $i->date }}</td>
-              <td>{{ $i->total }}</td>
-              <td>pendiente</td>
+              <td>{{ $invoice->date }}</td>
+              <td>{{ $invoice->total }}</td>
+              <td>
+                <div class="pill pill-{{ $invoice->status }}">
+                    {{ $invoice->status }}    
+                </div>
+              </td>
+              <td>
+                  @if( $invoice->paid_at )
+                    {{ \Carbon\Carbon::parse( $invoice->paid_at ) }}
+                  @endif
+              </td>
               <td>
                 <div class="btn-group">
-                  <a href="{{ route('invoices.show', ['invoice'=>$i->id]) }}" class="btn btn-link btn-sm">
-                    <i class="material-icons">remove_red_eye</i>
+                  @if( $invoice->status != 'pagado' )
+                  <a id="facturasDropdown" class="nav-link" target="blank" href="https://winred.co/payment/invoice-wallet.jsp?step=1&pId=108">
+                    Pagar | <img src="https://corbanca.com.co/wp-content/uploads/2022/06/pse.png" style="width: 100px;">
+                  </a>
+                  @endif
+                  <a href="{{ route('invoices.show', ['invoice'=>$invoice->id]) }}" class="btn btn-link btn-sm">
+                    VER FACTURA
                   </a>
                 </div>
               </td>

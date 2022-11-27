@@ -23,7 +23,7 @@ class GuardSwitcher
         $guards = array_keys( config('auth.guards') );
         foreach( $guards as $guard ){
           if( Auth::guard( $guard )->check() ){
-            // config([ 'auth.defaults.guard' => $guard ]);
+            config([ 'auth.defaults.guard' => $guard ]);
             return $next($request);
           }
         }

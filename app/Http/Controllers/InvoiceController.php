@@ -12,6 +12,12 @@ class InvoiceController extends Controller
     public function index()
     {
       $invoices = auth()->user()->invoices()->orderBy('created_at', 'DESC')->get();
+      $invoices = $invoices->each(function($i){
+          if( $i->status == 'pendiente' && (\Carbon\Carbon::parse($i->date) < now()->startOfMonth()) ){
+              $i->status = 'vencido';
+          }
+          return $i;
+      });
       return view('admin.invoices.index', ['invoices' => $invoices]);
     }
 

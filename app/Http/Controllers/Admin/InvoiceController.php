@@ -15,7 +15,7 @@ class InvoiceController extends Controller
     $year  = $request->year  ?: Carbon::now()->year;
     $month = $request->month ?: Carbon::now()->month;
 
-    $months = ["Enero",
+    $monthsName = ["Enero",
     "Febrero",
     "Marzo",
     "Abril",
@@ -29,7 +29,21 @@ class InvoiceController extends Controller
     "Diciembre"];
 
     $invoices = Invoice::inMonth($month, $year)->whereHas('admin')->with('admin')->get()->sortBy('admin.name');
-    return view('super.invoices.import', compact('invoices','month', 'year', 'months'));
+    
+    if( $request->expectsJson() ){
+        return response()->json(['data'=>$invoices]);
+    }
+    
+    return view('super.invoices.import', compact('invoices','month', 'year', 'monthsName'));
+  }
+  
+  public function update(Invoice $invoice, Request $request){
+      $invoice->update([
+          'paid_at'        => $request->status == 'pagado' ? now() : null,
+          'status'         => $request->status ,
+          'payment_method' => 'super'
+      ]);
+      return response()->json(['data'=>$invoice->load('admin')]);
   }
 
   public function import(Request $request){

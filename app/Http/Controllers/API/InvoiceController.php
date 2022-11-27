@@ -41,7 +41,8 @@ class InvoiceController extends Controller
   {
     $invoice->update([
       'paid_at' => Carbon::now(),
-      'status'  => 'pagado'
+      'status'  => 'pagado',
+      'payment_method' => 'pse'
     ]);
     return response()->json(['data' => $invoice]);
   }

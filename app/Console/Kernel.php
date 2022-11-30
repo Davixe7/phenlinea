@@ -42,9 +42,9 @@ class Kernel extends ConsoleKernel
             
             $numbers = explode(',', $batch->receivers_numbers );
             
-            $message = "*Unidad: {$batch->admin->name}* \n";
-            $message = $message . "\n $batch->message \n";
-            $message = $message . "\n Servicio prestado por PHenlinea.com";
+            $message = "*Unidad: {$batch->admin->name}*\n\n";
+            $message = $message . "$batch->message\n\n";
+            $message = $message . "Servicio prestado por PHenlinea.com";
             
             $data = [
               "access_token" => '3f8b18194536bdafa301c662dc9caa4c',

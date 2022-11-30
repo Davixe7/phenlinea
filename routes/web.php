@@ -14,6 +14,7 @@ use GuzzleHttp\Client;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 Route::get('whatsapp/hook', 'WhatsappController@hook')->name('whatsapp.hook');
 Route::post('whatsapp/hook', 'WhatsappController@hook')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 
@@ -21,6 +22,8 @@ Route::middleware('auth:admin')->group(function(){
     Route::get('whatsapp', 'WhatsappController@index')->name('whatsapp.index');
     Route::get('whatsapp/logout', 'WhatsappController@logout')->name('whatsapp.logout');
     Route::post('whatsapp/send', 'WhatsappController@sendMessage')->name('whatsapp.send');
+    Route::get('whatsapp/status', 'WhatsappController@isOnline');
+    Route::get('whatsapp/getQR', 'WhatsappController@getQRurl');
 });
 
 Route::get('servicios', function(){

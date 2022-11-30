@@ -104,6 +104,10 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
   public function push_notification_logs(){
     return $this->hasMany('App\PushNotificationLog');
   }
+  
+  public function whatsapp_messages_batches(){
+      return $this->hasMany('App\WhatsappMessagesBatch');
+  }
 
   public function getSolvenciaAttribute(){
     $month = "m" . date('n');

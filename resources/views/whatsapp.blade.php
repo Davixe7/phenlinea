@@ -14,26 +14,98 @@
   .list-group-item:first-child {
     border-top: none;
   }
+  .btn-round {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid #efefef;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+  }
+  .btn-attachment i {
+      color: #000000;
+      transform: rotate(-90deg);
+      transform-origin: center;
+  }
+  .attachmentDetails {
+      font-family: 'monospace';
+      font-size: .9em;
+      text-transform: lowercase;
+      color: #267bff;
+  }
+  .attachment-alert {
+      display: inline-block;
+      padding: 0 5px;
+      background: #2f2f2f;
+      color: #fff;
+      font-size: .8em;
+      border-radius: 3px;
+  }
+  .lightbulb {
+      border: 3px solid #9ffb9f;
+      border-radius: 50%;
+      height: 15px;
+      width: 15px;
+      margin-right: 3px;
+      background: green;
+      display: inline-block;
+  }
+  .monospace {
+      font-family: Monospace;
+  }
+  .table-responsive tbody td {
+      font-size: .9em;
+      font-weight: 400;
+  }
 </style>
 @endsection
 
 @section('content')
 @if( !isset($extensions) )
 <div class="container">
-  <div class="table-responsive">
-    <h1>
-      WhatsApp - Mensajería general
-    </h1>
-    <div class="text-secondary">
-      {{ auth()->user()->whatsapp_instance_id }}
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="table-responsive">
+                <h1>
+                  WhatsApp - Mensajería general
+                </h1>
+                <div class="text-secondary" style="padding: 0 1.15rem;">
+                  {{ $instance_id }}
+                </div>
+                @if( isset( $qrcode_src ) )
+                  <img src="{{ $qrcode_src }}" alt="" id="qrImage">
+                @endif
+                <div class="text-center">
+                    <div class="px-4">
+                        Si el código QR expira, por favor haz click en actualizar
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <button class="btn btn-outline-success">
+                            Actualizar
+                        </button>
+                    </div>
+                </div>
+              </div>
+        </div>
+        <div class="col-lg-7">
+            <ul class="list-group m-t-25">
+        		<li class="list-group-item active bg-info text-uppercase"><i class="far fa-question-circle"></i> Para comenzar a usar la herramienta, debe conectar su número de teléfono.</li>
+        		<li class="list-group-item">Paso 1: Abre WhatsApp en tu teléfono</li>
+        		<li class="list-group-item">Paso 2: toca Menú o Configuración y selecciona WhatsApp Web</li>
+        		<li class="list-group-item">Paso 3: apunta tu teléfono a esta pantalla y captura el código de arriba</li>
+        		<li class="list-group-item text-danger">
+        			<video width="100%" height="320" autoplay="" muted="" loop="">
+        			  <source src="https://asistbot.com/inc/public/whatsapp_profiles/assets/img/scan.mp4" type="video/mp4">
+        			</video>
+        		</li>
+        	</ul>
+        </div>
     </div>
-    @if( isset( $base64 ) )
-      <img src="{{ $base64 }}" alt="">
-    @endif
-  </div>
 </div>
 @else
-<form action="{{ route('whatsapp.send') }}" method="POST">
+<div class="container">
+    <form action="{{ route('whatsapp.send') }}" method="POST" enctype="multipart/form-data" id="whatsappForm">
   @csrf
   <div class="row">
     <div class="col-lg-3">
@@ -67,41 +139,156 @@
       </div>
     </div>
     <div class="col-lg-6">
-      <a href="{{ route('whatsapp.logout') }}">Cerrar sesión</a>
-      <div class="table-responsive">
-        <textarea id="message" placeholder="Escribe un mensaje" rows="10" name="message" class="form-control mb-3" required>Lorem ipsum dolor sit amet</textarea>
-        <div class="d-flex justify-content-end">
-          <button class="btn btn-primary">
-            Enviar
-          </button>
+      <div class="table-responsive mb-4">
+        <textarea
+            id="message"
+            placeholder="Escribe un mensaje"
+            rows="10"
+            name="message"
+            class="form-control mb-3"
+            required></textarea>
+        
+        <div style="margin-bottom: -22px;" class="px-3">
+            <div class="attachment-alert mb-2">
+                  Adjuntar solo Imagenes Y PDF
+            </div>
+            <div class="d-flex align-items-center">
+                <input
+                type="file"
+                name="attachment"
+                class="form-control d-none"
+                id="attachmentInput">
+                <button
+                  type="button"
+                  class="btn-round btn-attachment mr-3"
+                  onclick="document.querySelector('#attachmentInput').click()">
+                    <i class="material-icons" style="color: darkgray;">
+                        attachment
+                    </i>
+                </button>
+                <div class="attachmentDetails"></div>
+                <button type="button" class="btn btn-primary ml-auto" onclick="submitMessage()">
+                    Enviar
+                </button>
+            </div>
         </div>
       </div>
+      
+      @if( isset( $history ) )
+      <div class="table-responsive">
+          <table class="table">
+              <thead>
+                  <th>
+                      Mensaje
+                  </th>
+                  <th>
+                      Fecha
+                  </th>
+              </thead>
+              <tbody>
+                  @foreach( $history as $batch )
+                    <tr>
+                        <td>
+                            {{ $batch->message }}
+                        </td>
+                        <td>
+                            {{ Carbon\Carbon::parse($batch->created_at)->format('Y-m-d H:i:s') }}
+                        </td>
+                    </tr>
+                  @endforeach
+              </tbody>
+          </table>
+      </div>
+      @endif
+    </div>
+    
+    <div class="col-lg-3" style="text-align: right">
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="monospace">
+                    status
+                </div>
+                <div class="d-flex align-items-center justify-content-end">
+                    <span class="lightbulb"></span> Online
+                </div>
+                <div class="monospace">
+                    {{ auth()->user()->whatsapp_instance_id }}
+                </div>
+                <a href="{{ route('whatsapp.logout') }}" class="btn btn-danger">
+                    Cerrar sesión
+                </a>
+            </div>
+        </div>
+        
+        <div class="card mb-3">
+            <div class="card-header">
+                <i class="material-icons">info</i> Recomendación
+            </div>
+            <div class="card-body">
+                PHenlínea SAS recomienda el uso responsable del servicio de mensajería masíva
+            </div>
+        </div>
+        
+        <div class="card background-info">
+            <div class="card-header">
+                <i class="material-icons">info</i> Advertencia
+            </div>
+            <div class="card-body">
+                PHenlínea SAS no se hace responsable del uso inapropiado del servicio de mensajería masíva
+            </div>
+        </div>
     </div>
   </div>
 </form>
+</div>
 @endif
 @endsection
 
 @section('scripts')
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    const qrImage = document.querySelector('#qrImage')
+    if( qrImage ){
+        setInterval(function(){
+            axios.get('/whatsapp/getQR')
+            .then(response => qrImage.src = response.data.data)
+        }, 31000)
+        
+        setInterval(function(){
+            axios.get('/whatsapp/status')
+            .then(response => {
+                let isOnline = response.data.data
+                if( isOnline ){
+                    location.reload()
+                }
+            })
+        }, 5000)
+    }
+</script>
 <script>
   const extensionsChecks = document.querySelectorAll('.extension-check')
   const ownersOnlyCheckbox = document.querySelector('#checkbox-owners_only')
   const selectAll = document.querySelector('#checkbox-select_all')
+  const attachmentInput = document.querySelector('#attachmentInput')
+  const whatsappForm    = document.querySelector('#whatsappForm')
 
   extensionsChecks.forEach(check=>{
     check.addEventListener('change', updateCount)
   })
 
-  selectAll.addEventListener('change', function(e) {
-    if (!e.target.checked) return
-    extensionsChecks.forEach(check => {
-      check.checked = true;
-      check.setAttribute('readonly', true)
-    })
-    updateCount()
-  })
+  if( selectAll ){
+      selectAll.addEventListener('change', function(e) {
+        if (!e.target.checked) return
+        extensionsChecks.forEach(check => {
+          check.checked = true;
+          check.setAttribute('readonly', true)
+        })
+        updateCount()
+      })
+  }
 
-  ownersOnlyCheckbox.addEventListener('change', function(e) {
+  if( ownersOnlyCheckbox ){
+      ownersOnlyCheckbox.addEventListener('change', function(e) {
     if (e.target.checked) {
       extensionsChecks.forEach(check => {
         check.checked = false
@@ -124,12 +311,34 @@
     }
     updateCount()
   })
+  }
+  
+  if( attachmentInput ){
+      attachmentInput.addEventListener('change', function(e){
+      let validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'application/pdf'];
+      
+      if(e.target.files && e.target.files.length){
+          if( !validTypes.includes(e.target.files[0].type) ){
+              alert('Solo se admiten adjuntos JPG, JPEG, PNG, GIF Y PDF');
+              e.target.files[0].value = ''
+              return
+          }
+          document.querySelector('.attachmentDetails').innerHTML = e.target.files[0].name
+      }
+    })
+  }
 
   function updateCount(){
     let checked = Array.from(extensionsChecks).filter(check => {
       return (check.disabled == false) && (check.checked == true)
     })
     document.querySelector('#receivers-count').innerHTML = checked.length
+  }
+  
+  function submitMessage(){
+      if( !whatsappForm.reportValidity() ){ return }
+      if( !window.confirm('Seguro que desea enviar el mensaje?') ){ return }
+      whatsappForm.submit()
   }
 </script>
 @endsection

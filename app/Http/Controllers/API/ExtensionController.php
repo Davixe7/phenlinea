@@ -4,12 +4,8 @@ namespace App\Http\Controllers\API;
 
 use App\Extension;
 use App\Http\Resources\Extension as ExtensionResource;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
-use App\Events\CreatedUpdatedPhone;
-use App\Events\SendPasswordSms;
 
 class ExtensionController extends Controller
 {
@@ -111,10 +107,4 @@ class ExtensionController extends Controller
     return new ExtensionResource( $extension );
   }
   
-  public function sendPasswordSms(Request $request, Extension $extension){
-    $extension->resetPassword();
-    $extension->passwordResetPhone = $request->phone;
-    event( new SendPasswordSms( $extension ) );
-    return response()->json(['data'=>'Password sent']);
-  }
 }

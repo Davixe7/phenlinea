@@ -37,10 +37,6 @@ class Porteria extends Authenticatable implements JWTSubject
 
   // protected $without = ['extensions'];
 
-  public function notifications(){
-      return $this->hasMany('App\Notification');
-  }
-
   public function extensions(){
     return $this->hasMany('App\Extension', 'admin_id', 'admin_id');
   }
@@ -59,13 +55,5 @@ class Porteria extends Authenticatable implements JWTSubject
   
   public function checkins(){
     return $this->hasManyThrough('App\Checkin', 'App\Extension', 'admin_id', 'extension_id', 'admin_id');
-  }
-
-  public function daysSinceLastNotification(String $type){
-    $lastNotification     = $this->notifications()->where('type', $type)->orderBy('date', 'DESC')->first();
-    $lastNotificationDate = ($lastNotification) ? \Carbon\Carbon::parse($lastNotification->date) : null;
-    $now = \Carbon\Carbon::now(new \DateTimeZone('America/Bogota'));
-    $sinceLastNot = ($lastNotificationDate) ? $lastNotificationDate->diffInDays( $now ) : null;
-    return $sinceLastNot;
   }
 }

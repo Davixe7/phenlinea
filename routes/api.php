@@ -53,12 +53,6 @@ Route::group(['middleware'=>'auth:api-admin,api-extension'], function(){
     //Route::delete('push/{push_notification_log}', 'PushNotificationController@destroy')->name('push.destroy');
 });
 
-Route::group(['middleware'=>['auth:api-porteria']], function(){
-   Route::post('notifyDelivery', 'API\SmsController@notifyDelivery');
-   Route::post('notifyGlobal',   'API\SmsController@notifyGlobal');
-   Route::get('history',         'API\SmsController@history');
-});
-
 Route::post('login', 'Auth\ApiController@login');
 Route::post('admin-login', 'Auth\ApiController@adminLogin');
 Route::post('store-login', 'Auth\ApiController@storeLogin');
@@ -68,6 +62,3 @@ Route::get('adminslist', 'Auth\Extension\LoginController@adminslist');
 Route::get('extensionslist/{admin}', 'Auth\Extension\LoginController@extensionslist');
 
 Route::get('extensions/byphone', 'API\ExtensionController@byphone');
-
-Route::put('extensions/{extension}/resetpassword', 'API\ExtensionController@resetPassword');
-Route::post('extensions/{extension}/sendpassword', 'API\ExtensionController@sendPasswordSms');

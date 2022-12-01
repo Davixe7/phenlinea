@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
     //   'Censo'                  => 'census',
     //   'Facturación Residentes' => 'residents_billing',
     //   'Manuales & Documentos'  => 'documents',
-    //   'Mensajería de Texto'    => 'sms',
+    //   'Mensajes masivos'       => 'whatsapp',
     //   'Notificaciones'         => 'notifications',
     //   'Novedades'              => 'news',
     //   'Pagos'                  => 'payment_links',

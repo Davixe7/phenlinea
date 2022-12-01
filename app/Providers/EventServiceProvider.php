@@ -18,21 +18,6 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        'App\Events\CreatedUpdatedPhone' => [
-            'App\Listeners\SendSMSNotification',
-        ],
-        'App\Events\DeliveryOrderReceived' => [
-            'App\Listeners\SendDeliverySMSNotification',
-        ],
-        'App\Events\GlobalNotificationSent' => [
-            'App\Listeners\SendGlobalSMSNotification',
-        ],
-        'App\Events\BulkSmsSent' => [
-            'App\Listeners\SendBulkSms',
-        ],
-        'App\Events\SendPasswordSms' => [
-            'App\Listeners\SendPasswordSms',
-        ],
     ];
 
     /**

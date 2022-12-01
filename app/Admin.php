@@ -7,7 +7,6 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Notifications\VerifyPhone;
 use Illuminate\Contracts\Auth\CanResetPassword;
-use App\Notifications\PasswordResetNotificationSms;
 
 class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
 {
@@ -19,14 +18,14 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
     'password',
     'contact_email',
     'nit',
-    'sms_enabled',
     'phone',
     'phone_2',
     'address',
     'status',
     'picture',
-    'phone_verification', 'whatsapp_instance_id', 'whatsapp_status',
-    'wa_instance_id'
+    'phone_verification',
+    'whatsapp_instance_id',
+    'whatsapp_status',
   ];
 
   protected $hidden   = ['password', 'created_at', 'updated_at'];
@@ -34,23 +33,7 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
   protected $appends = ['solvencia'];
   protected $casts = [
     'solvencia'   => 'string',
-    'sms_enabled' => 'integer'
   ];
-
-  public function getEmailForVerification()
-  {
-    return $this->contact_email;
-  }
-
-  public function sendEmailVerificationNotification()
-  {
-    $this->notify(new VerifyPhone());
-  }
-
-  public function sendPasswordResetNotification($token)
-  {
-    $this->notify(new PasswordResetNotificationSms($token));
-  }
 
   public function invoices()
   {
@@ -60,16 +43,6 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
   public function visits()
   {
     return $this->hasMany('App\Visit');
-  }
-
-  public function notifications()
-  {
-    return $this->hasMany('App\Notification');
-  }
-
-  public function logs()
-  {
-    return $this->hasManyThrough('App\Notification', 'App\Porteria');
   }
 
   public function extensions()
@@ -139,11 +112,6 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
       return $lastPayment->attributes[$month];
     }
     return null;
-  }
-
-  public function getMonthSmsCountAttribute()
-  {
-    return $this->notifications()->bulk()->sentThisMonth()->count();
   }
 
   public function getExtensionsCountAttribute()

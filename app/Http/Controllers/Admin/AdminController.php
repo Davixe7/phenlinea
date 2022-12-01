@@ -87,7 +87,6 @@ class AdminController extends Controller
       'password' => ($request->password) ? bcrypt($request->password) : $admin->password,
       'contact_email' => ($request->contact_email) ?: $admin->contact_email,
       'status'        => $request->status,
-      'sms_enabled'   => ($request->sms_enabled) ? 1 : 0,
       'picture'       => $profile_picture ?: $admin->picture
     ]);
 

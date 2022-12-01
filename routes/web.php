@@ -71,7 +71,6 @@ Route::get('home', 'HomeController@index')->middleware('phoneverified')->name('h
 Route::get('user', 'Auth\UserController@index')->middleware('auth');
 
 //Route::view('email/verify', 'auth.verify')->name('confirmphone');
-Route::post('admins/{admin}/sendpassword', 'AdminController@sendPasswordSms');
 Route::get('admin/admins/{admin}/payments', 'Admin\AdminController@getPayments');
 Route::get('admins/{admin}/payments', 'AdminController@payments')->name('admins.payments');
 
@@ -98,23 +97,6 @@ Route::name('admin.')->prefix('admin')->middleware('auth:web')->group(function (
 
   Route::get('admins/{admin}/edit-permissions', 'Admin\AdminController@editPermissions')->name('admins.edit-permissions');
   Route::put('admins/{admin}/update-permissions', 'Admin\AdminController@updatePermissions')->name('admins.update-permissions');
-
-  Route::get('quota-sms', function (Request $request) {
-    $admins = App\Admin
-      ::select(['id', 'name'])
-      ->withCount([
-        'notifications' => function ($query) use ($request) {
-          $query
-            ->whereType('bulk')
-            ->select(DB::raw('SUM(count) as total'))
-            ->whereBetween('date', [$request->dateFrom, $request->dateTo]);
-        }
-      ])
-      ->orderBy('name')
-      ->get();
-
-    return view('super.smsquota', compact('admins'));
-  })->name('smsQuota');
 });
 
 //Main application routes
@@ -122,10 +104,6 @@ Route::middleware(['auth:admin', 'phoneverified', 'suspended'])->group(function 
   Route::resource('extensions', 'ExtensionController');
   Route::resource('residents', 'ResidentController');
   Route::get('residents/list', 'ResidentController@list')->name('residents.list');
-
-  Route::get('messages', 'API\SmsController@index')->name('messages.index');
-  Route::get('sms/log', 'API\SmsController@history')->name('sms.log');
-  Route::post('bulk', 'API\SmsController@bulkMessage');
 
   Route::get('push', 'PushNotificationController@create')->name('push.create');
   Route::post('push', 'PushNotificationController@store')->name('push.store');
@@ -159,7 +137,6 @@ Route::middleware(['auth:admin,extension', 'phoneverified', 'suspended'])->group
   Route::get('facturas/{factura}', 'FacturaController@show')->name('factura.show');
   Route::get('mis-facturas', 'FacturaController@index');
 
-  Route::post('messages/generate-instance', 'API\SmsController@generateInstance')->name('messages.createInstance');
   Route::put('posts/{post}/deletepicture', 'PostController@deletePicture')->name('posts.deletepicture');
   Route::put('posts/{post}/deleteattachment', 'PostController@deleteAttachment')->name('posts.deleteattachment');
   Route::put('petitions/{petition}/deletepicture', 'PetitionController@deletePicture');

@@ -68,11 +68,6 @@
       </label>
       <input type="file" class="form-control" name="picture" ref="pictureInput" @change="loadPicture">
     </div>
-    
-    <div v-if="editing" class="form-check form-check-inline">
-      <input class="form-check-input" type="checkbox" id="inlineCheckbox1" v-model="sms_enabled">
-      <label class="form-check-label" for="inlineCheckbox1">Habilitar SMS masivo</label>
-    </div>
 
     <div class="form-group text-right">
       <button v-if="!editing" class="btn btn-primary" @click="storeAdmin">Enviar</button>
@@ -100,7 +95,6 @@ export default {
       'email': '',
       'password': '',
       'status': Number,
-      'sms_enabled': false,
       'new_picture': null
     }
   },
@@ -116,7 +110,6 @@ export default {
         this.password = newAdmin.password
         this.contact_email = newAdmin.contact_email
         this.status = newAdmin.status
-        this.sms_enabled = newAdmin.sms_enabled
       }else {
         this.clearForm()
       }
@@ -167,7 +160,6 @@ export default {
       data.append('password', (this.password) ? this.password : '')
       data.append('contact_email', this.contact_email)
       data.append('status', Number(this.status) )
-      data.append('sms_enabled', (this.sms_enabled) ? 1 : 0)
       data.append('picture', this.new_picture)
       return data;
     },

@@ -166,11 +166,6 @@
             Ingresar Propietario o Residente
           </a>
         </li>
-        <li>
-          <a href="{{ route('register') }}" class="btn btn-link">
-            Ingresar Freelancer
-          </a>
-        </li>
         <li class="divider">
           Otras Opciones
         </li>

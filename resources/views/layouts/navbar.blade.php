@@ -33,11 +33,6 @@
           <a class="nav-link" href="{{ route('admin.documentos.index') }}">Documentos Legales</a>
         </li>
         @endif
-        @if( Auth::guard('freelancer')->check() )
-          <li class="nav-item">
-            <a class="nav-link" href="/">Referidos</a>
-          </li>
-        @endif
         @if( Auth::guard('admin')->check() )
           <li class="nav-item">
             <a class="nav-link" href="{{ route('extensions.index') }}">Extensiones</a>

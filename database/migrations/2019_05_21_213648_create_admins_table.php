@@ -32,7 +32,6 @@ class CreateAdminsTable extends Migration
       $table->string('phone_4')->nullable();
       $table->text('address');
       
-      $table->unsignedBigInteger('referer_id')->nullable();
       $table->unsignedInteger('status')->default(1);
       
       $table->string('api_token', 60)->nullable()->default(null);

@@ -23,7 +23,6 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
     'phone',
     'phone_2',
     'address',
-    'referer_id',
     'status',
     'picture',
     'phone_verification', 'whatsapp_instance_id', 'whatsapp_status',
@@ -111,11 +110,6 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
   public function petitions()
   {
     return $this->hasManyThrough('App\Petition', 'App\Extension');
-  }
-
-  public function referer()
-  {
-    return $this->hasMany('App\Freelancer', 'referer_id');
   }
 
   public function porterias()

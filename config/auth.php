@@ -64,15 +64,6 @@ return [
             'provider' => 'porterias',
         ],
 
-        'freelancer' => [
-            'driver' => 'session',
-            'provider' => 'freelancers',
-        ],
-        'api-freelancer' => [
-            'driver' => 'token',
-            'provider' => 'freelancers',
-        ],
-
         'extension' => [
             'driver' => 'session',
             'provider' => 'extensions',
@@ -124,11 +115,6 @@ return [
         'porterias' => [
             'driver' => 'eloquent',
             'model' => App\Porteria::class,
-        ],
-
-        'freelancers' => [
-            'driver' => 'eloquent',
-            'model' => App\Freelancer::class,
         ],
 
         'extensions' => [

@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Seeder;
 use App\Admin;
-use App\Freelancer;
 use App\User;
 use App\Payment;
 use App\Porteria;

@@ -23,9 +23,6 @@ class AdminPolicy
 
   public function viewAny($user)
   {
-    if( Auth::guard('freelancer')->check() ){
-      return true;
-    }
     return false;
   }
 

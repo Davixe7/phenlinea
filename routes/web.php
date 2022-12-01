@@ -48,14 +48,12 @@ Route::get('apk', function () {
  *  Auth Routes
  */
 // Get login forms
-Route::get('freelancers/login', 'Auth\Freelancer\LoginController@showLoginForm')->name('freelancers.getLogin');
 Route::get('residents/login', 'Auth\Extension\LoginController@showLoginForm')->name('residents.getLogin');
 Route::get('stores/login', 'Auth\Store\LoginController@showLoginForm')->name('stores.getLogin');
 Route::get('root/login', 'Admin\Auth\LoginController@showLoginForm');
 
 // Login routes
 Route::post('admins/login', 'Auth\Admin\LoginController@login')->name('admins.login');
-Route::post('freelancers/login', 'Auth\Freelancer\LoginController@login')->name('freelancers.login');
 Route::post('residents/login', 'Auth\Extension\LoginController@login')->name('residents.login');
 Route::post('stores/login', 'Auth\Store\LoginController@login')->name('stores.login');
 Route::post('root/login', 'Admin\Auth\LoginController@login')->name('root.login');
@@ -65,7 +63,6 @@ Route::get('extensionslist/{admin}', 'Auth\Extension\LoginController@extensionsl
 
 // Logout routes
 Route::post('admins/logout', 'Auth\Admin\LoginController@logout')->name('admins.logout');
-Route::post('freelancers/logout', 'Auth\Freelancer\LoginController@logout')->name('freelancers.logout');
 Route::post('extensions/logout', 'Auth\Extension\LoginController@logout')->name('extensions.logout');
 Route::post('porterias/logout', 'Auth\Porteria\LoginController@logout')->name('porterias.logout');
 Route::post('stores/logout', 'Auth\Store\LoginController@logout')->name('stores.logout');
@@ -88,14 +85,12 @@ Route::get('admins/{admin}/payments', 'AdminController@payments')->name('admins.
 Route::name('admin.')->prefix('admin')->middleware('auth:web')->group(function () {
   Route::get('users/list', 'Admin\UserController@list')->name('users.list');
   Route::get('admins/list', 'Admin\AdminController@list')->name('admins.list');
-  Route::get('freelancers/list', 'Admin\FreelancerController@list')->name('freelancers.list');
 
   Route::resource('users', 'Admin\UserController');
   Route::resource('admins', 'Admin\AdminController');
   Route::resource('payments', 'Admin\PaymentController');
   Route::resource('porterias', 'Admin\PorteriaController');
   Route::resource('extensions', 'ExtensionController');
-  Route::resource('freelancers', 'Admin\FreelancerController');
 
   Route::get('admins/{admin}/export/', 'ExportController@exportCensus');
   Route::get('export/admins', 'ExportController@exportAdmins')->name('admins.export');
@@ -179,12 +174,6 @@ Route::middleware(['auth:admin,extension', 'phoneverified', 'suspended'])->group
 
   Route::view('account-suspended', 'suspended')->name('suspended');
   Route::view('modulo-deshabilitado', 'disabled_module')->name('modules.disabled');
-});
-
-//Freelancer routes
-Route::middleware('auth:freelancer')->group(function () {
-  Route::get('admins',    'AdminController@index')->name('admins.list');
-  Route::get('admins/{admin}', 'AdminController@show')->name('admins.show');
 });
 
 //Stores routes

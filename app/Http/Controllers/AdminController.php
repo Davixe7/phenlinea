@@ -16,14 +16,6 @@ class AdminController extends Controller
   public function __construct(){
     $this->authorizeResource(Admin::class, 'admin');
   }
-  
-  public function index(Request $request)
-  {
-    if( $request->expectsJson() ){
-        return new AdminResource( auth()->user()->admins );
-    }
-    return view('freelancer.referrals');
-  }
 
   public function show(Admin $admin)
   {

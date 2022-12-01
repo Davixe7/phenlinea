@@ -36,9 +36,6 @@ Route::get('consultar-factura', 'FacturaController@byCode')->name('facturas.quer
 Route::get('ver-factura/{factura}', 'FacturaController@show');
 Route::get('descargar/{factura}', 'FacturaController@download')->name('facturas.download');
 
-Route::get('stores', 'StoreController@index');
-Route::get('stores/{store}', 'StoreController@show');
-
 Route::view('configuracion', 'configuration');
 Route::get('apk', function () {
   return response()->download(public_path('app-release.apk'), 'app-release.apk', ['Content-Type' => 'application/vnd.android.package-archive']);
@@ -49,13 +46,11 @@ Route::get('apk', function () {
  */
 // Get login forms
 Route::get('residents/login', 'Auth\Extension\LoginController@showLoginForm')->name('residents.getLogin');
-Route::get('stores/login', 'Auth\Store\LoginController@showLoginForm')->name('stores.getLogin');
 Route::get('root/login', 'Admin\Auth\LoginController@showLoginForm');
 
 // Login routes
 Route::post('admins/login', 'Auth\Admin\LoginController@login')->name('admins.login');
 Route::post('residents/login', 'Auth\Extension\LoginController@login')->name('residents.login');
-Route::post('stores/login', 'Auth\Store\LoginController@login')->name('stores.login');
 Route::post('root/login', 'Admin\Auth\LoginController@login')->name('root.login');
 //---
 Route::get('adminslist', 'Auth\Extension\LoginController@adminslist')->name('residents.adminslist');
@@ -65,7 +60,6 @@ Route::get('extensionslist/{admin}', 'Auth\Extension\LoginController@extensionsl
 Route::post('admins/logout', 'Auth\Admin\LoginController@logout')->name('admins.logout');
 Route::post('extensions/logout', 'Auth\Extension\LoginController@logout')->name('extensions.logout');
 Route::post('porterias/logout', 'Auth\Porteria\LoginController@logout')->name('porterias.logout');
-Route::post('stores/logout', 'Auth\Store\LoginController@logout')->name('stores.logout');
 
 Auth::routes();
 Route::get('home', 'HomeController@index')->middleware(['phoneverified', 'auth:web,admin,extension'])->name('home');
@@ -174,18 +168,4 @@ Route::middleware(['auth:admin,extension', 'phoneverified', 'suspended'])->group
 
   Route::view('account-suspended', 'suspended')->name('suspended');
   Route::view('modulo-deshabilitado', 'disabled_module')->name('modules.disabled');
-});
-
-//Stores routes
-Route::middleware('auth:web,store')->group(function () {
-  Route::get('stores/get-qr', function () {
-    $store = auth()->user();
-    ob_end_clean();
-    return response()->download($store->qr['path'], 'qr.svg', ['Content-Type' => 'image/svg+xml']);
-  });
-  Route::put('stores/{store}', 'StoreController@update')->middleware('can:update,store');
-  Route::put('stores/{store}/pictures', 'StoreController@deletepicture');
-  Route::put('stores/{store}/reset-password', 'StoreController@resetPassword');
-  Route::resource('products', 'ProductController');
-  Route::delete('/products/{product}/deletePicture', 'ProductController@deletePicture');
 });

@@ -120,14 +120,6 @@
             Porterias
           </a>
         </li>
-        <li>
-          <a
-            href="https://phenlinea.com/stores"
-            class="btn btn-outline-primary d-none d-lg-flex" style="position: relative;">
-              <span class="brand-new">Nuevo</span>
-            Comercios
-          </a>
-        </li>
       </ul>
 
       <ul class="custom-navbar-nav ml-auto d-none d-lg-flex">

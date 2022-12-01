@@ -73,15 +73,6 @@ return [
             'provider' => 'extensions',
         ],
 
-        'store' => [
-            'driver' => 'session',
-            'provider' => 'stores',
-        ],
-        'api-store' => [
-            'driver' => 'token',
-            'provider' => 'stores',
-        ],
-
     ],
 
     /*
@@ -120,11 +111,6 @@ return [
         'extensions' => [
             'driver' => 'eloquent',
             'model' => App\Extension::class,
-        ],
-
-        'stores' => [
-            'driver' => 'eloquent',
-            'model' => App\Store::class,
         ],
 
         // 'users' => [

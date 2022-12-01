@@ -43,10 +43,7 @@ Route::group(['middleware'=>'auth:api-extension,api-porteria,api-admin'], functi
     Route::get('extensions/{extension}/visitors', 'API\VisitorController@extensionVisitors');
 });
 
-Route::get('stores', 'API\StoreController@index');
-
 Route::group(['middleware'=>'auth:api-admin,api-extension'], function(){
-    Route::apiResource('stores', 'API\StoreController');
     Route::apiResource('posts', 'API\PostController');
     Route::apiResource('reminders', 'API\ReminderController');
     Route::apiResource('bills', 'API\BillController');
@@ -55,8 +52,6 @@ Route::group(['middleware'=>'auth:api-admin,api-extension'], function(){
     Route::get('extensions/{extension}/checkins', 'API\CheckinController@extensionCheckins');
     //Route::delete('push/{push_notification_log}', 'PushNotificationController@destroy')->name('push.destroy');
 });
-
-Route::get('stores', 'API\StoreController@index');
 
 Route::group(['middleware'=>['auth:api-porteria']], function(){
    Route::post('notifyDelivery', 'API\SmsController@notifyDelivery');

@@ -47,7 +47,7 @@ class WhatsappController extends Controller
       return null;
     }
     
-    if (array_key_exists('base64', $data)) {
+    if ($data && array_key_exists('base64', $data)) {
       return $data['base64'];
     }
 

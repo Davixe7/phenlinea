@@ -72,11 +72,11 @@
     align-items: center;
   }
   .preloader {
+    height: 30px;
     width: 30px;
     -webkit-animation: rotate 0.5s infinite linear;
     animation: rotate 0.5s infinite linear;
     margin-right: 10px;
-    height: 30px;
     border: 3.5px solid #000;
     border-radius: 50%;
     border-top: 3.5px solid #fff;
@@ -267,6 +267,7 @@
       axios.get('/whatsapp/getQR')
         .then(response => {
           qrImage.style.display = 'block'
+          qrPreloader.style.display = 'none'
           qrImage.src = response.data.data
         })
         .catch(error=>{

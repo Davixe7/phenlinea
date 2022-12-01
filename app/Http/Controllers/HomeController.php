@@ -24,25 +24,24 @@ class HomeController extends Controller
      */
     public function index()
     {
-      $user = auth()->user();
-      $driver = auth()->getDefaultDriver();
+      $user   = auth()->user();
+      $driver = 'web';
+      
+      if( $user->admin_id ){
+        $driver = 'extension';
+      }elseif( $user->nit ){
+        $driver = 'admin';
+      }
       
       switch ($driver) {
         case 'extension':
           return view('resident.home', ['posts'=>auth()->user()->posts()->whereType('post')->get()]);
-          break;
-        case 'freelancer':
-          return view('admins.referrals');
           break;
         case 'admin':
           return view('admin.census.index');
           break;
         case 'web':
           return view('super.users.index');
-          break;
-        case 'store':
-          $store = new StoreResource($user->load('menu'));
-          return view('commerce.profile', ['commerce'=>$store]);
           break;
       }
     }

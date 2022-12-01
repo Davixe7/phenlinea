@@ -23,7 +23,7 @@
   <main>
     <div id="app" data-app>
       @include('layouts.navbar')
-      <div class="container">
+      <div class="">
         @if( session('message') )
         <div class="alert text-center alert-{{ session('message_type') ?: 'info' }}">
           {{ session('message') }}

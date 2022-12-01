@@ -1,4 +1,4 @@
- <?php
+<?php
 use Illuminate\Http\Request;
 use App\Http\Resources\VisitPorteria;
 use App\Extension;
@@ -14,6 +14,17 @@ use GuzzleHttp\Client;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::get('whatsapp/hook', 'WhatsappController@hook')->name('whatsapp.hook');
+Route::post('whatsapp/hook', 'WhatsappController@hook')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
+
+Route::middleware('auth:admin')->group(function(){
+    Route::get('whatsapp', 'WhatsappController@index')->name('whatsapp.index');
+    Route::get('whatsapp/logout', 'WhatsappController@logout')->name('whatsapp.logout');
+    Route::post('whatsapp/send', 'WhatsappController@sendMessage')->name('whatsapp.send');
+    Route::get('whatsapp/status', 'WhatsappController@isOnline');
+    Route::get('whatsapp/getQR', 'WhatsappController@getQRurl');
+});
 
 Route::get('servicios', function(){
     $stores = App\Store::all();
@@ -70,7 +81,7 @@ Route::post('porterias/logout', 'Auth\Porteria\LoginController@logout')->name('p
 Route::post('freelancers/logout', 'Auth\Freelancer\LoginController@logout')->name('freelancers.logout');
 Route::post('extensions/logout', 'Auth\Extension\LoginController@logout')->name('extensions.logout');
 
-Route::get('home', 'HomeController@index')->middleware('phoneverified')->name('home');
+Route::get('home', 'HomeController@index')->middleware(['phoneverified', 'auth:web,admin,extension'])->name('home');
 
 Route::middleware('auth')->get('user', 'Auth\UserController@index');
 
@@ -91,7 +102,7 @@ Route::get('admins/{admin}/payments', 'AdminController@payments')->name('admins.
 Route::get('ads', 'AdController@index')->name('ads.index');
 Route::get('clasificados', 'AdController@index');
 
-Route::name('admin.')->prefix('admin')->middleware('auth:web')->group(function(){
+Route::name('admin.')->prefix('admin')->middleware(['auth:web', 'role:Super'])->group(function(){
   // Get JSON Resources for VueJS Components
   Route::get('users/list', 'Admin\UserController@list')->name('users.list');
   Route::get('admins/list', 'Admin\AdminController@list')->name('admins.list');
@@ -104,7 +115,6 @@ Route::name('admin.')->prefix('admin')->middleware('auth:web')->group(function()
   Route::resource('porterias', 'Admin\PorteriaController');
   Route::resource('extensions', 'ExtensionController');
   Route::resource('freelancers', 'Admin\FreelancerController');
-  Route::resource('slides', 'Admin\SlideController');
   Route::resource('stores', 'Admin\StoreController');
   Route::put('stores/{store}/update-status', 'Admin\StoreController@updateStatus');
   Route::resource('classifieds', 'Admin\ClassifiedController');
@@ -115,6 +125,7 @@ Route::name('admin.')->prefix('admin')->middleware('auth:web')->group(function()
   Route::put('stores/{store}/resetpassword/', 'Admin\StoreController@resetpassword');
   Route::get('export/admins', 'ExportController@exportAdmins')->name('admins.export');
 
+  Route::put('invoices/{invoice}', 'Admin\InvoiceController@update')->name('invoices.update');
   Route::get('invoices/upload', 'Admin\InvoiceController@upload')->name('invoices.upload');
   Route::post('invoices/import', 'Admin\InvoiceController@import')->name('invoices.import');
 

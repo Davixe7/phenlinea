@@ -28,7 +28,7 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
     'referer_id',
     'status',
     'picture',
-    'phone_verification',
+    'phone_verification', 'whatsapp_instance_id', 'whatsapp_status',
     'wa_instance_id'
   ];
 
@@ -133,6 +133,10 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
   public function push_notification_logs()
   {
     return $this->hasMany('App\PushNotificationLog');
+  }
+  
+  public function whatsapp_messages_batches(){
+      return $this->hasMany('App\WhatsappMessagesBatch');
   }
 
   public function getSolvenciaAttribute()

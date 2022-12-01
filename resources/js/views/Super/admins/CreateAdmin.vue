@@ -49,13 +49,6 @@
       </div>
     </div>
     
-    <div class="form-group" v-if=" freelancers && freelancers.length">
-      <label for="referer_id">Freelancer</label>
-      <select class="form-control" v-model="referer_id">
-        <option v-for="f in freelancers" :value="f.id">{{ f.name }}</option>
-      </select>
-    </div>
-    
     <div v-if="editing" class="form-group">
       <label for="status">Status</label>
       <select v-model="status" id="status" class="form-control">
@@ -96,7 +89,6 @@ export default {
   },
   data(){
     return {
-      'freelancers': [],
       'errors': [],
       'adminId': null,
       'name': '',
@@ -108,7 +100,6 @@ export default {
       'email': '',
       'password': '',
       'status': Number,
-      'referer_id': '',
       'sms_enabled': false,
       'new_picture': null
     }
@@ -125,7 +116,6 @@ export default {
         this.password = newAdmin.password
         this.contact_email = newAdmin.contact_email
         this.status = newAdmin.status
-        this.referer_id = newAdmin.referer_id
         this.sms_enabled = newAdmin.sms_enabled
       }else {
         this.clearForm()
@@ -177,7 +167,6 @@ export default {
       data.append('password', (this.password) ? this.password : '')
       data.append('contact_email', this.contact_email)
       data.append('status', Number(this.status) )
-      data.append('referer_id', Number(this.referer_id) )
       data.append('sms_enabled', (this.sms_enabled) ? 1 : 0)
       data.append('picture', this.new_picture)
       return data;
@@ -194,11 +183,6 @@ export default {
       this.errors = []
       this.$refs.pictureInput.value = ''
     }
-  },
-  mounted(){
-    axios.get('/admin/freelancers/list').then((response)=>{
-      this.freelancers = response.data.data
-    })
   }
 }
 </script>

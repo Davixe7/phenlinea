@@ -7,11 +7,22 @@ use Illuminate\Database\Eloquent\Model;
 class Factura extends Model
 {
   protected $fillable = [
-    'apto', 'admin_id', 'link', 'note',
-    'periodo', 'emision', 'limite',
-    'concepto1', 'vencido1', 'actual1',
-    'concepto2', 'vencido2', 'actual2',
-    'concepto3', 'vencido3', 'actual3'
+    'apto',
+    'admin_id',
+    'link',
+    'note',
+    'periodo',
+    'emision',
+    'limite',
+    'concepto1',
+    'vencido1',
+    'actual1',
+    'concepto2',
+    'vencido2',
+    'actual2',
+    'concepto3',
+    'vencido3',
+    'actual3'
   ];
   
   protected $casts = [

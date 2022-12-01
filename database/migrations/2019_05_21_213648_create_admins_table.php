@@ -36,12 +36,14 @@ class CreateAdminsTable extends Migration
       $table->unsignedInteger('status')->default(1);
       
       $table->string('api_token', 60)->nullable()->default(null);
-      $table->string('wa_instance_id')->nullable();
       $table->boolean('sms_enabled')->default(0);
       
       $table->string('picture')->nullable();
       $table->decimal('lat', 8, 6)->nullable();
       $table->decimal('lng', 9, 6)->nullable();
+
+      $table->string('whatsapp_instance_id')->nullable();
+      $table->string('whatsapp_status')->default('offline');
     });
   }
 

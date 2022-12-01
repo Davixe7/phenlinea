@@ -54,9 +54,16 @@ class PetitionController extends Controller
         'phone'        => $request->phone,
         'email'        => $request->email,
         'status'       => 'pending',
-        'pictures'     => $this->upload($request, 'pictures'),
         'extension_id' => auth()->user()->id
       ]);
+
+      if( $files = $request->file('pictures') ){
+        foreach( $files as $file ){
+          $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . time() . '.' . $file->extension();
+          $path     = storage_path( 'app/'.$file->storeAs('petitions/pictures/', $fileName) );
+          $petition->addMedia( $path )->toMediaCollection('pictures');
+        }
+      }
       
       return redirect()->route('petitions.index')->with(['message'=>'Solicitud creada exitosamente']);
     }
@@ -81,15 +88,21 @@ class PetitionController extends Controller
      */
     public function update(Request $request, Petition $petition)
     {
-      $uploadedPictures = $this->upload($request, 'pictures');
       $petition->update([
         'title'        => $request->title       ?: $petition->title,
         'description'  => $request->description ?: $petition->description,
         'phone'        => $request->phone  ?: $petition->phone,
         'email'        => $request->email  ?: $petition->email,
         'status'       => $request->status ?: $petition->status,
-        'pictures'     => array_merge($uploadedPictures, $petition->pictures)
       ]);
+
+      if( $files = $request->file('pictures') ){
+        foreach( $files as $file ){
+          $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . time() . '.' . $file->extension();
+          $path     = storage_path( 'app/'.$file->storeAs('petitions/pictures/', $fileName) );
+          $petition->addMedia( $path )->toMediaCollection('pictures');
+        }
+      }
       
       return redirect()->route('petitions.index')->with(['message'=>'Petición procesada exitosamente']);
     }

@@ -3,22 +3,31 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Visit extends Model
+class Visit extends Model implements HasMedia
 {
+  use InteractsWithMedia;
   protected $fillable = [
-    'name', 'dni', 'type', 'arl', 'eps', 'phone',
-    'plate', 'checkin', 'checkout', 'admin_id', 'extension_id', 'company'
+    'admin_id',
+    'arl',
+    'checkin',
+    'checkout',
+    'company',
+    'dni',
+    'name',
+    'eps',
+    'extension_id',
+    'phone',
+    'plate',
+    'type',
   ];
 
   // protected $appends = ['extension_name'];
 
   public function extension(){
     return $this->belongsTo('App\Extension');
-  }
-
-  public function picture(){
-    return $this->hasOne('App\Attachment');
   }
 
   // public function getExtensionNameAttribute(){

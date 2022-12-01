@@ -29,23 +29,19 @@ class NoveltyController extends Controller
   */
   public function store(Request $request)
   {
-    $json_pictures = [];
     $novelty = Novelty::create([
       'description' => $request->description,
       'porteria_id' => auth()->user()->id ?: $request->porteria_id
     ]);
 
-    for($i = 1; $i < 4; $i++){
-      if( $picture = $request->file('picture'.$i) ){
-        $path = $picture->store('public/news');
-        $json_pictures[] = [
-          'path' => $path,
-          'url'  => str_replace('public', 'storage', $path)
-        ];
+    if( $files = $request->file('pictures') ){
+      foreach( $files as $file ){
+        $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . time() . '.' . $file->extension();
+        $path     = storage_path( 'app/'.$file->storeAs('novelties/pictures/', $fileName) );
+        $novelty->addMedia( $path )->toMediaCollection('pictures');
       }
     }
-    $novelty->pictures = $json_pictures;
-    $novelty->save();
+
     return new NoveltyResource( $novelty );
   }
 

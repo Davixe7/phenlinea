@@ -21,7 +21,6 @@ class CreatePetitionsTable extends Migration
       $table->text('description');
       $table->string('phone');
       $table->string('email');
-      $table->text('pictures')->nullable();
       $table->enum('status', ['pending', 'approved', 'denied'])->default('pending');
     });
   }

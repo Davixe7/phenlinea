@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,17 +17,13 @@
 <body>
   <main>
     <div id="app" data-app>
-      <v-app>
-        <v-main>
-          @include('layouts.navbar')
-          @if( session('message') )
-          <div class="alert text-center alert-{{ session('message_type') ?: 'info' }}">
-            {{ session('message') }}
-          </div>
-          @endif
-          @yield('content')
-        </v-main>
-      </v-app>
+      @include('layouts.navbar')
+      @if( session('message') )
+      <div class="alert text-center alert-{{ session('message_type') ?: 'info' }}">
+        {{ session('message') }}
+      </div>
+      @endif
+      @yield('content')
     </div>
   </main>
   <script src="{{ mix('js/app.js') }}" defer></script>

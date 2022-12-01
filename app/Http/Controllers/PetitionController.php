@@ -23,10 +23,11 @@ class PetitionController extends Controller
      */
     public function index(Request $request)
     {
-      if( $request->expectsJson() ){
-        return PetitionResource::collection( auth()->user()->petitions()->orderBy('created_at', 'DESC')->with('extension')->get() );
+      $petitions = auth()->user()->petitions()->orderBy('created_at', 'DESC')->with('extension')->get();
+      if( auth()->user()->admin_id ){
+        return view('resident.petitions', compact('petitions'));
       }
-      return view('admin.petitions');
+      return view('admin.petitions', compact('petitions'));
     }
     
     /**
@@ -57,7 +58,7 @@ class PetitionController extends Controller
         'extension_id' => auth()->user()->id
       ]);
       
-      return new PetitionResource( $petition );
+      return redirect()->route('petitions.index')->with(['message'=>'Solicitud creada exitosamente']);
     }
 
     /**
@@ -68,7 +69,7 @@ class PetitionController extends Controller
      */
     public function show(Petition $petition)
     {
-      return new PetitionResource( $petition );
+      return view('admin.petition-show', compact('petition'));
     }
 
     /**
@@ -90,7 +91,7 @@ class PetitionController extends Controller
         'pictures'     => array_merge($uploadedPictures, $petition->pictures)
       ]);
       
-      return new PetitionResource( $petition );
+      return redirect()->route('petitions.index')->with(['message'=>'Petición procesada exitosamente']);
     }
     
     public function deletePicture(Request $request, Petition $petition){

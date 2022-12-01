@@ -114,11 +114,14 @@ class SmsController extends Controller
   }
   
   public function history(Request $request){
-    $log = Auth::user() ? SmsResource::collection( Auth::user()->logs->load('extension:id,name') ) : null;
+    $messages = auth()->user()->logs->load('extension:id,name');
+
     if( $request->expectsJson() ){
-      return response()->json(['data'=>$log]);
+      $messages = SmsResource::collection( $messages );
+      return response()->json(['data' => $messages]);
     }
-    return view('admin.messages.log', ['log'=>$log]);
+
+    return view('admin.sms', ['messages' => $messages]);
   }
   
   public function concatExtensionsNumbers($extensions, $receiverType){

@@ -38,35 +38,35 @@
   </div>
   @else
   <div>
-  <h1>Novedades</h1>
-      <div class="table-responsive">
-        @if( $novelties->count() )
-        <table class="table">
-          <thead>
-            <th>Fecha</th>
-            <th>Descripción</th>
-            <th class="text-right">Opciones</th>
-          </thead>
-          <tbody>
-            @foreach( $novelties as $novelty )
-            <tr class="{{ $novelty->read ? 'read' : ''}}">
-              <td>{{ $novelty->created_at }}</td>
-              <td>{{ $novelty->excerpt }}</td>
-              <td class="text-right">
-                <div class="btn-group">
-                  <a href="{{ route('novelties.show', ['novelty'=>$novelty->id]) }}" class="btn btn-sm btn-link">
-                    <i class="material-icons">remove_red_eye</i>
-                  </a>
-                </div>
-              </td>
-            </tr>
-            @endforeach
-          </tbody>
-        </table>
-        @else
-        <div class="alert alert-info">No hay Novedades para mostrar</div>
-        @endif
-      </div>
+    <div class="table-responsive">
+      <h1>Novedades</h1>
+      @if( $novelties->count() )
+      <table class="table">
+        <thead>
+          <th>Fecha</th>
+          <th>Descripción</th>
+          <th class="text-right">Opciones</th>
+        </thead>
+        <tbody>
+          @foreach( $novelties as $novelty )
+          <tr class="{{ $novelty->read ? 'read' : ''}}">
+            <td>{{ $novelty->created_at }}</td>
+            <td>{{ $novelty->excerpt }}</td>
+            <td class="text-right">
+              <div class="btn-group">
+                <a href="{{ route('novelties.show', ['novelty'=>$novelty->id]) }}" class="btn btn-sm btn-link">
+                  <i class="material-icons">remove_red_eye</i>
+                </a>
+              </div>
+            </td>
+          </tr>
+          @endforeach
+        </tbody>
+      </table>
+      @else
+      <div class="alert alert-info">No hay Novedades para mostrar</div>
+      @endif
+    </div>
   </div>
   @endif
 </div>

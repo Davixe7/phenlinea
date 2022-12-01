@@ -18,8 +18,8 @@ class CreateAttachmentsTable extends Migration
       $table->timestamps();
       $table->string('url');
       $table->string('path');
-      $table->unsignedBigInteger('product_id')->nullable();
-      $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade')->nullable();      
+      $table->unsignedBigInteger('visit_id')->nullable();
+      $table->foreign('visit_id')->references('id')->on('visits')->onDelete('cascade')->nullable();
     });
   }
 

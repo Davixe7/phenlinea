@@ -1,15 +1,17 @@
 <template>
   <div id="admins" v-if="user">
-    <div class="page-title">
-      <h1>Administradores</h1>
-      <SearchForm
-        v-if="admins && admins.length"
-        :collection="admins"
-        :attribute="'name'"
-        v-model="results"/>
-    </div>
     
     <div v-if="results && results.length" class="table-responsive">
+      <div class="d-flex align-items-center">
+        <h1 style="flex: 1;">Administradores</h1>
+        <div class="d-flex py-3 px-3" style="flex: 1;">
+          <SearchForm
+          v-if="admins && admins.length"
+          :collection="admins"
+          :attribute="'name'"
+          v-model="results"/>
+        </div>
+      </div>
       <table class="table">
         <thead>
           <th>Nombre</th>
@@ -18,7 +20,6 @@
           <th>Celular</th>
           <th>Celular 2</th>
           <th>Correo</th>
-          <th>SMS</th>
           <th>Status</th>
           <th class="text-right" v-if="user.isAdmin">Opciones</th>
         </thead>
@@ -30,19 +31,18 @@
             <td>{{ admin.phone }}</td>
             <td>{{ admin.phone_2 }}</td>
             <td>{{ admin.email }}</td>
-            <td>{{ admin.month_sms_count }}</td>
             <td>{{ admin.status }}</td>
       
-            <td v-if="user.isAdmin" class="text-right">
+            <td class="text-right">
               <div class="btn-group">
                 <a
                   :href="`/admin/admins/${admin.id}/edit-permissions`"
-                  class="btn btn-sm btn-secondary text-white">
+                  class="btn btn-xs btn-link">
                   <i class="material-icons">lock</i>
                 </a>
-                <button class="btn btn-sm btn-success"   @click="editPayment(admin)"><i class="material-icons">list</i></button>
-                <button class="btn btn-sm btn-secondary" @click="editAdmin(admin)"><i class="material-icons">edit</i></button>
-                <button class="btn btn-sm btn-secondary" @click="deleteAdmin(admin.id)"><i class="material-icons">delete</i></button>
+                <button class="btn btn-xs btn-link" @click="editPayment(admin)"><i class="material-icons">list</i></button>
+                <button class="btn btn-xs btn-link" @click="editAdmin(admin)"><i class="material-icons">edit</i></button>
+                <button class="btn btn-xs btn-link" @click="deleteAdmin(admin.id)"><i class="material-icons">delete</i></button>
               </div>
             </td>
           </tr>

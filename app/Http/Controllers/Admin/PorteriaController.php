@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Porteria;
+use App\Admin;
 use Illuminate\Http\Request;
 use App\Http\Resources\Porteria as PorteriaResource;
 use App\Http\Requests\StorePorteria as StorePorteriaRequest;
@@ -22,7 +23,10 @@ class PorteriaController extends Controller
   
   public function index()
   {
-    return view('super.porterias.index');
+    $porterias = Porteria::orderBy('created_at', 'DESC')->get();
+    $admins    = Admin::orderBy('name', 'ASC')->get();
+
+    return view('super.porterias.index', compact('porterias', 'admins'));
   }
   
   public function list(Request $request)

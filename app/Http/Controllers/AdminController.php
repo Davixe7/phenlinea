@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Admin;
-use App\Payment;
 use App\Http\Resources\Admin as AdminResource;
 use App\Http\Resources\Payment as PaymentResource;
 use Illuminate\Http\Request;

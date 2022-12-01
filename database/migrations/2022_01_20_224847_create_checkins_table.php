@@ -16,8 +16,10 @@ class CreateCheckinsTable extends Migration
         Schema::create('checkins', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->timestamps();
+            $table->unsignedBigInteger('extension_id');
             $table->unsignedBigInteger('visitor_id');
             $table->foreign('visitor_id')->references('id')->on('visitors')->onDelete('cascade');
+            
         });
     }
 

@@ -34,10 +34,10 @@ h6 {
             <p style="flex: 0 1 auto; margin-right: 10px;">
               Descargue el formato requerido y cargue los datos al archivo XLSX
             </p>
-            <v-btn dark success color="success" class="btn btn-success" style="flex: 1 0 auto;" href="{{ asset('phenlinea_formato_factura.xlsx') }}">
+            <button class="btn btn-success" style="flex: 1 0 auto;" href="{{ asset('phenlinea_formato_factura.xlsx') }}">
               <i class="material-icons mr-2">arrow_circle_down</i>
               Descargar Formato
-            </v-btn>
+            </button>
           </div>
         </li>
         <li class="list-group-item">
@@ -83,9 +83,9 @@ h6 {
                 name="file"
                 class="form-control mr-3"
                 style="border: 2px solid green; height: 43px;">
-              <v-btn type="submit" primary  dark class="btn btn-primary">
+              <button type="submit" primary  dark class="btn btn-primary">
                 Importar facturas
-              </v-btn>
+              </button>
             </div>
           </form>
         </li>

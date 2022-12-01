@@ -24,13 +24,7 @@
           <a class="nav-link" href="{{ route('admin.porterias.index') }}">Porterias</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{{ route('admin.freelancers.index') }}">Freelancers</a>
-        </li>
-        <li class="nav-item">
           <a class="nav-link" href="{{ route('admin.admins.export') }}">Exportar</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{{ route('admin.stores.index') }}">Comercios</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{{ route('admin.invoices.upload') }}">Facturas</a>
@@ -46,7 +40,7 @@
         @endif
         @if( Auth::guard('admin')->check() )
           <li class="nav-item">
-            <a class="nav-link" href="{{ route('census.index') }}">Extensiones</a>
+            <a class="nav-link" href="{{ route('extensions.index') }}">Extensiones</a>
           </li>
           <!-- <li class="nav-item">
             <a class="nav-link" href="{{ route('posts.index') }}">Cartelera</a>
@@ -94,7 +88,7 @@
             <a class="nav-link" href="{{ route('reminders.index') }}">Notificaciones</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ route('petitions.create') }}">Solicitudes</a>
+            <a class="nav-link" href="{{ route('petitions.index') }}">Solicitudes</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{{ route('bills.index') }}">Enlaces</a>

@@ -28,7 +28,7 @@ class AdminController extends Controller
 
   public function list()
   {
-    $admins = Admin::without('extensions')->get();
+    $admins = Admin::without('extensions')->orderBy('name', 'ASC')->get();
     return AdminResource::collection( $admins );
   }
 

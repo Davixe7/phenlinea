@@ -21,6 +21,12 @@
       padding-bottom: 2.75rem;
       box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, .15);
     }
+    .navbar-nav .nav-item a.nav-link {
+        padding-left: 1rem;
+        padding-right: 1rem;
+        border-right: 1px solid #ffffff30 !important;
+        font-size: 1em !important;   
+    }
 
     .table-responsive h1 {
       font-size: 1.3rem;

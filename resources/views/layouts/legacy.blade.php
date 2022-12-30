@@ -15,6 +15,13 @@
     .navbar.bg-dark {
       background: #4b7094 !important;
     }
+    .navbar-nav .nav-item a.nav-link {
+        padding-left: 1rem;
+        padding-right: 1rem;
+        border-right: 1px solid #ffffff30 !important;
+        font-size: 1em !important;
+        color: #fff;
+    }
     .table-responsive {
       border-radius: 5px;
       background: #fff;

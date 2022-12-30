@@ -28,8 +28,8 @@ class StoreAdmin extends FormRequest
       'contact_email'     => 'required',
       'nit'     => ['required', Rule::unique('admins')->ignore($this->admin)],
       'email'   => ['required', Rule::unique('admins')->ignore($this->admin)],
-      'phone'   => 'required|numeric|digits_between:10,10',
-      'phone_2' => 'nullable|numeric|digits_between:10,10',
+      'phone'   => 'required|numeric|digits_between:10,12',
+      'phone_2' => 'nullable|numeric|digits_between:10,12',
       'password' => 'nullable|min:6'
     ];
   }

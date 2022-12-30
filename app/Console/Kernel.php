@@ -61,8 +61,8 @@ class Kernel extends ConsoleKernel
             
             foreach( $numbers as $number ){
                 $data['number'] = '57' . $number;
-                $client->post('send.php', ['query' => $data]);
-                Storage::append('whatsapp_log.txt', now() . " {$batch->admin->name} - {$batch->admin->whatsapp_instance_id} - {$number} - { $batch->message }");
+                $response = $client->post('send.php', ['query' => $data]);
+                Storage::append('whatsapp_log.txt', now() . " " . $response->getStatusCode() . " {$batch->admin->name} - {$batch->admin->whatsapp_instance_id} - {$number} - { $batch->message }");
                 sleep(3);
             }
             

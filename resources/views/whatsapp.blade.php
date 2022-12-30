@@ -58,35 +58,63 @@
       font-size: .9em;
       font-weight: 400;
   }
+  #qrPreloader {
+    display: flex;
+    height: 250px;
+    justify-content: center;
+    align-items: center;
+  }
+  .preloader {
+    height: 30px;
+    width: 30px;
+    -webkit-animation: rotate 0.5s infinite linear;
+    animation: rotate 0.5s infinite linear;
+    margin-right: 10px;
+    border: 3.5px solid #000;
+    border-radius: 50%;
+    border-top: 3.5px solid #fff;
+  }
+  #extensionsFilter {
+      height: 50px;
+      width: 100%;
+      padding: 0 20px;
+  }
 </style>
 @endsection
 
 @section('content')
 @if( !isset($extensions) )
-<div class="container">
+<div class="container pt-4">
     <div class="row">
         <div class="col-lg-4">
-            <div class="table-responsive">
-                <h1>
-                  WhatsApp - Mensajería general
-                </h1>
-                <div class="text-secondary" style="padding: 0 1.15rem;">
-                  {{ $instance_id }}
-                </div>
-                @if( isset( $qrcode_src ) )
-                  <img src="{{ $qrcode_src }}" alt="" id="qrImage">
-                @endif
-                <div class="text-center">
-                    <div class="px-4">
-                        Si el código QR expira, por favor haz click en actualizar
-                    </div>
-                    <div class="d-flex justify-content-center">
-                        <button class="btn btn-outline-success">
-                            Actualizar
-                        </button>
-                    </div>
-                </div>
+          <div class="table-responsive">
+            <h1>
+              WhatsApp - Mensajería general
+            </h1>
+            <div class="text-secondary d-none" style="padding: 0 1.15rem;">
+              {{ $instance_id }}
+            </div>
+            @if( isset( $qrcode_src ) && $qrcode_src )
+              <img src="{{ $qrcode_src }}" alt="" id="qrImage">
+              <div id="qrPreloader" style="display: none;">
+                <div class="preloader"></div>
               </div>
+            @else
+            <img src="#" alt="" id="qrImage" style="display: none;">
+            <div id="qrPreloader">
+                <div class="preloader"></div>
+            </div>
+            @endif
+              
+            <div class="text-center">
+              <div class="px-4">
+                Si el código QR expira, utilize el botón
+              </div>
+              <div class="d-flex justify-content-center">
+                  <a href="{{route('whatsapp.index')}}" class="btn btn-outline-success">Actualizar</a>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="col-lg-7">
             <ul class="list-group m-t-25">
@@ -104,7 +132,7 @@
     </div>
 </div>
 @else
-<div class="container">
+<div class="container pt-4">
     <form action="{{ route('whatsapp.send') }}" method="POST" enctype="multipart/form-data" id="whatsappForm">
   @csrf
   <div class="row">
@@ -119,6 +147,7 @@
           </div>
         </div>
         <div class="card-body p-0" style="max-height: calc(100vh - 200px); overflow: auto;">
+          <input id="extensionsFilter" placeholder="Buscar...">
           <ul class="list-group p-0">
             <li class="list-group-item">
               <input type="checkbox" name="select_all" id="checkbox-select_all" class="mr-3">
@@ -130,7 +159,7 @@
             </li>
             @foreach($extensions as $extension)
             <li class="list-group-item">
-              <input type="checkbox" name="receivers[]" id="checkbox-{{$extension->id}}" class="mr-3 extension-check @if($extension->owner_phone) hasOwnerPhone @endif" value="{{ $extension->id }}">
+              <input type="checkbox" name="receivers[]" id="checkbox-{{$extension->id}}" class="mr-3 extension-check @if($extension->owner_phone) hasOwnerPhone @endif" value="{{ $extension->id }}" data-apto="{{ $extension->name }}">
               <label for="checkbox-{{$extension->id}}">{{ $extension->name }}</label>
             </li>
             @endforeach
@@ -182,6 +211,9 @@
                       Mensaje
                   </th>
                   <th>
+                      Cant.
+                  </th>
+                  <th>
                       Fecha
                   </th>
               </thead>
@@ -190,6 +222,9 @@
                     <tr>
                         <td>
                             {{ $batch->message }}
+                        </td>
+                        <td>
+                            {{ count( explode(',', $batch->receivers_numbers) ) }}
                         </td>
                         <td>
                             {{ Carbon\Carbon::parse($batch->created_at)->format('Y-m-d H:i:s') }}
@@ -248,10 +283,25 @@
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
     const qrImage = document.querySelector('#qrImage')
-    if( qrImage ){
-        setInterval(function(){
-            axios.get('/whatsapp/getQR')
-            .then(response => qrImage.src = response.data.data)
+    const qrPreloader = document.querySelector('#qrPreloader')
+    
+      if (qrImage) {
+        setInterval(function() {
+          axios.get('/whatsapp/getQR')
+            .then(response => {
+              if( response.data.data ){
+                  qrImage.style.display = 'block'
+                  qrPreloader.style.display = 'none'
+                  qrImage.src = response.data.data
+                  return
+              }
+              qrImage.style.display = 'none'
+              qrPreloader.style.display = 'flex'
+            })
+            .catch(error=>{
+              qrImage.style.display = 'none'
+              qrPreloader.style.display = 'flex'
+            })
         }, 31000)
         
         setInterval(function(){
@@ -271,6 +321,7 @@
   const selectAll = document.querySelector('#checkbox-select_all')
   const attachmentInput = document.querySelector('#attachmentInput')
   const whatsappForm    = document.querySelector('#whatsappForm')
+  const extensionsFilter = document.querySelector('#extensionsFilter')
 
   extensionsChecks.forEach(check=>{
     check.addEventListener('change', updateCount)
@@ -289,27 +340,67 @@
 
   if( ownersOnlyCheckbox ){
       ownersOnlyCheckbox.addEventListener('change', function(e) {
-    if (e.target.checked) {
-      extensionsChecks.forEach(check => {
-        check.checked = false
-        check.style.display = 'none'
-        check.parentElement.style.display = 'none'
-        check.setAttribute('disabled', true)
+        if (e.target.checked) {
+          extensionsChecks.forEach(check => {
+            check.checked = false
+            check.style.display = 'none'
+            check.parentElement.style.display = 'none'
+            check.setAttribute('disabled', true)
+          })
+          document.querySelectorAll('.extension-check.hasOwnerPhone').forEach(check => {
+            check.removeAttribute('disabled')
+            check.checked = true
+            check.style.display = 'inline-block'
+            check.parentElement.style.display = 'inline-flex'
+          })
+        } else {
+          extensionsChecks.forEach(check => {
+            check.style.display = 'inline-flex'
+            check.parentElement.style.display = 'inline-flex'
+            check.removeAttribute('disabled')
+          })
+        }
+        updateCount()
       })
-      document.querySelectorAll('.extension-check.hasOwnerPhone').forEach(check => {
-        check.removeAttribute('disabled')
-        check.checked = true
-        check.style.display = 'inline-block'
-        check.parentElement.style.display = 'inline-flex'
-      })
-    } else {
-      extensionsChecks.forEach(check => {
-        check.style.display = 'inline-flex'
-        check.parentElement.style.display = 'inline-flex'
-        check.removeAttribute('disabled')
-      })
+  }
+  
+  if( extensionsFilter ){
+  extensionsFilter.addEventListener('input', function(e){
+    let search = e.target.value.trim().toLowerCase()
+    if( ( search  == '') && !ownersOnlyCheckbox.checked ){
+        extensionsChecks.forEach(check => {
+            check.style.display = 'inline-flex'
+            check.parentElement.style.display = 'inline-flex'
+            check.removeAttribute('disabled')
+        })
+        return
     }
-    updateCount()
+    
+    if( ( search == '') && ownersOnlyCheckbox.checked ){
+        document.querySelectorAll('.extension-check.hasOwnerPhone').forEach(check => {
+            check.removeAttribute('disabled')
+            check.checked = true
+            check.style.display = 'inline-block'
+            check.parentElement.style.display = 'inline-flex'
+          })
+          return
+    }
+    
+    if( !ownersOnlyCheckbox.checked ){
+        extensionsChecks.forEach(check => {
+            console.log( search )
+            console.log( check.getAttribute('data-apto') )
+            check.style.display = check.getAttribute('data-apto').includes( search ) ? 'inline-flex' : 'none'
+            check.parentElement.style.display = check.getAttribute('data-apto').includes( search ) ? 'inline-flex' : 'none'
+        })
+        return
+    }
+    
+    document.querySelectorAll('.extension-check.hasOwnerPhone').forEach(check => {
+      check.style.display = check.getAttribute('data-apto').includes( search ) ? 'inline-flex' : 'none'
+      check.parentElement.style.display = check.getAttribute('data-apto').includes( search ) ? 'inline-flex' : 'none'
+    })
+      
   })
   }
   

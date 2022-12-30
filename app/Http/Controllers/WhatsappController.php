@@ -39,7 +39,7 @@ class WhatsappController extends Controller
     $response = $this->client->post('getqrcode.php', ['query' => ['access_token' => '3f8b18194536bdafa301c662dc9caa4c','instance_id'  => $instance_id]]);
     $data = json_decode( $response->getBody(), true );
     
-    if( $data && $data['status'] == 'error' ){
+    if( ($response->getStatusCode() >= 400) || ($data && ($data['status'] == 'error')) ){
       Storage::append('whatsapp_error.log', 'InstanceID: ' . $instance_id . ' ' . $response->getBody() );
       if( !request()->expectsJson() ){
         return redirect()->route('whatsapp.index');
@@ -47,11 +47,11 @@ class WhatsappController extends Controller
       return null;
     }
     
-    if (array_key_exists('base64', $data)) {
+    if ($data && array_key_exists('base64', $data)) {
       return $data['base64'];
     }
 
-    Storage::append('whatsapp_error.log', $data['message'] );
+    Storage::append('whatsapp_error.log', 'InstanceID: ' . $instance_id . ' ' . $response->getStatusCode() . ' ' . $response->getReasonPhrase() . ' No error message available');
     return null;
   }
   
@@ -64,7 +64,7 @@ class WhatsappController extends Controller
   {
     if (auth()->user()->whatsapp_status == 'online') {
       $extensions = auth()->user()->extensions()->orderBy('name')->get();
-      $history    = auth()->user()->whatsapp_messages_batches;
+      $history    = auth()->user()->whatsapp_messages_batches()->orderBy('created_at', 'DESC')->get();
       return view('whatsapp', compact('extensions', 'history'));
     }
     
@@ -110,11 +110,19 @@ class WhatsappController extends Controller
   }
   
   public function logout(){
-      $response = $this->client->post('reboot.php', ['query' => [
+    $response = $this->client->post('reboot.php', ['query' => [
         'access_token' => '3f8b18194536bdafa301c662dc9caa4c',
         'instance_id'  => auth()->user()->whatsapp_instance_id
-      ]]);
-      return redirect()->route('home');
+    ]]);
+      
+    Storage::append('whatsapp_hook.log', auth()->user()->whatsapp_instance_id . " requested logout");
+      
+    auth()->user()->update([
+        'whatsapp_status'      => 'offline',
+        'whatsapp_instance_id' => null
+    ]);
+    
+    return redirect()->route('home');
   }
   
   public function isOnline(){

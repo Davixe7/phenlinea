@@ -47,13 +47,12 @@ class VisitController extends Controller
         "admin_id"     => auth()->user()->admin_id
       ]);
 
-      $attachments = $this->upload($request, 'picture');
-      foreach($attachments as $picture){
-        Attachment::create([
-          'url' => $picture['url'],
-          'path' => $picture['path'],
-          'visit_id' => $visit->id
-        ]);
+      if( $files = $request->file('picture') ){
+        foreach( $files as $file ){
+          $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . time() . '.' . $file->extension();
+          $path     = storage_path( 'app/'.$file->storeAs('visits/picture/', $fileName) );
+          $visit->addMedia( $path )->toMediaCollection('picture');
+        }
       }
 
       return new VisitPorteria( $visit );

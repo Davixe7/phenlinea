@@ -21,7 +21,6 @@ class CreateRemindersTable extends Migration
       $table->unsignedInteger('extension_id');
       $table->string('title');
       $table->text('description');
-      $table->json('pictures')->nullable();
     });
   }
   

@@ -20,8 +20,6 @@ class CreatePostsTable extends Migration
       $table->unsignedInteger('admin_id');
       $table->string('title');
       $table->text('description');
-      $table->json('pictures')->nullable();
-      $table->json('attachments')->nullable();
       $table->enum('type', ['post', 'doc'])->default('post');
     });
   }

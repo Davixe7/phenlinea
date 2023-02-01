@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Resources\Store as StoreResource;
+use App\Http\Resources\User as UserResource;
 
 class HomeController extends Controller
 {
@@ -38,10 +39,11 @@ class HomeController extends Controller
           return view('resident.home', ['posts'=>auth()->user()->posts()->whereType('post')->get()]);
           break;
         case 'admin':
-          return view('admin.census.index');
+          $extensions = auth()->user()->extensions()->orderBy('name')->get();
+          return view('admin.extensions.index', compact('extensions'));
           break;
         case 'web':
-          return view('super.users.index');
+          return view('super.users.index', ['users'=>UserResource::collection( \App\User::all() )]);
           break;
       }
     }

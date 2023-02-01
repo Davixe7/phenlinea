@@ -37,10 +37,24 @@ class PostController extends Controller
       $post = Post::create([
         'title'       => $request->title,
         'description' => $request->description,
-        'pictures'    => $this->upload($request, 'pictures'),
-        'attachments' => $this->upload($request, 'attachments'),
         'admin_id'    => auth()->user()->id
       ]);
+
+      if( $files = $request->file('pictures') ){
+        foreach( $files as $file ){
+          $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . time() . '.' . $file->extension();
+          $path     = storage_path( 'app/'.$file->storeAs('posts/pictures/', $fileName) );
+          $post->addMedia( $path )->toMediaCollection('pictures');
+        }
+      }
+
+      if( $files = $request->file('attachments') ){
+        foreach( $files as $file ){
+          $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . time() . '.' . $file->extension();
+          $path     = storage_path( 'app/'.$file->storeAs('posts/attachments/', $fileName) );
+          $post->addMedia( $path )->toMediaCollection('attachments');
+        }
+      }
       
       return new PostResource( $post );
     }
@@ -67,10 +81,24 @@ class PostController extends Controller
     {
       $post->update([
         'title' => $request->title,
-        'description' => $request->description,
-        'pictures'    => array_merge( $this->upload($request, 'pictures'), $post->pictures ?: [] ),
-        'attachments' => array_merge( $this->upload($request, 'attachments'), $post->pictures ?: [] )
+        'description' => $request->description
       ]);
+
+      if( $files = $request->file('pictures') ){
+        foreach( $files as $file ){
+          $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . time() . '.' . $file->extension();
+          $path     = storage_path( 'app/'.$file->storeAs('posts/pictures/', $fileName) );
+          $post->addMedia( $path )->toMediaCollection('pictures');
+        }
+      }
+
+      if( $files = $request->file('attachments') ){
+        foreach( $files as $file ){
+          $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . time() . '.' . $file->extension();
+          $path     = storage_path( 'app/'.$file->storeAs('posts/attachments/', $fileName) );
+          $post->addMedia( $path )->toMediaCollection('attachments');
+        }
+      }
       
       return new PostResource( $post );
     }

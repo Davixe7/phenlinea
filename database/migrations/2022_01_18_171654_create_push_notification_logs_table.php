@@ -17,7 +17,10 @@ class CreatePushNotificationLogsTable extends Migration
             $table->bigIncrements('id');
             $table->timestamps();
             $table->unsignedBigInteger('admin_id');
+            $table->unsignedBigInteger('extension_id');
+            $table->unsignedBigInteger('push_notification_log_id');
             $table->unsignedInteger('receivers_count');
+            $table->boolean('sent_to_all')->nullable()->default(false);
             $table->string('body');
         });
     }

@@ -64,15 +64,6 @@ return [
             'provider' => 'porterias',
         ],
 
-        'freelancer' => [
-            'driver' => 'session',
-            'provider' => 'freelancers',
-        ],
-        'api-freelancer' => [
-            'driver' => 'token',
-            'provider' => 'freelancers',
-        ],
-
         'extension' => [
             'driver' => 'session',
             'provider' => 'extensions',
@@ -80,15 +71,6 @@ return [
         'api-extension' => [
             'driver' => 'token',
             'provider' => 'extensions',
-        ],
-
-        'store' => [
-            'driver' => 'session',
-            'provider' => 'stores',
-        ],
-        'api-store' => [
-            'driver' => 'token',
-            'provider' => 'stores',
         ],
 
     ],
@@ -126,19 +108,9 @@ return [
             'model' => App\Porteria::class,
         ],
 
-        'freelancers' => [
-            'driver' => 'eloquent',
-            'model' => App\Freelancer::class,
-        ],
-
         'extensions' => [
             'driver' => 'eloquent',
             'model' => App\Extension::class,
-        ],
-
-        'stores' => [
-            'driver' => 'eloquent',
-            'model' => App\Store::class,
         ],
 
         // 'users' => [

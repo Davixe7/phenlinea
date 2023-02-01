@@ -2,34 +2,30 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Notifications\VerifyPhone;
 use Illuminate\Contracts\Auth\CanResetPassword;
-use App\Notifications\PasswordResetNotificationSms;
 
 class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
 {
   use Notifiable;
-  //protected $appends = ['extensions_count'];
 
   protected $fillable = [
     'name',
-    'email',
-    'password',
+    'address',
     'contact_email',
+    'email',
     'nit',
-    'sms_enabled',
+    'password',
     'phone',
     'phone_2',
-    'address',
-    'referer_id',
-    'status',
+    'phone_verification',
     'picture',
-    'phone_verification', 'whatsapp_instance_id', 'whatsapp_status',
-    'wa_instance_id'
+    'slug',
+    'status',
+    'whatsapp_instance_id',
+    'whatsapp_status'
   ];
 
   protected $hidden   = ['password', 'created_at', 'updated_at'];
@@ -37,23 +33,7 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
   protected $appends = ['solvencia'];
   protected $casts = [
     'solvencia'   => 'string',
-    'sms_enabled' => 'integer'
   ];
-
-  public function getEmailForVerification()
-  {
-    return $this->contact_email;
-  }
-
-  public function sendEmailVerificationNotification()
-  {
-    $this->notify(new VerifyPhone());
-  }
-
-  public function sendPasswordResetNotification($token)
-  {
-    $this->notify(new PasswordResetNotificationSms($token));
-  }
 
   public function invoices()
   {
@@ -63,16 +43,6 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
   public function visits()
   {
     return $this->hasMany('App\Visit');
-  }
-
-  public function notifications()
-  {
-    return $this->hasMany('App\Notification');
-  }
-
-  public function logs()
-  {
-    return $this->hasManyThrough('App\Notification', 'App\Porteria');
   }
 
   public function extensions()
@@ -112,12 +82,7 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
 
   public function petitions()
   {
-    return $this->hasManyThrough('App\Petition', 'App\Extension');
-  }
-
-  public function referer()
-  {
-    return $this->hasMany('App\Freelancer', 'referer_id');
+    return $this->hasMany('App\Petition');
   }
 
   public function porterias()
@@ -134,9 +99,10 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
   {
     return $this->hasMany('App\PushNotificationLog');
   }
-  
-  public function whatsapp_messages_batches(){
-      return $this->hasMany('App\WhatsappMessagesBatch');
+
+  public function whatsapp_messages_batches()
+  {
+    return $this->hasMany('App\WhatsappMessagesBatch');
   }
 
   public function getSolvenciaAttribute()
@@ -147,11 +113,6 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
       return $lastPayment->attributes[$month];
     }
     return null;
-  }
-
-  public function getMonthSmsCountAttribute()
-  {
-    return $this->notifications()->bulk()->sentThisMonth()->count();
   }
 
   public function getExtensionsCountAttribute()

@@ -17,7 +17,6 @@ class CreateNoveltiesTable extends Migration
       $table->bigIncrements('id');
       $table->boolean('read')->default(0);
       $table->text('description');
-      $table->json('pictures')->nullable();
       $table->unsignedBigInteger('porteria_id');
       $table->timestamps();
     });

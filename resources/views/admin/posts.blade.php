@@ -23,7 +23,7 @@
             </div>
             <div class="mb-3">
               <label style="font-size: .9em; font-weight: 500;">Archivos</labe>
-                <input type="file" class="form-control" name="attachments" multiple>
+                <input type="file" class="form-control" name="attachments[]" multiple>
             </div>
             <div class="d-flex justify-content-end">
               <button class="btn btn-link" type="submit">

@@ -120,14 +120,6 @@
             Porterias
           </a>
         </li>
-        <li>
-          <a
-            href="https://phenlinea.com/stores"
-            class="btn btn-outline-primary d-none d-lg-flex" style="position: relative;">
-              <span class="brand-new">Nuevo</span>
-            Comercios
-          </a>
-        </li>
       </ul>
 
       <ul class="custom-navbar-nav ml-auto d-none d-lg-flex">
@@ -140,7 +132,7 @@
         </li>
         <li>
           <a
-            href="{{ route('extensions.login') }}"
+            href="{{ route('residents.login') }}"
             class="btn btn-outline-primary">
             Propietario o Residente
           </a>
@@ -162,13 +154,8 @@
           </a>
         </li>
         <li>
-          <a href="{{ route('extensions.login') }}" class="btn btn-link">
+          <a href="{{ route('residents.login') }}" class="btn btn-link">
             Ingresar Propietario o Residente
-          </a>
-        </li>
-        <li>
-          <a href="{{ route('register') }}" class="btn btn-link">
-            Ingresar Freelancer
           </a>
         </li>
         <li class="divider">
@@ -183,7 +170,7 @@
         </li>
         <li>
           <a
-            href="{{ route('pwa.index') }}"
+            href="https://porterias.phenlinea.com"
             class="btn btn-link">
             Control de Porteria
           </a>

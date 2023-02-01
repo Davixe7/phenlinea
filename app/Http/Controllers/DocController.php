@@ -41,9 +41,16 @@ class DocController extends Controller
         'title'       => $request->title,
         'description' => $request->description,
         'admin_id'    => $request->user()->id,
-        'attachments' => $this->upload($request, 'attachments'),
         'type' => 'doc'
       ]);
+
+      if( $files = $request->file('attachments') ){
+        foreach( $files as $file ){
+          $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . time() . '.' . $file->extension();
+          $path     = storage_path( 'app/'.$file->storeAs('docs/attachments/', $fileName) );
+          $post->addMedia( $path )->toMediaCollection('attachments');
+        }
+      }
 
       if( $request->expectsJson() ){
         return new PostResource( $post );
@@ -72,12 +79,17 @@ class DocController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-      $uploadedAttachments = $this->upload($request, 'attachments');
+      if( $files = $request->file('attachments') ){
+        foreach( $files as $file ){
+          $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . time() . '.' . $file->extension();
+          $path     = storage_path( 'app/'.$file->storeAs('docs/attachments/', $fileName) );
+          $post->addMedia( $path )->toMediaCollection('attachments');
+        }
+      }
       
       $post->update([
         'title'       => $request->title ?: $post->title,
-        'description' => $request->description ?: $post->description,
-        'attachments' => array_merge($uploadedAttachments, $post->attachments)
+        'description' => $request->description ?: $post->description
       ]);
       
       return new PostResource( $post );

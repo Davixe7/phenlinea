@@ -44,10 +44,24 @@ class PostController extends Controller
         'type'        => 'post',
         'title'       => $request->title,
         'description' => $request->description,
-        'admin_id'    => $request->user()->id,
-        'pictures'    => $this->upload($request, 'pictures'),
-        'attachments' => $this->upload($request, 'attachments')
+        'admin_id'    => $request->user()->id
       ]);
+
+      if( $files = $request->file('pictures') ){
+        foreach( $files as $file ){
+          $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . time() . '.' . $file->extension();
+          $path     = storage_path( 'app/'.$file->storeAs('posts/pictures/', $fileName) );
+          $post->addMedia( $path )->toMediaCollection('pictures');
+        }
+      }
+
+      if( $files = $request->file('attachments') ){
+        foreach( $files as $file ){
+          $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . time() . '.' . $file->extension();
+          $path     = storage_path( 'app/'.$file->storeAs('posts/attachments/', $fileName) );
+          $post->addMedia( $path )->toMediaCollection('attachments');
+        }
+      }
       
       return redirect()->route('posts.index')->with(['message'=>'Publicación creada con éxito']);
     }
@@ -72,14 +86,25 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-      $uploadedPictures    = $this->upload($request, 'pictures');
-      $uploadedAttachments = $this->upload($request, 'attachments');
+      if( $files = $request->file('pictures') ){
+        foreach( $files as $file ){
+          $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . time() . '.' . $file->extension();
+          $path     = storage_path( 'app/'.$file->storeAs('posts/pictures/', $fileName) );
+          $post->addMedia( $path )->toMediaCollection('pictures');
+        }
+      }
+
+      if( $files = $request->file('attachments') ){
+        foreach( $files as $file ){
+          $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . time() . '.' . $file->extension();
+          $path     = storage_path( 'app/'.$file->storeAs('posts/attachments/', $fileName) );
+          $post->addMedia( $path )->toMediaCollection('attachments');
+        }
+      }
       
       $post->update([
         'title'       => $request->title ?: $post->title,
-        'description' => $request->description ?: $post->description,
-        'pictures'    => array_merge($uploadedPictures, $post->pictures),
-        'attachments' => array_merge($uploadedAttachments, $post->attachments)
+        'description' => $request->description ?: $post->description
       ]);
       
       return new PostResource( $post );

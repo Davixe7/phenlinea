@@ -14,6 +14,9 @@ class Post extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        $data = parent::toArray($request);
+        $data['attachments'] = MediaResource::collection( $this->getMedia('attachments') );
+        $data['pictures']    = MediaResource::collection( $this->getMedia('pictures') );
+        return $data;
     }
 }

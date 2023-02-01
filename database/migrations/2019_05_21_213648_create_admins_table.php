@@ -17,6 +17,8 @@ class CreateAdminsTable extends Migration
       $table->bigIncrements('id');
       $table->timestamps();
       $table->rememberToken();
+      $table->timestamp('email_verified_at')->nullable();
+      $table->string('phone_verification', 6)->nullable();
 
       $table->string('email')->unique();
       $table->string('password');
@@ -30,15 +32,15 @@ class CreateAdminsTable extends Migration
       $table->string('phone_4')->nullable();
       $table->text('address');
       
-      $table->unsignedBigInteger('referer_id')->nullable();
       $table->unsignedInteger('status')->default(1);
       
       $table->string('api_token', 60)->nullable()->default(null);
-      $table->boolean('sms_enabled')->default(0);
       
-      $table->string('picture')->nullable();
       $table->decimal('lat', 8, 6)->nullable();
       $table->decimal('lng', 9, 6)->nullable();
+
+      $table->string('whatsapp_instance_id')->nullable();
+      $table->string('whatsapp_status')->default('offline');
     });
   }
 

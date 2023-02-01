@@ -17,8 +17,11 @@ class CreateResidentsTable extends Migration
       $table->string('name');
       $table->integer('age');
       $table->string('dni');
+      $table->string('card')->nullable();
       $table->boolean('is_owner');
       $table->boolean('is_resident');
+      $table->boolean('is_authorized')->default(false)->nullable();
+      $table->boolean('disability')->default(false)->nullable();
       
       $table->unsignedBigInteger('extension_id');
       $table->bigIncrements('id');

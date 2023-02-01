@@ -3,14 +3,17 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Novelty extends Model
+class Novelty extends Model implements HasMedia
 {
+  use InteractsWithMedia;
+
   protected $fillable = ['title', 'description', 'porteria_id'];
   protected $hidden   = ['updated_at'];
   protected $appends  = ['excerpt','pictures_url'];
   protected $casts     = [
-    'pictures' => 'array',
     'excerpt'  => 'string',
     'read'     => 'integer'
   ];
@@ -24,8 +27,6 @@ class Novelty extends Model
   }
 
   public function getPicturesUrlAttribute(){
-    return collect($this->pictures)->map(function($p){
-      return asset( $p['url'] );
-    });
+    $this->getMedia('pictures')->pluck('url')->toArray()
   }
 }

@@ -28,7 +28,7 @@ class AdminController extends Controller
 
   public function list()
   {
-    $admins = Admin::without('extensions')->get();
+    $admins = Admin::without('extensions')->orderBy('name', 'ASC')->get();
     return AdminResource::collection( $admins );
   }
 
@@ -52,7 +52,6 @@ class AdminController extends Controller
       'email'      => $request->email,
       'password'   => bcrypt( $request->password ),
       
-      'referer_id' => $request->referer_id,
       'picture'    => $profile_picture ? $profile_picture[0]['url'] : null
     ]);
     
@@ -88,8 +87,6 @@ class AdminController extends Controller
       'password' => ($request->password) ? bcrypt($request->password) : $admin->password,
       'contact_email' => ($request->contact_email) ?: $admin->contact_email,
       'status'        => $request->status,
-      'sms_enabled'   => ($request->sms_enabled) ? 1 : 0,
-      'referer_id'    => $request->referer_id ?: $admin->referer_id,
       'picture'       => $profile_picture ?: $admin->picture
     ]);
 

@@ -24,13 +24,7 @@
           <a class="nav-link" href="{{ route('admin.porterias.index') }}">Porterias</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{{ route('admin.freelancers.index') }}">Freelancers</a>
-        </li>
-        <li class="nav-item">
           <a class="nav-link" href="{{ route('admin.admins.export') }}">Exportar</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{{ route('admin.stores.index') }}">Comercios</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{{ route('admin.invoices.upload') }}">Facturas</a>
@@ -39,39 +33,19 @@
           <a class="nav-link" href="{{ route('admin.documentos.index') }}">Documentos Legales</a>
         </li>
         @endif
-        @if( Auth::guard('freelancer')->check() )
-          <li class="nav-item">
-            <a class="nav-link" href="/">Referidos</a>
-          </li>
-        @endif
         @if( Auth::guard('admin')->check() )
           <li class="nav-item">
-            <a class="nav-link" href="{{ route('census.index') }}">Extensiones</a>
-          </li>
-          <!-- <li class="nav-item">
-            <a class="nav-link" href="{{ route('posts.index') }}">Cartelera</a>
+            <a class="nav-link" href="{{ route('extensions.index') }}">Extensiones</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ route('docs.index') }}">Manuales & Doc.</a>
-          </li> -->
-          <!-- <li class="nav-item">
-            <a class="nav-link" href="{{ route('reminders.index') }}">MSJ Apt</a>
-          </li> -->
-          <!-- <li class="nav-item">
-            <a class="nav-link" href="{{ route('bills.index') }}">Enlaces</a>
+            <a class="nav-link" href="{{ route('pqrs.index') }}">PQRS</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ route('petitions.index') }}">Solicitudes</a>
-          </li> -->
           <li class="nav-item">
             <a class="nav-link" href="{{ route('novelties.index') }}">Novedades</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{{ route('visits.index') }}">Visitas</a>
           </li>
-          <!--<li class="nav-item">
-            <a class="nav-link" href="/push">MSJ App</a>
-          </li>-->
           <li class="nav-item">
             <a class="nav-link" href="{{ route('invoices.index') }}" v-pre>
               Facturas <span>PSE</span> <img src="https://corbanca.com.co/wp-content/uploads/2022/06/pse.png" style="width: 60px;">
@@ -95,7 +69,7 @@
             <a class="nav-link" href="{{ route('reminders.index') }}">Notificaciones</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ route('petitions.create') }}">Solicitudes</a>
+            <a class="nav-link" href="{{ route('petitions.index') }}">Solicitudes</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{{ route('bills.index') }}">Enlaces</a>

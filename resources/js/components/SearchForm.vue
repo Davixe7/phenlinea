@@ -1,15 +1,15 @@
 <template>
   <div class="search-form">
     <form autocomplete="off">
-      <v-text-field
+      <!-- <v-text-field
         prepend-inner-icon="search"
         v-model="query"
         outlined
         clearable
         dense
         placeholder="Buscar..."
-        hide-details="auto"/>
-      <!-- <input autocomplete="none" type="search" v-model="query" placeholder="Buscar..."> -->
+        hide-details="auto"/> -->
+      <input autocomplete="none" type="search" v-model="query" placeholder="Buscar...">
     </form>
   </div>
 </template>

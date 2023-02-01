@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>{{ config('app.name', 'PHenlinea') }}</title>
   <link rel="dns-prefetch" href="//fonts.gstatic.com">
-  <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+  <link href="{{ asset('css/app.css') }}" rel="stylesheet">
   <link href="/img/favicon.png" rel="icon">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,600,700" rel="stylesheet">
@@ -14,17 +15,19 @@
     .navbar.bg-dark {
       background: #4b7094 !important;
     }
+
     .table-responsive {
       border-radius: 5px;
       background: #fff;
       padding-bottom: 2.75rem;
       box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, .15);
     }
+
     .navbar-nav .nav-item a.nav-link {
-        padding-left: 1rem;
-        padding-right: 1rem;
-        border-right: 1px solid #ffffff30 !important;
-        font-size: 1em !important;   
+      padding-left: 1rem;
+      padding-right: 1rem;
+      border-right: 1px solid #ffffff30 !important;
+      font-size: 1em !important;
     }
 
     .table-responsive h1 {
@@ -66,17 +69,13 @@
 <body>
   <main>
     <div id="app" data-app>
-      <v-app>
-        <v-main>
-          @include('layouts.navbar')
-          @if( session('message') )
-          <div class="alert text-center alert-{{ session('message_type') ?: 'info' }}">
-            {{ session('message') }}
-          </div>
-          @endif
-          @yield('content')
-        </v-main>
-      </v-app>
+      @include('layouts.navbar')
+      @if( session('message') )
+      <div class="alert text-center alert-{{ session('message_type') ?: 'info' }}">
+        {{ session('message') }}
+      </div>
+      @endif
+      @yield('content')
     </div>
   </main>
   <script src="{{ mix('js/app.js') }}" defer></script>

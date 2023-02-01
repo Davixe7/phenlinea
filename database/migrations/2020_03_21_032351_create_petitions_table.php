@@ -16,11 +16,11 @@ class CreatePetitionsTable extends Migration
     Schema::create('petitions', function (Blueprint $table) {
       $table->bigIncrements('id');
       $table->timestamps();
-      $table->unsignedBigInteger('extension_id');
-      $table->string('title');
-      $table->text('description');
+      $table->unsignedBigInteger('admin_id');
+      $table->string('name');
       $table->string('phone');
-      $table->string('email');
+      $table->string('phone_2');
+      $table->text('description');
       $table->enum('status', ['pending', 'approved', 'denied'])->default('pending');
     });
   }

@@ -9,14 +9,25 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 class Petition extends Model implements HasMedia
 {
   use InteractsWithMedia;
-  protected $fillable = ['extension_id', 'title', 'description', 'email', 'phone', 'status', 'pictures'];
-  protected $hidden   = ['updated_at'];
-  
-  public function admin(){
-    return $this->hasOneThrough('App\Admin', 'App\Admin');
-  }
-  
-  public function extension(){
-    return $this->belongsTo('App\Extension');
+  protected $fillable = [
+    'admin_id',
+    'answer',
+    'apto',
+    'description',
+    'name',
+    'phone',
+    'phone_2',
+    'read_at',
+    'replied_at',
+    'status'
+  ];
+
+  protected $hidden   = [
+    'updated_at'
+  ];
+
+  public function admin()
+  {
+    return $this->belongsTo('App\Admin');
   }
 }

@@ -16,15 +16,23 @@ use GuzzleHttp\Client;
 |
 */
 
+Route::get('pqrs/qr', 'PetitionController@qr')->name('pqrs.qr')->middleware('auth:admin');
+Route::get('pqrs', 'PetitionController@index')->name('pqrs.index')->middleware('auth:admin');
+Route::get('pqrs/{petition}', 'PetitionController@show')->name('pqrs.show');
+Route::put('pqrs/{petition}', 'PetitionController@update')->name('pqrs.update');
+Route::put('pqrs/{petition}/markAsRead', 'PetitionController@markAsRead')->name('pqrs.markasread');
+Route::post('pqrs', 'PetitionController@store')->name('pqrs.store');
+Route::get('/unidades/{admin:slug}/pqrs', 'PetitionController@create')->name('pqrs.create');
+
 Route::get('whatsapp/hook', 'WhatsappController@hook')->name('whatsapp.hook');
 Route::post('whatsapp/hook', 'WhatsappController@hook')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 
-Route::middleware('auth:admin')->group(function () {
-  Route::get('whatsapp', 'WhatsappController@index')->name('whatsapp.index');
-  Route::get('whatsapp/logout', 'WhatsappController@logout')->name('whatsapp.logout');
-  Route::post('whatsapp/send', 'WhatsappController@sendMessage')->name('whatsapp.send');
-  Route::get('whatsapp/status', 'WhatsappController@isOnline');
-  Route::get('whatsapp/getQR', 'WhatsappController@getQRurl');
+Route::middleware(['auth:admin', 'modules:whatsapp'])->group(function(){
+    Route::get('whatsapp', 'WhatsappController@index')->name('whatsapp.index');
+    Route::get('whatsapp/logout', 'WhatsappController@logout')->name('whatsapp.logout');
+    Route::post('whatsapp/send', 'WhatsappController@sendMessage')->name('whatsapp.send');
+    Route::get('whatsapp/status', 'WhatsappController@isOnline');
+    Route::get('whatsapp/getQR', 'WhatsappController@getQRurl');
 });
 
 Route::view('/', 'public.landing')->middleware('guest');

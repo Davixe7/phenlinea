@@ -5,7 +5,6 @@ namespace App;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Notifications\VerifyPhone;
 use Illuminate\Contracts\Auth\CanResetPassword;
 
 class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
@@ -14,18 +13,19 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
 
   protected $fillable = [
     'name',
-    'email',
-    'password',
+    'address',
     'contact_email',
+    'email',
     'nit',
+    'password',
     'phone',
     'phone_2',
-    'address',
-    'status',
-    'picture',
     'phone_verification',
+    'picture',
+    'slug',
+    'status',
     'whatsapp_instance_id',
-    'whatsapp_status',
+    'whatsapp_status'
   ];
 
   protected $hidden   = ['password', 'created_at', 'updated_at'];
@@ -82,7 +82,7 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
 
   public function petitions()
   {
-    return $this->hasManyThrough('App\Petition', 'App\Extension');
+    return $this->hasMany('App\Petition');
   }
 
   public function porterias()
@@ -99,9 +99,10 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
   {
     return $this->hasMany('App\PushNotificationLog');
   }
-  
-  public function whatsapp_messages_batches(){
-      return $this->hasMany('App\WhatsappMessagesBatch');
+
+  public function whatsapp_messages_batches()
+  {
+    return $this->hasMany('App\WhatsappMessagesBatch');
   }
 
   public function getSolvenciaAttribute()

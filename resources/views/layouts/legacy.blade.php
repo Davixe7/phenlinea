@@ -15,6 +15,54 @@
     .navbar.bg-dark {
       background: #4b7094 !important;
     }
+
+    .navbar-nav .nav-item a.nav-link {
+      padding-left: 1rem;
+      padding-right: 1rem;
+      border-right: 1px solid #ffffff30 !important;
+      font-size: 1em !important;
+      color: #fff;
+    }
+
+    .table-responsive {
+      border-radius: 5px;
+      background: #fff;
+      padding-bottom: 2.75rem;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, .15);
+    }
+
+    .table-responsive h1 {
+      font-size: 1.3rem;
+      margin: 0;
+      padding: .75rem 1.15rem;
+    }
+
+    .table tr:last-child td {
+      border-bottom: 1px solid #dee2e6;
+    }
+
+    .table th {
+      font-size: .85rem !important;
+    }
+
+    .table th,
+    .table td {
+      padding: .75rem 1.15rem;
+    }
+
+    .table th:first-child {
+      border-left: none !important;
+    }
+
+    .table th:last-child {
+      border-right: none !important;
+    }
+
+    .table td {
+      font-size: .85rem !important;
+      font-weight: 500;
+      color: rgba(0, 0, 0, .75);
+    }
   </style>
   @yield('styles')
 </head>

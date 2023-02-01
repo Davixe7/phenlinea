@@ -12,7 +12,7 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto" style="align-items: center;">
+      <ul class="navbar-nav mx-auto" style="align-items: center;">
         @if( Auth::guard('web')->check() )
         <li class="nav-item">
           <a class="nav-link" href="{{ route('admin.users.index') }}">SuperUsuarios</a>
@@ -37,21 +37,9 @@
           <li class="nav-item">
             <a class="nav-link" href="{{ route('extensions.index') }}">Extensiones</a>
           </li>
-          <!-- <li class="nav-item">
-            <a class="nav-link" href="{{ route('posts.index') }}">Cartelera</a>
-          </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ route('docs.index') }}">Manuales & Doc.</a>
-          </li> -->
-          <!-- <li class="nav-item">
-            <a class="nav-link" href="{{ route('reminders.index') }}">MSJ Apt</a>
-          </li> -->
-          <!-- <li class="nav-item">
-            <a class="nav-link" href="{{ route('bills.index') }}">Enlaces</a>
+            <a class="nav-link" href="{{ route('pqrs.index') }}">PQRS</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{{ route('petitions.index') }}">Solicitudes</a>
-          </li> -->
           <li class="nav-item">
             <a class="nav-link" href="{{ route('novelties.index') }}">Novedades</a>
           </li>
@@ -59,17 +47,15 @@
             <a class="nav-link" href="{{ route('visits.index') }}">Visitas</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/push">MSJ App</a>
+            <a class="nav-link" href="{{ route('invoices.index') }}" v-pre>
+              Facturas <span>PSE</span> <img src="https://corbanca.com.co/wp-content/uploads/2022/06/pse.png" style="width: 60px;">
+            </a>
           </li>
           <li class="nav-item">
-            <a id="facturasDropdown" class="nav-link" href="{{ route('invoices.index') }}" v-pre>
-              Facturas | <img src="https://corbanca.com.co/wp-content/uploads/2022/06/pse.png" style="width: 100px;">
-              <!-- <span class="caret"></span> -->
+            <a class="nav-link" href="{{ route('whatsapp.index') }}">
+                <span class="mr-2">Mensajes Whatsapp</span>
+                <img src="/img/icons8-whatsapp.svg" style="width: 20px; height: 20px;">
             </a>
-            <div class="dropdown-menu dropdown-menu-right">
-              <a class="dropdown-item" href="{{ route('invoices.index') }}">Mis facturas</a>
-              <a class="dropdown-item" href="/facturas/upload">Facturación residentes</a>
-            </div>
           </li>
         @endif
         @if( Auth::guard('extension')->check() )
@@ -95,15 +81,15 @@
       </ul>
 
       <!-- Right Side Of Navbar -->
-      <ul class="navbar-nav ml-auto">
+      <ul class="navbar-nav">
           <li class="nav-item">
               @if( Auth::check() && Auth::user()->admin_id )
               <a class="nav-link" href="{{ 'https://api.whatsapp.com/send?phone=57' . Auth::user()->admin->phone . '&text=Hola,%20necesito%20asistencia%20relativa%20a%20PHEnLinea' }}">
-                  <img src="/img/icons8-whatsapp.svg" style="width: 20px; height: 20px;"> Contáctanos
+                  Contáctanos
               </a>
               @else
               <a class="nav-link" href="https://api.whatsapp.com/send?phone=573144379170&text=Hola,%20necesito%20asistencia%20relativa%20a%20PHEnLinea">
-                  <img src="/img/icons8-whatsapp.svg" style="width: 20px; height: 20px;"> Contáctanos
+                  Contáctanos
               </a>
               @endif
           </li>

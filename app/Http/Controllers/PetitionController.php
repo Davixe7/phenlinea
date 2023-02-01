@@ -7,14 +7,15 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Petition as PetitionResource;
 use App\Http\Requests\StorePetition;
 use App\Petition;
-use App\Traits\Uploads;
+use App\Admin;
+use App\Jobs\ProcessPQRS;
+use Illuminate\Support\Str;
+use GuzzleHttp\Client;
 
 class PetitionController extends Controller
 {
-    use Uploads;
-    
     public function __construct(){
-      $this->middleware('modules:requests');
+      //$this->middleware('modules:requests');
     }
     /**
      * Display a listing of the resource.
@@ -24,9 +25,17 @@ class PetitionController extends Controller
     public function index(Request $request)
     {
       if( $request->expectsJson() ){
-        return PetitionResource::collection( auth()->user()->petitions()->orderBy('created_at', 'DESC')->with('extension')->get() );
+        return PetitionResource::collection( auth()->user()->petitions()->orderBy('created_at', 'DESC')->get() );
       }
-      return view('admin.petitions');
+      
+      $path = public_path("qr/pqrs_" . Str::slug( auth()->user()->name ) . "_qr.svg");
+        if( !is_file( $path ) ){
+            \QrCode::size(500)->format('svg')->generate( url("unidades/" . Str::slug( auth()->user()->name ) . "/pqrs"), $path);
+         }
+         $qr = ['path' => $path, 'url' => url("qr/pqrs_" . Str::slug( auth()->user()->name ) . "_qr.svg")];
+      
+      $pqrss = auth()->user()->petitions()->orderBy('created_at', 'DESC')->get();
+      return view('admin.petitions', compact('pqrss', 'qr'));
     }
     
     /**
@@ -34,9 +43,9 @@ class PetitionController extends Controller
     *
     * @return \Illuminate\Http\Response
     */
-    public function create()
+    public function create(Admin $admin, Request $request)
     {
-      return view('resident.petitions');
+      return view('public.pqrs.create', ['admin'=>$admin]);
     }
 
     /**
@@ -45,19 +54,69 @@ class PetitionController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StorePetition $request)
-    {
-      $petition = Petition::create([
-        'title'        => $request->title,
-        'description'  => $request->description,
-        'phone'        => $request->phone,
-        'email'        => $request->email,
-        'status'       => 'pending',
-        'pictures'     => $this->upload($request, 'pictures'),
-        'extension_id' => auth()->user()->id
-      ]);
+    public function store(Request $request)
+    {   $request->validate([
+            'description' => 'required'
+        ]);
+        $petition = Petition::create([
+            'admin_id'     => $request->admin_id,
+            'name'         => $request->name,
+            'apto'         => $request->apto,
+            'phone'        => $request->phone,
+            'phone_2'      => $request->phone_2,
+            'description'  => $request->description,
+            'status'       => 'pending'
+        ]);
       
-      return new PetitionResource( $petition );
+        $media = null;
+        
+        if( $request->hasFile('media') ){
+            foreach( $request->media as $file ){
+                $media = $petition->addMedia( $file )->toMediaCollection('attachments');
+            }
+        }
+        
+        $client = new Client([
+          'base_uri' => 'http://asistbot.com/api/',
+          'verify' => false
+        ]);
+        
+        $data = [
+            'id'        => $petition->id,
+            'status'    => $petition->status,
+            'phone'     => $petition->admin->name == 'Jardines Del Eden' ? '584147912134' : '57' . $petition->phone,
+            
+            'adminName'  => $petition->admin->name,
+            'adminPhone' => $petition->admin->phone,
+            'media_url' => $media ? $media->original_url : null
+        ];
+        
+        $client->post('http://161.35.60.29/api/pqrs', ['query' => $data]);
+        
+        return redirect()->route('pqrs.create', ['admin' => Str::slug($petition->admin->name) ])->with(['message'=>'Petición creada con éxito']);
+    }
+    
+    public function markAsRead(Petition $petition){
+        $petition->update(['read_at'=> now(), 'status'=>'read' ]);
+        
+        $client = new Client([
+          'base_uri' => 'http://asistbot.com/api/',
+          'verify' => false
+        ]);
+        
+        $data = [
+            'id'        => $petition->id,
+            'status'    => $petition->status,
+            'phone'     => '57' . $petition->phone,
+            
+            'adminName'  => $petition->admin->name,
+            'adminPhone' => $petition->admin->phone,
+            'media_url'  => null
+        ];
+        
+        $client->post('http://161.35.60.29/api/pqrs', ['query' => $data]);
+        
+        return response()->json(['data'=>$petition]);
     }
 
     /**
@@ -68,7 +127,27 @@ class PetitionController extends Controller
      */
     public function show(Petition $petition)
     {
-      return new PetitionResource( $petition );
+      if( (auth()->user()) && (auth()->user()->nit != null) && ($petition->read_at == null)){
+          $petition->update(['read_at'=> now() ]);
+        $client = new Client([
+          'base_uri' => 'http://asistbot.com/api/',
+          'verify' => false
+        ]);
+        
+        $data = [
+            'id'        => $petition->id,
+            'status'    => $petition->status,
+            'phone'     => '57' . $petition->phone,
+            
+            'adminName'  => $petition->admin->name,
+            'adminPhone' => $petition->admin->phone,
+            'media_url'  => null
+        ];
+        
+        $client->post('http://161.35.60.29/api/pqrs', ['query' => $data]);
+      }
+      $attachments = $petition->getMedia('attachments')->map(function($media){ return $media->original_url; });
+      return view('public.pqrs.show', ['pqrs'=>$petition, 'attachments'=> $attachments]);
     }
 
     /**
@@ -80,17 +159,36 @@ class PetitionController extends Controller
      */
     public function update(Request $request, Petition $petition)
     {
-      $uploadedPictures = $this->upload($request, 'pictures');
       $petition->update([
-        'title'        => $request->title       ?: $petition->title,
+        'name'         => $request->name        ?: $petition->name,
         'description'  => $request->description ?: $petition->description,
-        'phone'        => $request->phone  ?: $petition->phone,
-        'email'        => $request->email  ?: $petition->email,
-        'status'       => $request->status ?: $petition->status,
-        'pictures'     => array_merge($uploadedPictures, $petition->pictures)
+        'phone'        => $request->phone       ?: $petition->phone,
+        'status'       => $request->answer      ? 'answered' : $petition->status,
+        'answer'       => $request->answer,
+        'replied_at'   => $request->answer ? now() : $petition->replied_at
       ]);
       
-      return new PetitionResource( $petition );
+      $client = new Client([
+          'base_uri' => 'http://asistbot.com/api/',
+          'verify' => false
+        ]);
+        
+        $data = [
+            'id'        => $petition->id,
+            'status'    => $petition->status,
+            'phone'     => '57' . $petition->phone,
+            
+            'adminName'  => $petition->admin->name,
+            'adminPhone' => $petition->admin->phone,
+            'media_url'  => null
+        ];
+        
+        $client->post('http://161.35.60.29/api/pqrs', ['query' => $data]);
+        
+      if( $request->expectsJson() ){
+          return response()->json(['data'=>$petition]);
+      }
+      return redirect()->route('pqrs.show', ['petition'=>$petition])->with('Peticion actualizada con éxito');
     }
     
     public function deletePicture(Request $request, Petition $petition){
@@ -112,5 +210,20 @@ class PetitionController extends Controller
     {
       $petition->delete();
       return response()->json(['data'=>"Petition $petition->id deleted successfuly"]);
+    }
+    
+    public function qr(){
+        $adminId = auth()->id();
+        $path = public_path("qr/pqrs_" . $adminId . "_qr.svg");
+        
+        if( !is_file( $path ) ){
+           \QrCode::size(500)->format('svg')->generate( url("unidades/" . auth()->user()->slug . "/pqrs"), $path);
+         }
+         $qr = [
+           'path' => $path,
+           'url'  => url("qr/pqrs_" . $adminId . "_qr.svg")
+        ];
+        ob_end_clean();
+        return response()->download($qr['path'], 'qr_' . now() .  '.svg', ['Content-Type'=>'image/svg+xml']);
     }
 }

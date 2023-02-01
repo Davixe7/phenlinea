@@ -12,29 +12,39 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\SmsResource;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use GuzzleHttp\Client;
 
 class SmsController extends Controller
 {
   public function notifyDelivery(Request $request){
     $extension = Auth::user()->extensions()->name( $request->name )->firstOrFail();
-    //if( $request->expectsJson() ){
-    //    $extension = Auth::user()->extensions()->findOrFail( $request->name );
-    //}else{
-    //    $extension = Auth::user()->extensions()->name( $request->name )->firstOrFail();
-    //}
+    
     $firstPhone1  = ( $extension->phone_1 ) ? $extension->phone_1[0] : null;
     $firstPhone2  = ( $extension->phone_2 ) ? $extension->phone_2[0] : null;
       
     if( $firstPhone1 != '3' && $firstPhone2 != '3' ){
         return response()->json(['data'=>'La extensión no tiene números de teléfono validos para notificación'],400);
-        //abort(400, 'La extensión no tiene números de teléfono validos para notificación');
     }
     
+    $data = [
+        'extension' => $extension->name,
+        'admin'     => $extension->admin->name,
+        'phone'     => null
+    ];
+    
+    $client = new Client([
+      'base_uri' => 'http://asistbot.com/api/',
+      'verify' => false
+    ]);
+    
+    
     if( $extension->phone_1 && $extension->phone_1[0] == '3'){
-        ProcessDeliveries::dispatch($extension, "57" . $extension->phone_1);
+        $data['phone'] = '57' . $extension->phone_1;
+        $response      = $client->post('http://161.35.60.29/api/hello', ['query' => $data]);
     }
     if( $extension->phone_2 && $extension->phone_2[0] == '3'){
-        ProcessDeliveries::dispatch($extension, "57" . $extension->phone_2);
+        $data['phone'] = '57' . $extension->phone_2;
+        $response      = $client->post('http://161.35.60.29/api/hello', ['query' => $data]);
     }
     
     $this->storeNotification($request, $extension->id, 'delivery');

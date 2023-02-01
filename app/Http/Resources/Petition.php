@@ -14,6 +14,8 @@ class Petition extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        $data = parent::toArray($request);
+        $data['attachments'] = $this->getMedia('attachments')->map( function( $media ){ return $media->original_url; } );
+        return $data;
     }
 }

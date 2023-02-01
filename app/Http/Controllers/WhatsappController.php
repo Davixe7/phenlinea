@@ -64,7 +64,10 @@ class WhatsappController extends Controller
   {
     if (auth()->user()->whatsapp_status == 'online') {
       $extensions = auth()->user()->extensions()->orderBy('name')->get();
-      $history    = auth()->user()->whatsapp_messages_batches()->orderBy('created_at', 'DESC')->get();
+      
+      $response = $this->client->get('http://161.35.60.29/api/whatsapp-batches/?user_id=' . auth()->id());
+      $history  = json_decode($response->getBody())->data;
+      
       return view('whatsapp', compact('extensions', 'history'));
     }
     
@@ -147,18 +150,24 @@ class WhatsappController extends Controller
     }
 
     if( !$phones || !count($phones) ){ return; }
-
-    $batch = WhatsappMessagesBatch::create([
-      'admin_id'          => auth()->id(),
-      'message'           => $request->message,
-      'receivers_numbers' => implode(',', $phones)
-    ]);
+    
+    $path = '';
     
     if( $file = $request->file('attachment') ){
         $fileName = "{$file->getClientOriginalName()}" . now() . ".{$file->extension()}";
         $path = $file->storeAs('whatsapp_attachments', $fileName);
-        $batch->addMedia( storage_path( "app/{$path}" ) )->toMediaCollection('attachment');
     }
+    
+    $response = $this->client->post('http://161.35.60.29/api/whatsapp-batches', ['query' => [
+        'admin_id'    => auth()->id(),
+        'admin_name'  => auth()->user()->name,
+        'admin_phone' => auth()->user()->phone,
+        'whatsapp_instance_id'  => auth()->user()->whatsapp_instance_id,
+        'message'               => $request->message,
+        'receivers' => implode(',', $phones)
+    ],
+        'multipart' => $path ? [['name'=>'attachment', 'contents'=>fopen(storage_path('app/' . $path), 'r')]] : []
+    ]);
 
     return redirect()->route('whatsapp.index')->with(['message'=>'Mensaje enviado exitosamente']);
   }

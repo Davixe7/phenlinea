@@ -77,3 +77,5 @@ Route::get('extensions/byphone', 'API\ExtensionController@byphone');
 
 Route::put('extensions/{extension}/resetpassword', 'API\ExtensionController@resetPassword');
 Route::post('extensions/{extension}/sendpassword', 'API\ExtensionController@sendPasswordSms');
+
+Route::post('/pqrs', 'PetitionController@store');

@@ -16,7 +16,9 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
   //protected $appends = ['extensions_count'];
 
   protected $fillable = [
-    'name', 'email', 'password', 'contact_email', 'nit', 'sms_enabled',
+    'name',
+    'slug',
+    'email', 'password', 'contact_email', 'nit', 'sms_enabled',
     'phone', 'phone_2', 'address', 'referer_id','status', 'picture',
      'phone_verification', 'whatsapp_instance_id', 'whatsapp_status'
   ];
@@ -86,7 +88,7 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
   }
 
   public function petitions(){
-    return $this->hasManyThrough('App\Petition', 'App\Extension');
+    return $this->hasMany('App\Petition');
   }
 
   public function referer(){

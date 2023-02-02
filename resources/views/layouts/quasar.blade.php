@@ -15,7 +15,7 @@
 
         <q-space></q-space>
 
-        <q-btn flat stretch href="{{ route('census.index') }}" label="Extensiones">
+        <q-btn flat stretch href="/extensions" label="Extensiones">
         </q-btn>
         <q-separator dark vertical></q-separator>
 

@@ -27,6 +27,6 @@ class Novelty extends Model implements HasMedia
   }
 
   public function getPicturesUrlAttribute(){
-    $this->getMedia('pictures')->pluck('url')->toArray()
+    $this->getMedia('pictures')->pluck('url')->toArray();
   }
 }

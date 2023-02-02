@@ -33,6 +33,10 @@ class ExtensionController extends Controller
     public function edit(Extension $extension){
       return view('admin.extensions.edit', ['extension_id'=>$extension->id]);
     }
+    
+    public function show(Extension $extension){
+        return new CensusResource( $extension );
+    }
 
     /**
      * Store a newly created resource in storage.

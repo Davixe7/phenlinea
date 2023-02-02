@@ -15,13 +15,13 @@ class WhatsappController
   public function sendDelivery(Extension $extension, Request $request)
   {
     if (!$request->name) {
-      abort('422', 'El campo extension es obligatorio');
+      //abort('422', 'El campo extension es obligatorio');
     }
 
     $extension = auth()->user()->extensions()->whereName($request->name)->firstOrFail();
 
     if (!$extension || (!$extension->admin_id == auth()->user()->admin_id)) {
-      abort('404', 'No tiene una extensión asociada con el número especificado');
+      //abort('404', 'No tiene una extensión asociada con el número especificado');
     }
 
     $media = null;

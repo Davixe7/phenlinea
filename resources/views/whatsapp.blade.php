@@ -212,6 +212,7 @@
             </ul>
           </div>
         </div>
+      </div>
         <div class="col-lg-6">
           <div class="table-responsive mb-4">
             <textarea id="message" placeholder="Escribe un mensaje" rows="10" name="message" class="form-control mb-3" required></textarea>
@@ -259,7 +260,7 @@
                     {{ count( explode(',', $batch->receivers_numbers) ) }}
                   </td>
                   <td>
-                    {{ Carbon\Carbon::parse($batch->created_at)->format('Y-m-d H:i:s') }}
+                    {{ Carbon\Carbon::parse($batch->created_at)->setTimeZone('GMT-5')->format('Y-m-d H:i:s') }}
                   </td>
                 </tr>
                 @endforeach

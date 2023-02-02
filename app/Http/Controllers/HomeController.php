@@ -28,9 +28,9 @@ class HomeController extends Controller
       $user   = auth()->user();
       $driver = 'web';
       
-      if( $user->admin_id ){
+      if( $user && $user->admin_id ){
         $driver = 'extension';
-      }elseif( $user->nit ){
+      }elseif( $user && $user->nit ){
         $driver = 'admin';
       }
       

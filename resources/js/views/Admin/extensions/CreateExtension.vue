@@ -257,14 +257,14 @@
                 </div>
             </div>
             
-            <div class="text-right">
-              <button class="btn btn-secondary w-100 text-center" dark v-if="!editing" @click="storeCensus()" :loading="loading">
+            <div class="d-flex justify-content-end">
+              <button class="btn btn-secondary w-100 justify-content-center" dark v-if="!editing" @click="storeCensus()" :loading="loading">
                   Registrar Extensión
               </button>
               <a v-if="editing" href="/extensions" class="btn btn-link">
                   Terminar
               </a>
-              <button dark v-if="editing" class="btn btn-secondary w-100 text-center" @click="updateCensus()" :loading="loading">
+              <button dark v-if="editing" class="btn btn-secondary justify-content-center text-center" @click="updateCensus()" :loading="loading">
                   Actualizar
               </button>
             </div>
@@ -379,10 +379,10 @@
         if( this.$refs.storeCensusForm.reportValidity() ){
           this.loading = true
           let data = this.loadData()
-          axios.post('/census', data).then(response=>{
+          axios.post('/extensions', data).then(response=>{
             this.extension = response.data.data
             this.$toasted.success('Datos guardados exitosamente')
-            window.location.href = `/census/${this.extension.id}/edit`
+            window.location.href = `/extensions/${this.extension.id}/edit`
           },error=>{
             this.errors = error.response.data.errors
             this.$toasted.error('Error al guardar el censo')
@@ -395,7 +395,7 @@
         if( this.$refs.storeCensusForm.reportValidity() ){
           let data = this.loadData()
           data._method = 'PUT'
-          axios.post('/census/'+this.extensionId, data).then(response=>{
+          axios.post('/extensions/'+this.extensionId, data).then(response=>{
             this.extension = response.data.data
             this.$toasted.success('Datos guardados exitosamente')
           },error=>{
@@ -440,7 +440,7 @@
         return data
       },
       fetchCensus(){
-        axios.get('/census/'+this.extensionId).then(response=>{
+        axios.get('/extensions/'+this.extensionId).then(response=>{
           this.residents = response.data.data.residents
           this.extension = response.data.data
         },error=>{
@@ -484,7 +484,6 @@
     padding: 15px
     border: 1px solid #dee2e6
     border-radius: 7px
-    height: 100%
     
 .form-section > h4
   color: #0a47e4 !important

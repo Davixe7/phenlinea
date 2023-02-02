@@ -122,7 +122,7 @@
       </li>
       @else
         <li class="nav-item">
-          <a class="nav-link" href="{{ route('admins.getLogin') }}">Ingresar</a>
+          <a class="nav-link" href="{{ route('admins.login') }}">Ingresar</a>
         </li>
       @endif
     </ul>

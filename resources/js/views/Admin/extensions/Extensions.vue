@@ -39,7 +39,7 @@
             <td>{{ ext.adults }}</td>
             <td>{{ ext.minors }}</td>
             <td>{{ ext.pets_count }}</td>
-            <td>{{ ext.vehicles.length }}</td>
+            <td>{{ ext.vehicles ? ext.vehicles.length : 0 }}</td>
             <td>{{ (ext.has_deposit) ? 'SÍ' : 'NO' }}</td>
             <td>{{ ext.owner_phone }}</td>
             <td>{{ ext.phone_1 }}</td>

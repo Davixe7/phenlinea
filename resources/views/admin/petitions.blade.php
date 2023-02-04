@@ -129,7 +129,7 @@
 </div>
 @endsection
 
-@section('script')
+@section('scripts')
 <script src="https://unpkg.com/vue-easy-lightbox@next/dist/vue-easy-lightbox.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <style>

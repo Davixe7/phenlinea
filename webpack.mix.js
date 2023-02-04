@@ -13,14 +13,15 @@ const mix = require('laravel-mix');
 let publicPath = process.env.MIX_PUBLIC_PATH ? process.env.MIX_PUBLIC_PATH : './public/'
 mix.setPublicPath( publicPath )
 
-const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
-mix.webpackConfig({
-  plugins: [
-    new VuetifyLoaderPlugin()
-  ]
-})
+//const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
+// mix.webpackConfig({
+//   plugins: [
+//     new VuetifyLoaderPlugin()
+//   ]
+// })
 
 mix.js('resources/js/app.js', 'js')
 .js('resources/js/super.js', 'js')
+.vue()
 // .version()
 .sass('resources/sass/app.scss', 'css');

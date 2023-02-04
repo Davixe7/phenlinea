@@ -41,9 +41,6 @@
             <a class="nav-link" href="{{ route('pqrs.index') }}">PQRS</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ route('novelties.index') }}">Novedades</a>
-          </li>
-          <li class="nav-item">
             <a class="nav-link" href="{{ route('visits.index') }}">Visitas</a>
           </li>
           <li class="nav-item">

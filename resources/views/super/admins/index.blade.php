@@ -1,6 +1,6 @@
 @extends('layouts.super')
 @section('content')
 <div class="container">
-  <admins></admins>
+  <admins :admins="{{ json_encode( $admins ) }}"></admins>
 </div>
 @endsection

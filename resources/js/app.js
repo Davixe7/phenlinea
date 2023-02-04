@@ -6,13 +6,7 @@
 
 require('./bootstrap')
 
-window.Vue = require('vue')
-import Loading from 'vue-loading-overlay'
-import 'vue-loading-overlay/dist/vue-loading.css'
-import Toasted from 'vue-toasted'
-
-Vue.use(Toasted)
-Vue.use(Loading)
+import Vue from 'vue'
 
 Vue.component('pagination', require('laravel-vue-pagination'))
 

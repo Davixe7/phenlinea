@@ -12,6 +12,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ExtensionsExport;
 use App\Http\Controllers\Controller;
 use App\Traits\Uploads;
+use Illuminate\Support\Str
 
 class AdminController extends Controller
 {
@@ -23,7 +24,8 @@ class AdminController extends Controller
 
   public function index()
   {
-    return view('super.admins.index');
+    $admins = Admin::orderBy('name', 'asc')->get();
+    return view('super.admins.index', compact('admins'));
   }
 
   public function list()
@@ -51,6 +53,7 @@ class AdminController extends Controller
 
       'email'      => $request->email,
       'password'   => bcrypt( $request->password ),
+      'slug'       => Str::slug($request->name),
       
       'picture'    => $profile_picture ? $profile_picture[0]['url'] : null
     ]);
@@ -87,7 +90,8 @@ class AdminController extends Controller
       'password' => ($request->password) ? bcrypt($request->password) : $admin->password,
       'contact_email' => ($request->contact_email) ?: $admin->contact_email,
       'status'        => $request->status,
-      'picture'       => $profile_picture ?: $admin->picture
+      'picture'       => $profile_picture ?: $admin->picture,
+      'slug'          => Str::slug($request->name) ?: $admin->slug
     ]);
 
     return new AdminResource( $admin );
@@ -121,3 +125,4 @@ class AdminController extends Controller
     return redirect()->route('admin.admins.edit-permissions', ['admin'=>$admin->id]);
   }
 }
+

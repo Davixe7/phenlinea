@@ -11,7 +11,6 @@ class Porteria extends Authenticatable implements JWTSubject
 
   protected $fillable = ['name', 'email', 'password', 'admin_id'];
   protected $hidden   = ['password', 'created_at', 'updated_at'];
-  protected $appends  = ['extensions_count'];
 
   // Rest omitted for brevity
 

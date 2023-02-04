@@ -12,17 +12,10 @@ use GuzzleHttp\Client;
 class WhatsappController
 {
 
-  public function sendDelivery(Extension $extension, Request $request)
+  public function sendDelivery($name = null, Request $request)
   {
-    if (!$request->name) {
-      //abort('422', 'El campo extension es obligatorio');
-    }
-
+    $request->validate(['name:required']);
     $extension = auth()->user()->extensions()->whereName($request->name)->firstOrFail();
-
-    if (!$extension || (!$extension->admin_id == auth()->user()->admin_id)) {
-      //abort('404', 'No tiene una extensión asociada con el número especificado');
-    }
 
     $media = null;
 

@@ -8,6 +8,7 @@
   <link rel="dns-prefetch" href="//fonts.gstatic.com">
   <link href="{{ mix('css/app.css') }}" rel="stylesheet">
   <link href="/img/favicon.png" rel="icon">
+  
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,600,700" rel="stylesheet">
   @yield('styles')
@@ -16,17 +17,13 @@
 <body>
   <main>
     <div id="app" data-app>
-      <v-app>
-        <v-main>
-          @include('layouts.navbar')
+      @include('layouts.navbar')
           @if( session('message') )
           <div class="alert text-center alert-{{ session('message_type') ?: 'info' }}">
             {{ session('message') }}
           </div>
           @endif
           @yield('content')
-        </v-main>
-      </v-app>
     </div>
   </main>
   <script src="{{ mix('js/super.js') }}" defer></script>

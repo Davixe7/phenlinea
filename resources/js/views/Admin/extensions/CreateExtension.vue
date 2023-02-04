@@ -456,64 +456,73 @@
   }
 </script>
     
-<style lang="sass">
-  ul.vehicle-list
-    padding: 0 !important
-    margin-bottom: 15px
-    display: flex
-    flex-flow: row wrap
-  .vehicle-list li
-    display: flex
-    justify-content: space-between
-    align-items: center
-    flex: 1 0 100%
-    padding: 5px 15px !important
-    border-radius: 5px
-    background: #efefef
-    input
-      max-width: 120px
-      margin-left: 10px
-      padding: 5px 10px
-      border-radius: 5px
-      background: #fff
-    span
-      cursor: pointer
-      font-weight: 600
-      
-.form-section
-    padding: 15px
-    border: 1px solid #dee2e6
-    border-radius: 7px
-    
-.form-section > h4
-  color: #0a47e4 !important
-  margin: 0 0 24px
-  font-size: 1.2em
+<style lang="scss">
+ul.vehicle-list {
+  padding: 0 !important;
+  margin-bottom: 15px;
+  display: flex;
+  flex-flow: row wrap;
 
-.color-card
-  color: #fff
-  background: linear-gradient(45deg, #3c00f5, rgb(66, 72, 150)) !important
-.color-card .form-group
-  display: flex
-  margin-bottom: 20px
-.color-card h4
-  color: #fff !important
-.color-card label
-  flex: 1 0 74px
-    
-.dropdown-toggler i.material-icons
-  font-size: 1.5em
-  margin-left: 5px
-  color: #9f9f9f
-.text-red
-  color: red !important
-  
-h4
-  color: #fff
-  padding: 0
-  background: none
-  box-shadow: none
-  
-.plates-input
-    text-transform: uppercase
+  .vehicle-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1 0 100%;
+    padding: 5px 15px !important;
+    border-radius: 5px;
+    background: #efefef;
+    input {
+      max-width: 120px;
+      margin-left: 10px;
+      padding: 5px 10px;
+      border-radius: 5px;
+      background: #fff;
+    }
+    span {
+      cursor: pointer;
+      font-weight: 600;
+    }
+  }
+}
+.form-section {
+  padding: 15px;
+  border: 1px solid #dee2e6;
+  border-radius: 7px;
+}
+.form-section > h4 {
+  color: #0a47e4 !important;
+  margin: 0 0 24px;
+  font-size: 1.2em;
+}
+.color-card {
+  color: #fff;
+  background: linear-gradient(45deg, #3c00f5, rgb(66, 72, 150)) !important;
+  .form-group {
+    display: flex;
+    margin-bottom: 20px;
+  }
+  h4 {
+    color: #fff !important;
+  }
+  label {
+    flex: 1 0 74px;
+  }
+}
+.dropdown-toggler i.material-icons {
+  font-size: 1.5em;
+  margin-left: 5px;
+  color: #9f9f9f;
+}
+.text-red {
+  color: red !important;
+}
+h4 {
+  color: #fff;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+}
+.plates-input {
+  text-transform: uppercase;
+}
 </style>

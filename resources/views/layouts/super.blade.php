@@ -7,10 +7,11 @@
   <title>{{ config('app.name', 'PHenlinea') }}</title>
   <link rel="dns-prefetch" href="//fonts.gstatic.com">
   <link href="{{ mix('css/app.css') }}" rel="stylesheet">
-  <link href="/img/favicon.png" rel="icon">
-  
+  <link href="/img/favicon.png" rel="icon">  
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,600,700" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
   @yield('styles')
 </head>
 

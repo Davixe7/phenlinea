@@ -32,17 +32,30 @@ class WhatsappController
     $data = [
       'extension' => $extension->name,
       'admin'     => $extension->admin->name,
-      'phone'     => $request->name == '1000' ? '584147912134' : '57' . $extension->phone_1,
       'media_url' => $media ? $media->original_url : ''
     ];
 
-    $response = $client->post('http://161.35.60.29/api/hello', ['query' => $data]);
+    $phonesCount = 2;
+    $validPhones = [];
 
-    if ($extension->phone_2) {
-      $data['phone'] = '57' . $extension->phone_2;
-      $response = $client->post('http://161.35.60.29/api/hello', ['query' => $data]);
+    if( $extension->name == '1000' ){
+      $data['phone'] = '584147912134';
+      $client->post('http://161.35.60.29/api/hello', ['query' => $data]);
+      return response()->json(['data' => 'Message sent successfully']);
+    }
+
+    for($i = 0; $i < $phonesCount; $i++){
+      $phone_first_number = $extension["phone_{$i}"][0];
+      if($phone_first_number != '3'){ continue; }
+      $validPhones[ '57' . $extension["phone_{$i}"] ];
+    }
+
+    foreach( $validPhones as $phone ){
+      $data['phone'] = $phone;
+      $client->post('http://161.35.60.29/api/hello', ['query' => $data]);
     }
 
     return response()->json(['data' => 'Message sent successfully']);
   }
 }
+

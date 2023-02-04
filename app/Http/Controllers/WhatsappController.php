@@ -163,6 +163,7 @@ class WhatsappController extends Controller
     if ($file = $request->file('attachment')) {
       $fileName = "{$file->getClientOriginalName()}" . now() . ".{$file->extension()}";
       $path = $file->storeAs('whatsapp_attachments', $fileName);
+      Storage::append('batches.log', $path);
     }
 
     $response = $this->client->post('http://161.35.60.29/api/whatsapp-batches', [

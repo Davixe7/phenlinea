@@ -12,11 +12,8 @@
             </div>
           </div>
           <div class="card-body p-0" style="max-height: calc(100vh - 200px); overflow: auto;">
-            
-            <input
-              id="extensionsFilter"
-              v-model="search"
-              placeholder="Buscar...">
+
+            <input id="extensionsFilter" v-model="search" placeholder="Buscar...">
 
             <ul class="list-group p-0">
               <li class="list-group-item">
@@ -29,15 +26,11 @@
                 <label for="checkbox-owners_only">Solo propietarios</label>
               </li>
               <li v-for="extension in results" class="list-group-item">
-                <input
-                  v-model="receivers"
-                  :value="extension.id"
-                  type="checkbox"
-                  id="`checkbox-${extension.id}`"
+                <input v-model="receivers" :value="extension.id" type="checkbox" id="`checkbox-${extension.id}`"
                   class="mr-3 extension-check">
-                  <label for="`checkbox-${extension.id}`">
-                    {{ extension.name }}
-                  </label>
+                <label for="`checkbox-${extension.id}`">
+                  {{ extension.name }}
+                </label>
               </li>
             </ul>
           </div>
@@ -59,7 +52,7 @@
               <button type="button" class="btn-round btn-attachment mr-3" @click="openFileDialog()">
               </button>
               <div class="attachmentDetails">
-                  {{ attachment ? attachment.name : 'ningún archivo seleccionado' }}
+                {{ attachment? attachment.name : 'ningún archivo seleccionado' }}
               </div>
               <button type="button" class="btn btn-primary ms-auto" @click="send()">
                 Enviar
@@ -90,7 +83,7 @@
                   {{ batch.receivers_numbers.split(',').length }}
                 </td>
                 <td>
-                  {{ new Date(batch.created_at).toLocaleString('es-CO', {timezone: 'America/Colombia'}) }}
+                  {{ new Date(batch.created_at).toLocaleString('es-CO', { timezone: 'America/Colombia' }) }}
                 </td>
               </tr>
             </tbody>
@@ -144,53 +137,54 @@ import { computed, ref } from 'vue';
 const props = defineProps(['extensions', 'logoutRoute', 'history', 'whatsappInstanceId'])
 const attachmentInput = ref(null)
 const ownersOnly = ref(false)
-const search     = ref('')
-const message    = ref('')
-const receivers  = ref([])
-const attachment  = ref(null)
+const search = ref('')
+const message = ref('')
+const receivers = ref([])
+const attachment = ref(null)
 
 const results = computed(() => {
   let results = [...props.extensions]
-  if( ownersOnly.value ){ results = results.filter( extension => (extension.owner_phone ? true : false) ) }
+  if (ownersOnly.value) { results = results.filter(extension => (extension.owner_phone ? true : false)) }
   if (search.value == '') return results
   let searchText = search.value.toLowerCase().trim()
   return props.extensions.filter(extension => extension.name.toLowerCase().trim().includes(searchText))
 })
 
-function openFileDialog(){
+function openFileDialog() {
   attachmentInput.value.click()
 }
 
-function updateAttachment(){
-    if( attachmentInput.value.files.length ){
-        attachment.value = attachmentInput.value.files[0]
-        return
-    }
-    attachment.value = null
+function updateAttachment() {
+  if (attachmentInput.value.files.length) {
+    attachment.value = attachmentInput.value.files[0]
+    return
+  }
+  attachment.value = null
 }
 
-function send(){
-  if( !receivers.value.length ){ alert('Debe incluir al menos un destinatario'); return; }
-  if( !message.value ){ alert('Debe incluir un mensaje'); return; }
-  
+function send() {
+  if (!receivers.value.length) { alert('Debe incluir al menos un destinatario'); return; }
+  if (!message.value) { alert('Debe incluir un mensaje'); return; }
+
   let data = new FormData()
   data.append('message', message.value)
-  data.append('receivers[]', receivers.value)
-  if( attachment.value ){
+  receivers.value.forEach(receiver => data.append('receivers[]', receiver))
+
+  if (attachment.value) {
     data.append('attachment', attachment.value)
   }
 
   axios.post('/whatsapp/send', data)
-  .then(response => {
-    message.value = ''
-    receivers.value = []
-    attachmentInput.value.value = ''
-    alert('Mensaje enviado exitosamente')
-  })
-  .catch(error => console.log(error))
+    .then(response => {
+      message.value = ''
+      receivers.value = []
+      attachmentInput.value.value = ''
+      alert('Mensaje enviado exitosamente')
+    })
+    .catch(error => console.log(error))
 }
 
-function selectAll(){
+function selectAll() {
   receivers.value = [...props.extensions].map(extension => extension.id)
 }
 </script>

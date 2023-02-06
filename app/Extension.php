@@ -48,9 +48,7 @@ class Extension extends Authenticatable implements HasMedia
   ];
   
   protected $appends = [
-    'parking_numbers_str',
-    'adults',
-    'minors'
+    'parking_numbers_str'
   ];
 
   public function resetPassword(){

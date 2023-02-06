@@ -22,8 +22,6 @@
       <table class="table">
         <thead>
           <th>Apto.</th>
-          <th>Adultos</th>
-          <th>Menores</th>
           <th>Mascotas</th>
           <th>Vehículos</th>
           <th>Útil</th>
@@ -35,8 +33,6 @@
         <tbody>
           <tr v-for="extension in results" :key="extension.id">
             <td>{{ extension.name }}</td>
-            <td>{{ extension.adults }}</td>
-            <td>{{ extension.minors }}</td>
             <td>{{ extension.pets_count }}</td>
             <td>{{ extension.vehicles ? extension.vehicles.length : 0 }}</td>
             <td>{{ (extension.has_deposit) ? 'SÍ' : 'NO' }}</td>

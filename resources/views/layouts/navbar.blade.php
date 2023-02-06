@@ -30,11 +30,12 @@
       </li>
       @if( Auth::check() )
       <li>
+       <span class="text-white d-inline-block pe-3">
+           {{ explode("@", Auth::user()->email)[0] }}
+       </span>
         <a href="{{ route('logout') }}">
           <span>
-            {{ explode("@", Auth::user()->email)[0] }}
-          </span>
-          <span class="caret">
+            Salir
           </span>
         </a>
       </li>

@@ -149,7 +149,7 @@ class WhatsappController extends Controller
     } else {
       $phones_1 = $extensions->pluck('phone_1');
       $phones_2 = $extensions->pluck('phone_2');
-      $phones = $phones_2->merge($phones_1)->toArray();
+      $phones = array_filter( $phones_2->merge($phones_1)->toArray() );
     }
 
     if (!$phones || !count($phones)) {

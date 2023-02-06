@@ -32,7 +32,7 @@ class PetitionController extends Controller
     $qr = ['path' => $path, 'url' => url("qr/pqrs_" . Str::slug(auth()->user()->name) . "_qr.svg")];
 
     $pqrss = auth()->user()->petitions()->orderBy('created_at', 'DESC')->get();
-    return view('admin.petitions', compact('pqrss', 'qr'));
+    return view('admin.petitions.index', compact('pqrss', 'qr'));
   }
 
   /**

@@ -1,10 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-use App\Http\Resources\VisitPorteria;
-use App\Extension;
-use GuzzleHttp\Client;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -15,6 +10,8 @@ use GuzzleHttp\Client;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::get('logout', function(){ auth()->logout(); return redirect('/'); });
 
 Route::get('pqrs/qr', 'PetitionController@qr')->name('pqrs.qr')->middleware('auth:admin');
 Route::get('pqrs', 'PetitionController@index')->name('pqrs.index')->middleware('auth:admin');

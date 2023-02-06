@@ -7,6 +7,7 @@ use App\Extension;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class WhatsappController extends Controller
 {
@@ -158,7 +159,8 @@ class WhatsappController extends Controller
     $path = '';
 
     if ($file = $request->file('attachment')) {
-      $fileName = "{$file->getClientOriginalName()}" . now() . ".{$file->extension()}";
+      $clearFileName = Str::slug( pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) );
+      $fileName = $clearFileName . time() . "." . $file->extension();
       $path = $file->storeAs('whatsapp_attachments', $fileName);
       Storage::append('batches.log', $path);
     }
@@ -174,7 +176,10 @@ class WhatsappController extends Controller
       ],
       'multipart' => $path ? [['name' => 'attachment', 'contents' => fopen(storage_path('app/' . $path), 'r')]] : []
     ]);
-
+    
+    if( $request->expectsJson() ){
+        return response()->json(['data'=>'Message sent successfully']);
+    }
     return redirect()->route('whatsapp.index')->with(['message' => 'Mensaje enviado exitosamente']);
   }
 }

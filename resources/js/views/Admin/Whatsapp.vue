@@ -55,10 +55,12 @@
               Adjuntar solo Imagenes Y PDF
             </div>
             <div class="d-flex align-items-center">
-              <input type="file" class="form-control d-none" ref="attachmentInput">
+              <input type="file" class="form-control d-none" ref="attachmentInput" @change="updateAttachment">
               <button type="button" class="btn-round btn-attachment mr-3" @click="openFileDialog()">
               </button>
-              <div class="attachmentDetails"></div>
+              <div class="attachmentDetails">
+                  {{ attachment ? attachment.name : 'ningún archivo seleccionado' }}
+              </div>
               <button type="button" class="btn btn-primary ms-auto" @click="send()">
                 Enviar
               </button>
@@ -88,7 +90,7 @@
                   {{ batch.receivers_numbers.split(',').length }}
                 </td>
                 <td>
-                  {{ batch.created_at }}
+                  {{ new Date(batch.created_at).toLocaleString('es-CO', {timezone: 'America/Colombia'}) }}
                 </td>
               </tr>
             </tbody>
@@ -145,6 +147,7 @@ const ownersOnly = ref(false)
 const search     = ref('')
 const message    = ref('')
 const receivers  = ref([])
+const attachment  = ref(null)
 
 const results = computed(() => {
   let results = [...props.extensions]
@@ -156,6 +159,35 @@ const results = computed(() => {
 
 function openFileDialog(){
   attachmentInput.value.click()
+}
+
+function updateAttachment(){
+    if( attachmentInput.value.files.length ){
+        attachment.value = attachmentInput.value.files[0]
+        return
+    }
+    attachment.value = null
+}
+
+function send(){
+  if( !receivers.value.length ){ alert('Debe incluir al menos un destinatario'); return; }
+  if( !message.value ){ alert('Debe incluir un mensaje'); return; }
+  
+  let data = new FormData()
+  data.append('message', message.value)
+  data.append('receivers[]', receivers.value)
+  if( attachment.value ){
+    data.append('attachment', attachment.value)
+  }
+
+  axios.post('/whatsapp/send', data)
+  .then(response => {
+    message.value = ''
+    receivers.value = []
+    attachmentInput.value.value = ''
+    alert('Mensaje enviado exitosamente')
+  })
+  .catch(error => console.log(error))
 }
 
 function selectAll(){

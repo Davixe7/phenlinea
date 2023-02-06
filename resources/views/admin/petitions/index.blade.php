@@ -78,6 +78,14 @@
           </div>
           <div class="flex justify-between">
             <div class="text-medium">
+              Apto
+            </div>
+            <div>
+              @{{ currentPqrs.apto }}
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div class="text-medium">
               Teléfono
             </div>
             <div>

@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 Route::middleware('auth:api-porteria')->group(function () {
   Route::post('extensions/{name?}/delivery', 'API\WhatsappController@sendDelivery');
   Route::post('extensions/delivery', 'API\WhatsappController@sendDelivery');
+  Route::post('notifyDelivery', 'API\WhatsappController@sendDelivery');
   Route::post('whatsapp', 'WhatsappController@logHook')->name('whatsapp.hook');
 });
 

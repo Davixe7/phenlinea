@@ -109,6 +109,8 @@ Route::name('admin.')->prefix('admin')->middleware('auth:web')->group(function (
 
 //Main application routes
 Route::middleware(['auth:admin', 'phoneverified', 'suspended'])->group(function () {
+  Route::get('extensions/export', 'ExportController@exportCensus');
+  Route::resource('novelties', 'NoveltyController');
   Route::resource('extensions', 'ExtensionController');
   Route::resource('residents', 'ResidentController');
   Route::get('residents/list', 'ResidentController@list')->name('residents.list');
@@ -131,7 +133,6 @@ Route::middleware(['auth:admin', 'phoneverified', 'suspended'])->group(function 
 
   Route::get('extensions/import', 'ExtensionController@getImport')->name('extensions.getImport')->middleware('can:import,App\Extension');
   Route::post('extensions/import', 'ExtensionController@import')->name('extensions.import');
-  Route::get('admins/{admin}/extensions/export', 'ExportController@exportCensus');
 });
 
 //Resident & User routes

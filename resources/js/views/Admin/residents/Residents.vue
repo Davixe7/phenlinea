@@ -20,7 +20,7 @@
               <input class="form-check-input" type="checkbox" id="inlineCheckbox2" v-model="is_resident" name="tipo de residente">
               <label class="form-check-label" for="inlineCheckbox2">Residente</label>
             </div>
-            <div class="form-check form-check-inline">
+            <div class="form-check form-check-inline me-0">
               <input class="form-check-input" type="checkbox" id="is_authorized" v-model="is_authorized">
               <label class="form-check-label" for="is_authorized">Autorizado</label>
             </div>
@@ -148,7 +148,6 @@
         is_authorized: false,
         disability: false,
         residents: [],
-        loader: {},
         resident: null,
         card: ''
       }
@@ -189,7 +188,6 @@
             data['_method'] = 'PUT'
           }
           
-          this.loader = this.$loading.show({container:this.$refs.storeResidentForm})
           axios.post(url, data).then(response=>{
             if( this.resident && this.resident.id ){
               console.log("replacing");
@@ -202,8 +200,6 @@
           },error=>{
             console.log( error.response );
             this.$toasted.error('Error al registrar al residente')
-          }).then(()=>{
-            this.loader.hide()
           })
         }
       },
@@ -242,3 +238,4 @@
     color: #0075ff;
   }
   </style>
+

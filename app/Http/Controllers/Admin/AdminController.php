@@ -12,7 +12,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ExtensionsExport;
 use App\Http\Controllers\Controller;
 use App\Traits\Uploads;
-use Illuminate\Support\Str
+use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {

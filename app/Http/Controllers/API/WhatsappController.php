@@ -45,17 +45,22 @@ class WhatsappController
     }
 
     for($i = 0; $i < $phonesCount; $i++){
-      $phone_first_number = $extension["phone_{$i}"][0];
-      if($phone_first_number != '3'){ continue; }
-      $validPhones[ '57' . $extension["phone_{$i}"] ];
+      $index = $i + 1;
+      $phone_first_number = $extension["phone_{$index}"] ? $extension["phone_{$index}"][0] : null;
+      if($phone_first_number && ($phone_first_number != '3')){ continue; }
+      $validPhones[] = '57' . $extension["phone_{$index}"];
     }
 
     foreach( $validPhones as $phone ){
       $data['phone'] = $phone;
       $client->post('http://161.35.60.29/api/hello', ['query' => $data]);
     }
+    
+    if( $data['media_url'] ){
+        return response()->json(['data' => 'Message sent successfully']);
+    }
 
-    return response()->json(['data' => 'Message sent successfully']);
+    return response()->json(['data' => ['message' => 'Message sent successfully']]);
   }
 }
 

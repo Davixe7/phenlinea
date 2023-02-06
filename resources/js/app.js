@@ -7,8 +7,10 @@
 require('./bootstrap')
 
 import Vue from 'vue'
+import Toasted from 'vue-toasted';
 
 Vue.component('pagination', require('laravel-vue-pagination'))
+Vue.use(Toasted)
 
 const files = require.context('./components', true, /\.vue$/i);
 files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));

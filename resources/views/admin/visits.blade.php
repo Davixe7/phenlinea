@@ -23,7 +23,6 @@
             <td>{{ $visit->apartment }}</td>
             <td>{{ $visit->dni }}</td>
             <td>{{ $visit->name }}</td>
-            <td>{{ $visit->plate }}</td>
             <td>{{ $visit->company }}</td>
             <td>{{ $visit->arl_eps }}</td>
             <td>{{ $visit->checkin }}</td>

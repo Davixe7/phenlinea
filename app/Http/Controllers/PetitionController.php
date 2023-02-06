@@ -28,9 +28,7 @@ class PetitionController extends Controller
     }
 
     $path = public_path("qr/pqrs_" . Str::slug(auth()->user()->name) . "_qr.svg");
-    if (!is_file($path)) {
-      \QrCode::size(500)->format('svg')->generate(url("unidades/" . Str::slug(auth()->user()->name) . "/pqrs"), $path);
-    }
+    \QrCode::size(500)->format('svg')->generate(url("unidades/" . Str::slug(auth()->user()->name) . "/pqrs"), $path);
     $qr = ['path' => $path, 'url' => url("qr/pqrs_" . Str::slug(auth()->user()->name) . "_qr.svg")];
 
     $pqrss = auth()->user()->petitions()->orderBy('created_at', 'DESC')->get();

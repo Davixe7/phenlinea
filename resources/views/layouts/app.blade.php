@@ -9,6 +9,7 @@
   <link rel="dns-prefetch" href="//fonts.gstatic.com">
   <link href="/img/favicon.png" rel="icon">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,600,700" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="{{ mix('css/app.css') }}" rel="stylesheet">

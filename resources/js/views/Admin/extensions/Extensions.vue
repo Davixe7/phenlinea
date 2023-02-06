@@ -1,9 +1,24 @@
 <template>
   <div id="extensions">
-    <div class="page-title">
-      <h1>Censo del edificio</h1>
-    </div>
     <div v-if="results && results.length" id="extensions-table-wrap" class="table-responsive">
+      <div class="d-flex align-items-center pe-2">
+        <h1>
+          Extensiones
+        </h1>
+
+        <SearchForm
+          :collection="items"
+          v-show="items && items.length"
+          v-model="results">
+        </SearchForm>
+
+        <a
+          target="_blank"
+          href="/extensions/export"
+          class="ms-3 btn btn-sm btn-outline btn-outline-success">
+          Exportar XLS
+        </a>
+      </div>
       <table class="table">
         <thead>
           <th>Apto.</th>
@@ -18,24 +33,24 @@
           <th class="text-right">Detalle</th>
         </thead>
         <tbody>
-          <tr v-for="ext in results" :key="ext.id">
-            <td>{{ ext.name }}</td>
-            <td>{{ ext.adults }}</td>
-            <td>{{ ext.minors }}</td>
-            <td>{{ ext.pets_count }}</td>
-            <td>{{ ext.vehicles ? ext.vehicles.length : 0 }}</td>
-            <td>{{ (ext.has_deposit) ? 'SÍ' : 'NO' }}</td>
-            <td>{{ ext.owner_phone }}</td>
-            <td>{{ ext.phone_1 }}</td>
-            <td>{{ ext.phone_2 }}</td>
+          <tr v-for="extension in results" :key="extension.id">
+            <td>{{ extension.name }}</td>
+            <td>{{ extension.adults }}</td>
+            <td>{{ extension.minors }}</td>
+            <td>{{ extension.pets_count }}</td>
+            <td>{{ extension.vehicles ? extension.vehicles.length : 0 }}</td>
+            <td>{{ (extension.has_deposit) ? 'SÍ' : 'NO' }}</td>
+            <td>{{ extension.owner_phone }}</td>
+            <td>{{ extension.phone_1 }}</td>
+            <td>{{ extension.phone_2 }}</td>
             <td>
-              <a :href="`/extensions/${ext.id}/visitors`">
+              <a :href="`/extensions/${extension.id}/visitors`">
                 <i class="material-icons">lock_open</i>
               </a>
-              <a :href="`/extensions/${ext.id}/edit`">
+              <a :href="`/extensions/${extension.id}/edit`">
                 <i class="material-icons">visibility</i>
               </a>
-              <a href="#" @click="deleteExtension(ext.id)">
+              <a href="#" @click="deleteExtension(extension.id)">
                 <i class="material-icons">delete</i>
               </a>
             </td>
@@ -70,7 +85,7 @@ function deleteExtension(id) {
   if (!window.confirm('¿Seguro que quieres eliminar la extensión?')) return
 
   axios.delete(`/extensions/${id}`)
-    .then(() => extensions.value = extensions.value.filter(ext => ext.id != id))
+    .then(() => extensions.value = extensions.value.filter(extension => extension.id != id))
     .catch(error => console.log(error.response.data))
 }
 
@@ -119,4 +134,5 @@ table tr td:last-child {
   height: 40px;
 }
 </style>
+
 

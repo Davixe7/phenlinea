@@ -47,12 +47,11 @@ class VisitController extends Controller
         "admin_id"     => auth()->user()->admin_id
       ]);
 
-      if( $files = $request->file('picture') ){
-        foreach( $files as $file ){
-          $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . time() . '.' . $file->extension();
-          $path     = storage_path( 'app/'.$file->storeAs('visits/picture/', $fileName) );
-          $visit->addMedia( $path )->toMediaCollection('picture');
-        }
+      if( $file = $request->file('picture') ){
+        $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . time() . '.' . $file->extension();
+        $path     = $file->storeAs('/visits/picture/', $fileName);
+        $path     = storage_path( "app/{$path}" );
+        $visit->addMedia( $path )->toMediaCollection('picture');
       }
 
       return new VisitPorteria( $visit );

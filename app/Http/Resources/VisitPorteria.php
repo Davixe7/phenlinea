@@ -29,7 +29,7 @@ class VisitPorteria extends JsonResource
         "checkout"  => $this->checkout,
         "extension" => $this->extension ? $this->extension->only(['id','name']) : null,
         "admin_id"  => $this->admin_id,
-        "picture"   => $this->picture ? asset($this->picture->url) : ''
+        "picture"   => $this->getFirstMediaUrl('picture')
       ];
     }
 }

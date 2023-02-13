@@ -24,14 +24,8 @@ class Visit extends Model implements HasMedia
     'type',
   ];
 
-  // protected $appends = ['extension_name'];
-
   public function extension(){
     return $this->belongsTo('App\Extension');
   }
-
-  // public function getExtensionNameAttribute(){
-  //   return $this->extension->name;
-  // }
 
 }

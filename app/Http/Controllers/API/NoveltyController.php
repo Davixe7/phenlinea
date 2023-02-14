@@ -32,6 +32,14 @@ class NoveltyController extends Controller
       'description' => $request->description,
       'porteria_id' => auth()->user()->id ?: $request->porteria_id
     ]);
+    
+    foreach( range(1,3) as $index){
+        if( $file = $request->file('picture'.$index) ){
+            $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . time() . '.' . $file->extension();
+            $path     = storage_path( 'app/'.$file->storeAs('novelties/pictures/', $fileName) );
+            $novelty->addMedia( $path )->toMediaCollection('pictures');
+        }
+    }
 
     if( $files = $request->file('pictures') ){
       foreach( $files as $file ){

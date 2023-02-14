@@ -36,6 +36,8 @@ class VisitController extends Controller
       $request->validate([
         'apartment' => 'required'
       ]);
+      
+      $extensionId = $request->apartment ?: $request->extension_id;
 
       $visit = Visit::create([
         "name"         => $request->name,
@@ -47,7 +49,7 @@ class VisitController extends Controller
         "company"      => $request->company,
         "arl"          => $request->arl,
         "eps"          => $request->eps,
-        "extension_id" => $request->apartment,
+        "extension_id" => $extensionId,
         "admin_id"     => auth()->user()->admin_id
       ]);
 

@@ -163,7 +163,7 @@ function updateAttachment() {
 }
 
 function send() {
-  if( window.confirm('Seguro que desea enviar el mensaje?') )
+  if( !window.confirm('Seguro que desea enviar el mensaje?') ) return
   if (!receivers.value.length) { alert('Debe incluir al menos un destinatario'); return; }
   if (!message.value) { alert('Debe incluir un mensaje'); return; }
 

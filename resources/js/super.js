@@ -8,9 +8,9 @@ import './bootstrap'
 
 import Vue from 'vue'
 
+import Users from './Root/views/users/Users.vue'
 import Admins from './Root/views/admins/Admins.vue'
 import Porterias from './Root/views/porterias/Porterias.vue'
-import SearchForm from './components/SearchForm.vue'
 import Upload from './Root/views/invoices/Upload.vue'
 
 /**
@@ -20,10 +20,11 @@ import Upload from './Root/views/invoices/Upload.vue'
  */
 
 const app = new Vue({
-    el: '#app',
-    components: {
-        Admins,
-        Porterias,
-        Upload
-    }
+  el: '#app',
+  components: {
+    Users,
+    Admins,
+    Porterias,
+    Upload
+  }
 })

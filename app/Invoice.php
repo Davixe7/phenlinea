@@ -10,7 +10,10 @@ class Invoice extends Model
     protected $fillable = ['number','nit','total','date', 'status', 'paid_at'];
 
     public function admin(){
-      return $this->belongsTo('App\Admin', 'nit', 'nit');
+      return $this->belongsTo('App\Admin', 'nit', 'nit')->withDefault([
+        'name' => 'Usuario eliminado',
+        'nit'  => 'No disponible'
+      ]);
     }
 
     public function scopeInMonth($query, $month, $year){

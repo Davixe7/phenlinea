@@ -33,6 +33,10 @@ class VisitController extends Controller
 
     public function store(Request $request)
     {
+      $request->validate([
+        'apartment' => 'required'
+      ]);
+
       $visit = Visit::create([
         "name"         => $request->name,
         "dni"          => $request->dni,

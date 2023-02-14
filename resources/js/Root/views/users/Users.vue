@@ -1,94 +1,65 @@
 <template>
   <div id="users">
-    <div v-if="users.length" class="table-responsive">
-      <h1>Usuarios</h1>
-      <table class="table">
+
+    <div class="table-responsive">
+      <div class="d-flex align-items-center">
+        <h1 style="flex: 1;">Super Usuarios</h1>
+        <div class="d-flex py-3 px-3" style="flex: 1;">
+          <SearchForm v-if="users && users.length" v-model="results" :collection="rows" :attribute="'name'">
+          </SearchForm>
+        </div>
+      </div>
+      <table class="table" v-if="results && results.length">
         <thead>
-          <th>ID</th>
           <th>Nombre</th>
-          <th>Correo</th>
-          <th class="text-right">Opciones</th>
+          <th>Email</th>
+          <th class="text-right">
+            Opciones
+          </th>
         </thead>
         <tbody>
-          <tr v-for="user in users">
-            <td>{{ user.id }}</td>
+          <tr v-for="user in results">
             <td>{{ user.name }}</td>
             <td>{{ user.email }}</td>
-
             <td class="text-right">
-              <div class="btn-group">
-                <a
-                  href="#"
-                  class="btn btn-sm btn-link"
-                  @click="editUser(user)"
-                >
-                  <i class="material-icons">edit</i></a
-                >
-                <a
-                  href="#"
-                  class="btn btn-sm btn-link"
-                  @click="deleteUser(user.id)"
-                >
-                  <i class="material-icons">delete</i></a
-                >
-              </div>
+              <button class="btn btn-xs btn-link" @click="editUser(user)">
+                <i class="material-icons">edit</i>
+              </button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
-    <div v-else class="alert alert-info">No hay usuarios para mostrar</div>
+
+    <div v-if="!results || !results.length" class="alert alert-info">
+      No hay usuarios para mostrar
+    </div>
 
     <div class="fab-container">
-      <button
-        type="button"
-        class="btn btn-primary btn-circle"
-        data-toggle="modal"
-        data-target="#exampleModal"
-        @click="
-          editing = false;
-          extToEdit = null;
-        "
-      >
+      <button color="primary" data-toggle="modal" data-target="#userEditModal"
+        @click="() => { editing = false; userToEdit = {}; }">
         <i class="material-icons">add</i>
       </button>
     </div>
 
     <!-- Modal -->
-    <div
-      ref="UsersModal"
-      class="modal fade"
-      id="exampleModal"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
+    <div ref="UsersModal" class="modal fade" id="userEditModal" tabindex="-1" role="dialog"
+      aria-labelledby="userEditModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">
+            <h5 class="modal-title" id="userEditModalLabel">
               <span v-if="!editing">Crear</span>
               <span v-else>Actualizar</span>
-              usuario
+              Usuario
             </h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
-            <create-user
-              :userToEdit="userToEdit"
-              :editing="editing"
-              @userStored="appendUser"
-              @userUpdated="updateUser"
-            >
-            </create-user>
+            <CreateUser :user="userToEdit" :editing="editing" @userStored="appendUser" @userUpdated="updateUser">
+            </CreateUser>
           </div>
         </div>
       </div>
@@ -96,66 +67,53 @@
   </div>
 </template>
 
-<script>
-import CreateUser from "./CreateUser.vue";
-export default {
-  name: "Users",
-  components: { CreateUser },
-  data() {
-    return {
-      userToEdit: null,
-      editing: false,
-      users: [],
-    };
-  },
-  methods: {
-    editUser(user) {
-      this.userToEdit = user;
-      this.editing = true;
-      $(this.$refs.UsersModal).modal("show");
-    },
-    updateUser(user) {
-      this.users = this.users.map((cUser) => {
-        return user.id == cUser.id ? user : cUser;
-      });
-      this.$toasted.success("Usuario actualizado exitosamente", {
-        position: "bottom-left",
-      });
-    },
-    deleteUser(id) {
-      if (window.confirm("¿Seguro que quieres eliminar al usuario?")) {
-        axios
-          .delete("/admin/users/" + id)
-          .then((response) => {
-            this.users = this.users.filter((user) => {
-              return user.id != id;
-            });
-            this.$toasted.success("Usuario eliminado exitosamente", {
-              position: "bottom-left",
-            });
-          })
-          .catch((error) => {
-            console.log(error.response);
-            if (error.response.status == 403) {
-              this.$toasted.error(
-                "No tienes permisos para realizar esta acción",
-                { position: "bottom-left" }
-              );
-            }
-          });
-      }
-    },
-    appendUser(user) {
-      this.users.push(user);
-      this.$toasted.success("Usuario creado exitosamente", {
-        position: "bottom-left",
-      });
-    },
-  },
-  mounted() {
-    axios.get("/admin/users/list").then((response) => {
-      this.users = response.data.data;
-    });
-  },
-};
+<script setup>
+import CreateUser from './CreateUser.vue'
+import SearchForm from './../../../components/SearchForm.vue'
+import { ref, onMounted } from 'vue'
+
+const props = defineProps(['users'])
+
+const userToEdit = ref({})
+const editing = ref(false)
+const results = ref([])
+const errors  = ref({})
+const rows    = ref([])
+
+const UsersModal = ref(null)
+
+function appendUser(user) {
+  rows.value.push(user)
+  $(UsersModal.value).modal('hide')
+  toasted.success('Usuario registrado exitosamente')
+}
+
+function editUser(user) {
+  userToEdit.value = user
+  editing.value = true
+  $(UsersModal.value).modal('show');
+}
+
+function updateUser(user) {
+  rows.value.splice(rows.value.indexOf( userToEdit.value ), 1, user)
+  $(UsersModal.value).modal('hide')
+}
+
+function deleteUser(id) {
+  if (!window.confirm('¿Seguro que quieres eliminar al usuario?')) return
+  axios.delete(`/admin/users/${id}`)
+    .then(() => users.value = users.filter(user => user.id != id))
+    .catch(error => {
+      console.log(error)
+      if( error.response.status == '403'){ alert('No tiene permisos para ejecutar esta acción') }
+    })
+}
+
+onMounted(() => rows.value = [...props.users])
 </script>
+
+<style>
+.modal-title {
+  font-size: 1.1em;
+}
+</style>

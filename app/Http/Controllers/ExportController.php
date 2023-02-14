@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Extension;
 use App\Http\Resources\ExtensionsExport;
 use App\Http\Resources\ResidentExport;
 use Rap2hpoutre\FastExcel\FastExcel;
@@ -12,8 +11,7 @@ use App\Admin;
 
 class ExportController extends Controller
 {
-  public function exportCensus($admin = null){
-    $admin      = $admin ?: auth()->user();
+  public function exportCensus(Admin $admin){
     $extensions = ExtensionsExport::collection( $admin->extensions )->toArray(true);
     $residents  = ResidentExport::collection( $admin->residents )->toArray(true);
     

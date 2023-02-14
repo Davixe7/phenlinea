@@ -24,8 +24,8 @@ class StoreUser extends FormRequest
   public function rules()
   {
     return [
-      'email'    => 'required|unique:users',
-      'password' => 'required|min:6',
+      'email'    => 'required|unique:users,email,' . auth()->id(),
+      'password' => 'min:6',
     ];
   }
 }

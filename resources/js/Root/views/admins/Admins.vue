@@ -17,7 +17,7 @@
         <thead>
           <th>Nombre</th>
           <th>NIT</th>
-          <th>Dirección</th>
+          <th>Direcci贸n</th>
           <th>Celular</th>
           <th>Celular 2</th>
           <th>Correo</th>
@@ -38,6 +38,9 @@
 
             <td class="text-right">
               <div class="btn-group">
+                <a :href="`/admin/admins/${admin.id}/export`" class="btn btn-xs btn-link">
+                  exportar
+                </a>
                 <a :href="`/admin/admins/${admin.id}/edit-permissions`" class="btn btn-xs btn-link">
                   <i class="material-icons">lock</i>
                 </a>
@@ -156,7 +159,7 @@ function updateAdmin(admin) {
 }
 
 function deleteAdmin(id) {
-  if (!window.confirm('¿Seguro que quieres eliminar al administrador?')) return
+  if (!window.confirm('驴Seguro que quieres eliminar al administrador?')) return
   axios.delete(`/admin/admins/${id}`)
   .then(()     => admins.value = admins.filter(admin => admin.id != id))
   .catch(error => errors.value = error.response.data.errors)

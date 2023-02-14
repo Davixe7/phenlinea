@@ -16,14 +16,8 @@ class UserController extends Controller
 
   public function index()
   {
-    return view('super.users.index', ['users'=>UserResource::collection( User::all() )]);
+    return view('super.users.index', ['users' => UserResource::collection( User::all() )]);
   }
-
-  public function list()
-  {
-    return UserResource::collection( User::all() );
-  }
-
 
   public function store(StoreUserRequest $request)
   {
@@ -37,7 +31,7 @@ class UserController extends Controller
   }
 
 
-  public function update(StoreUserRequest $request, User $user)
+  public function update(Request $request, User $user)
   {
     $user->update([
       'name'     => $request->name  ?: $user->name,

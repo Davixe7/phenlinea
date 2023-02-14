@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Novelty;
-use App\Http\Resources\Novelty as NoveltyResource;
 use Illuminate\Http\Request;
+use App\Http\Resources\Novelty as NoveltyResource;
 
 class NoveltyController extends Controller {
 
@@ -19,6 +19,11 @@ class NoveltyController extends Controller {
     public function index()
     {
       $novelties = auth()->user()->novelties()->orderBy('created_at', 'desc')->get();
+      
+      if( request()->expectsJson() ){
+        return NoveltyResource::collection( $novelties );
+      }
+
       return view('admin.novelties', compact('novelties'));
     }
 

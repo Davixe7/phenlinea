@@ -42,7 +42,9 @@ class WhatsappController extends Controller
 
     if (($response->getStatusCode() >= 400) || ($data && ($data['status'] == 'error'))) {
       Storage::append('whatsapp_error.log', 'InstanceID: ' . $instance_id . ' ' . $response->getBody());
-      if (request()->expectsJson()){ return null; }
+      if (request()->expectsJson()) {
+        return null;
+      }
       return redirect()->route('whatsapp.index');
     }
 
@@ -149,7 +151,7 @@ class WhatsappController extends Controller
     } else {
       $phones_1 = $extensions->pluck('phone_1');
       $phones_2 = $extensions->pluck('phone_2');
-      $phones = array_filter( $phones_2->merge($phones_1)->toArray() );
+      $phones = array_filter($phones_2->merge($phones_1)->toArray());
     }
 
     if (!$phones || !count($phones)) {
@@ -159,7 +161,7 @@ class WhatsappController extends Controller
     $path = '';
 
     if ($file = $request->file('attachment')) {
-      $clearFileName = Str::slug( pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) );
+      $clearFileName = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
       $fileName = $clearFileName . time() . "." . $file->extension();
       $path = $file->storeAs('whatsapp_attachments', $fileName);
       Storage::append('batches.log', $path);
@@ -167,18 +169,18 @@ class WhatsappController extends Controller
 
     $response = $this->client->post('http://161.35.60.29/api/whatsapp-batches', [
       'query' => [
-        'admin_id'    => auth()->id(),
-        'admin_name'  => auth()->user()->name,
-        'admin_phone' => auth()->user()->phone,
+        'admin_id'              => auth()->id(),
+        'admin_name'            => auth()->user()->name,
+        'admin_phone'           => auth()->user()->phone,
         'whatsapp_instance_id'  => auth()->user()->whatsapp_instance_id,
         'message'               => $request->message,
-        'receivers' => implode(',', $phones)
+        'receivers'             => implode(',', $phones)
       ],
       'multipart' => $path ? [['name' => 'attachment', 'contents' => fopen(storage_path('app/' . $path), 'r')]] : []
     ]);
-    
-    if( $request->expectsJson() ){
-        return response()->json(['data'=>'Message sent successfully']);
+
+    if ($request->expectsJson()) {
+      return response()->json(['data' => 'Message sent successfully']);
     }
     return redirect()->route('whatsapp.index')->with(['message' => 'Mensaje enviado exitosamente']);
   }

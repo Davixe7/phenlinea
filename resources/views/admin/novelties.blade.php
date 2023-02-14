@@ -46,8 +46,8 @@
             </div>
 
             <div v-if="novelty" class="flex">
-              <q-avatar v-for="(attachment, i) in novelty.pictures_url" :class="q-pe-2" @click="showImg(i)">
-                <img :src="attachment">
+              <q-avatar v-for="(picture, i) in novelty.pictures" :class="q-pe-2" @click="showImg(i)">
+                <img :src="picture.url">
               </q-avatar>
             </div>
           </q-card-section>
@@ -56,7 +56,7 @@
     </div>
   </div>
 
-  <vue-easy-lightbox v-if="novelty" :visible="visibleRef" :imgs="novelty.pictures_url" :index="indexRef" @hide="onHide">
+  <vue-easy-lightbox v-if="novelty" :visible="visibleRef" :imgs="novelty.pictures" :index="indexRef" @hide="onHide">
   </vue-easy-lightbox>
 </div>
 @endsection
@@ -72,10 +72,9 @@
 <script>
   const app = Vue.createApp({
     setup() {
-      const rows = Vue.ref(@json($novelties))
+      const rows = Vue.ref([])
       const search = Vue.ref('')
       const novelty = Vue.ref(null)
-
 
       //Lightbox configuration
       const visibleRef = Vue.ref(false)
@@ -124,6 +123,9 @@
         ],
       }
     },
+    mounted(){
+      axios.get('/novelties').then(response => this.rows = response.data.data)
+    }
   })
 
   app.use(Quasar)

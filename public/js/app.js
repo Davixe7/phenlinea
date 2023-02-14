@@ -2055,6 +2055,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     var search = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)('');
     var message = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)('');
     var receivers = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)([]);
+    var attachment = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)(null);
     var results = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(function () {
       var results = _toConsumableArray(props.extensions);
       if (ownersOnly.value) {
@@ -2071,6 +2072,39 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     function openFileDialog() {
       attachmentInput.value.click();
     }
+    function updateAttachment() {
+      if (attachmentInput.value.files.length) {
+        attachment.value = attachmentInput.value.files[0];
+        return;
+      }
+      attachment.value = null;
+    }
+    function send() {
+      if (window.confirm('Seguro que desea enviar el mensaje?')) if (!receivers.value.length) {
+        alert('Debe incluir al menos un destinatario');
+        return;
+      }
+      if (!message.value) {
+        alert('Debe incluir un mensaje');
+        return;
+      }
+      var data = new FormData();
+      data.append('message', message.value);
+      receivers.value.forEach(function (receiver) {
+        return data.append('receivers[]', receiver);
+      });
+      if (attachment.value) {
+        data.append('attachment', attachment.value);
+      }
+      axios.post('/whatsapp/send', data).then(function (response) {
+        message.value = '';
+        receivers.value = [];
+        attachmentInput.value.value = '';
+        alert('Mensaje enviado exitosamente');
+      })["catch"](function (error) {
+        return console.log(error);
+      });
+    }
     function selectAll() {
       receivers.value = _toConsumableArray(props.extensions).map(function (extension) {
         return extension.id;
@@ -2084,8 +2118,11 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       search: search,
       message: message,
       receivers: receivers,
+      attachment: attachment,
       results: results,
       openFileDialog: openFileDialog,
+      updateAttachment: updateAttachment,
+      send: send,
       selectAll: selectAll
     };
   }
@@ -3451,7 +3488,7 @@ var render = function render() {
       attrs: {
         "for": "`checkbox-${extension.id}`"
       }
-    }, [_vm._v("\n                  " + _vm._s(extension.name) + "\n                ")])]);
+    }, [_vm._v("\n                " + _vm._s(extension.name) + "\n              ")])]);
   })], 2)])])]), _vm._v(" "), _c("div", {
     staticClass: "col-lg-6"
   }, [_c("div", {
@@ -3493,6 +3530,9 @@ var render = function render() {
     staticClass: "form-control d-none",
     attrs: {
       type: "file"
+    },
+    on: {
+      change: _setup.updateAttachment
     }
   }), _vm._v(" "), _c("button", {
     staticClass: "btn-round btn-attachment mr-3",
@@ -3506,14 +3546,14 @@ var render = function render() {
     }
   }), _vm._v(" "), _c("div", {
     staticClass: "attachmentDetails"
-  }), _vm._v(" "), _c("button", {
+  }, [_vm._v("\n              " + _vm._s(_setup.attachment ? _setup.attachment.name : "ningún archivo seleccionado") + "\n            ")]), _vm._v(" "), _c("button", {
     staticClass: "btn btn-primary ms-auto",
     attrs: {
       type: "button"
     },
     on: {
       click: function click($event) {
-        return _vm.send();
+        return _setup.send();
       }
     }
   }, [_vm._v("\n              Enviar\n            ")])])])]), _vm._v(" "), _vm.history && _vm.history.length ? _c("div", {
@@ -3521,7 +3561,9 @@ var render = function render() {
   }, [_c("table", {
     staticClass: "table"
   }, [_vm._m(0), _vm._v(" "), _c("tbody", _vm._l(_vm.history, function (batch) {
-    return _c("tr", [_c("td", [_vm._v("\n                " + _vm._s(batch.message) + "\n              ")]), _vm._v(" "), _c("td", [_vm._v("\n                " + _vm._s(batch.receivers_numbers.split(",").length) + "\n              ")]), _vm._v(" "), _c("td", [_vm._v("\n                " + _vm._s(batch.created_at) + "\n              ")])]);
+    return _c("tr", [_c("td", [_vm._v("\n                " + _vm._s(batch.message) + "\n              ")]), _vm._v(" "), _c("td", [_vm._v("\n                " + _vm._s(batch.receivers_numbers.split(",").length) + "\n              ")]), _vm._v(" "), _c("td", [_vm._v("\n                " + _vm._s(new Date(batch.created_at).toLocaleString("es-CO", {
+      timezone: "America/Colombia"
+    })) + "\n              ")])]);
   }), 0)])]) : _vm._e()]), _vm._v(" "), _c("div", {
     staticClass: "col-lg-3",
     staticStyle: {
@@ -4574,7 +4616,7 @@ var render = function render() {
   }, [_vm._m(0), _vm._v(" "), _c("tbody", _vm._l(_setup.results, function (extension) {
     return _c("tr", {
       key: extension.id
-    }, [_c("td", [_vm._v(_vm._s(extension.name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(extension.adults))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(extension.minors))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(extension.pets_count))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(extension.vehicles ? extension.vehicles.length : 0))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(extension.has_deposit ? "SÍ" : "NO"))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(extension.owner_phone))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(extension.phone_1))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(extension.phone_2))]), _vm._v(" "), _c("td", [_c("a", {
+    }, [_c("td", [_vm._v(_vm._s(extension.name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(extension.pets_count))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(extension.vehicles ? extension.vehicles.length : 0))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(extension.has_deposit ? "SÍ" : "NO"))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(extension.owner_phone))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(extension.phone_1))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(extension.phone_2))]), _vm._v(" "), _c("td", [_c("a", {
       attrs: {
         href: "/extensions/".concat(extension.id, "/visitors")
       }
@@ -4604,7 +4646,7 @@ var staticRenderFns = [function () {
   var _vm = this,
     _c = _vm._self._c,
     _setup = _vm._self._setupProxy;
-  return _c("thead", [_c("th", [_vm._v("Apto.")]), _vm._v(" "), _c("th", [_vm._v("Adultos")]), _vm._v(" "), _c("th", [_vm._v("Menores")]), _vm._v(" "), _c("th", [_vm._v("Mascotas")]), _vm._v(" "), _c("th", [_vm._v("Vehículos")]), _vm._v(" "), _c("th", [_vm._v("Útil")]), _vm._v(" "), _c("th", [_vm._v("Tel. propietario")]), _vm._v(" "), _c("th", [_vm._v("Citofonía 1")]), _vm._v(" "), _c("th", [_vm._v("Citofonía 2")]), _vm._v(" "), _c("th", {
+  return _c("thead", [_c("th", [_vm._v("Apto.")]), _vm._v(" "), _c("th", [_vm._v("Mascotas")]), _vm._v(" "), _c("th", [_vm._v("Vehículos")]), _vm._v(" "), _c("th", [_vm._v("Útil")]), _vm._v(" "), _c("th", [_vm._v("Tel. propietario")]), _vm._v(" "), _c("th", [_vm._v("Citofonía 1")]), _vm._v(" "), _c("th", [_vm._v("Citofonía 2")]), _vm._v(" "), _c("th", {
     staticClass: "text-right"
   }, [_vm._v("Detalle")])]);
 }, function () {

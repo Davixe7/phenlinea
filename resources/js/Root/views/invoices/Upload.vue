@@ -87,16 +87,19 @@
           <h6>
             Cargar XLSX
           </h6>
-          <form action="/admin/invoices/import" method="POST" enctype="multipart/form-data">
+          <form
+            @submit.prevent="uploadInvoices"
+            action="#"
+            method="POST"
+            enctype="multipart/form-data">
             <div class="row">
               <div class="col">
                 <div class="form-group mb-2">
                   <label for="month" class="mb-2">Mes</label>
                   <select name="month" class="form-control" v-model="month" required>
                     <option
-                      v-for="(monthNanme, i) in monthsName"
-                      :value="i">
-                      {{ monthNanme }}
+                      v-for="(monthName, i) in monthsName" :value="i + 1">
+                      {{ monthName }}
                     </option>
                   </select>
                 </div>
@@ -104,7 +107,7 @@
               <div class="col">
                 <div class="form-group mb-2">
                   <label for="year" class="mb-2">Año</label>
-                  <select name="year" class="form-control" required>
+                  <select v-model="year" class="form-control" required>
                     <option value="2022">2022</option>
                     <option value="2023">2023</option>
                   </select>
@@ -113,10 +116,10 @@
             </div>
             <div class="form-group">
               <label for="#">Archivo Excel</label>
-              <input type="file" name="file" class="form-control" required>
+              <input ref="attachmentInput" type="file" class="form-control" required>
             </div>
-            <button type="submit" class="btn btn-primary w-100 justify-content-center">
-              Importar facturas
+            <button type="submit" class="btn btn-primary w-100 justify-content-center" :disabled="uploading">
+              {{ !uploading ? 'Importar facturas' : 'Cargando...'}}
             </button>
           </form>
         </li>
@@ -129,10 +132,12 @@
 import {ref, onMounted} from 'vue'
 const props = defineProps(['monthsName', 'rows'])
 
+const attachmentInput = ref(null)
 const invoices = ref([])
 const importing = ref(false)
 const month = ref('')
 const year = ref('')
+const uploading = ref(false)
 
 onMounted(() => invoices.value = [...props.rows])
 
@@ -146,5 +151,28 @@ function fetchInvoices() {
   let data = { year: year.value, month: month.value }
   axios.get('/admin/invoices/upload', { params: data })
   .then(response => invoices.value = Object.values(response.data.data))
-}   
+}
+
+function uploadInvoices(){
+  if( !month.value || !year.value  ) return
+  if( !attachmentInput.value.files.length ) return
+
+  let data = new FormData()
+  data.append('year', year.value)
+  data.append('month', month.value)
+  data.append('file', attachmentInput.value.files[0])
+
+  axios.post('/admin/invoices/import', data)
+  .then(response => {
+    attachmentInput.value = ''
+    fetchInvoices()
+  })
+  .catch(error => console.log(error))
+}
+
+onMounted(()=>{
+  let date = new Date()
+  year.value = date.getFullYear()
+  month.value = date.getMonth() + 1
+})
 </script>

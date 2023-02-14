@@ -1,19 +1,24 @@
 <template>
-  <div id="create-user">
+  <div id="create-user" v-if="user">
     <div class="form-group">
       <label for="name">Nombre</label>
-      <input type="text" class="form-control" id="name" v-model="name">
-    </div>
-    <div class="form-group">
-      <label for="email">Email</label>
-      <input type="email" class="form-control" :class="{'is-invalid':errors.email}" id="email" v-model="email">
-      <div v-if="errors.email" class="invalid-feedback">{{ errors.email[0] }}</div>
+      <input type="text" class="form-control" id="name" v-model="user.name">
     </div>
 
-    <div class="form-group">
-      <label for="password">Contraseña</label>
-      <input type="password" class="form-control" :class="{'is-invalid':errors.password}" id="password" v-model="password">
-      <div v-if="errors.password" class="invalid-feedback">{{ errors.password[0] }}</div>
+    <div class="row">
+      <div class="form-group col">
+        <label for="email">Usuario</label>
+        <input type="email" class="form-control" :class="{ 'is-invalid': errors.email }" id="email"
+          v-model="user.email">
+        <div v-if="errors.email" class="invalid-feedback">{{ errors.email[0] }}</div>
+      </div>
+
+      <div class="form-group col">
+        <label for="password">Contraseña</label>
+        <input type="password" class="form-control" :class="{ 'is-invalid': errors.password }" id="password"
+          v-model="user.password">
+        <div v-if="errors.password" class="invalid-feedback">{{ errors.password[0] }}</div>
+      </div>
     </div>
 
     <div class="form-group text-right">
@@ -23,77 +28,42 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    'userToEdit': Object,
-    'editing': Boolean,
-  },
-  data(){
-    return {
-      'userId': null,
-      'name': '',
-      'email': '',
-      'password': '',
-      'errors': []
-    }
-  },
-  watch:{
-    userToEdit(newUser, oldUser){
-      if( newUser ){
-        this.name = newUser.name
-        this.email = newUser.email
-        this.password = newUser.password
-      }else {
-        this.clearForm()
-      }
-    }
-  },
-  methods:{
-    storeUser(){
-      let data = this.loadData();
-      axios.post('/admin/users', data).then((response)=>{
-        this.$emit('userStored', response.data.data)
-        this.clearForm()
+<script setup>
+import { ref, watch } from 'vue'
 
-        $('#exampleModal').modal('hide')
-      })
-      .catch((err)=>{
-        this.errors = err.response.data.errors
-      });
-    },
-    updateUser(){
-      let data = this.loadData();
-      data.append('_method', 'PUT');
+const props = defineProps(['user', 'editing'])
+const errors = ref({})
 
-      axios.post('/admin/users/'+this.userToEdit.id, data).then((response)=>{
-        this.$emit('userUpdated', response.data.data)
-        this.clearForm()
+const emits = defineEmits(['userStored', 'userUpdated'])
 
-        $('#exampleModal').modal('hide')
-      })
-      .catch((error)=>{
-        console.log( error.response.status );
-        if( error.response.status == 403 ){
-          this.$toasted.error('No tienes permisos para realizar esta acción', {'position':'bottom-left'})
-        }else{
-          this.errors = error.response.data.errors
-        }
-      });
-    },
-    loadData(){
-      let data = new FormData();
-      data.append('name', this.name);
-      data.append('email', this.email);
-      data.append('password', this.password);
-      return data;
-    },
-    clearForm(){
-      this.name = ''
-      this.email = ''
-      this.password = ''
-      this.errors = []
-    }
-  }
+watch(props.user, (newUser, oldUser) => {
+  if (!newUser.id) clearForm()
+})
+
+function storeUser() {
+  axios.post('/admin/users', loadData())
+    .then(response => emits('userStored', response.data.data))
+    .catch(error => errors.value = error.response.data.errors)
+}
+
+function updateUser() {
+  let data = loadData();
+  data.append('_method', 'PUT');
+  axios.post('/admin/users/' + props.user.id, data)
+    .then(response => emits('userUpdated', response.data.data))
+    .catch(error => {
+      if( error.response.status == '403' ) alert('No tiene permisos para realizar esta acción')
+    })
+}
+
+function loadData() {
+  let data = new FormData();
+  Object.keys(props.user).forEach(key => data.append(key, props.user[key]))
+  return data;
+}
+
+function clearForm() {
+  errors.value = []
 }
 </script>
+

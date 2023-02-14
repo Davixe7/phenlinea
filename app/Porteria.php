@@ -40,10 +40,6 @@ class Porteria extends Authenticatable implements JWTSubject
     return $this->hasMany('App\Extension', 'admin_id', 'admin_id');
   }
 
-  public function getExtensionsCountAttribute(){
-    return $this->extensions()->count();
-  }
-
   public function novelties(){
     return $this->hasMany('App\Novelty');
   }

@@ -2080,7 +2080,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       attachment.value = null;
     }
     function send() {
-      if (window.confirm('Seguro que desea enviar el mensaje?')) if (!receivers.value.length) {
+      if (!window.confirm('Seguro que desea enviar el mensaje?')) return;
+      if (!receivers.value.length) {
         alert('Debe incluir al menos un destinatario');
         return;
       }
@@ -2177,7 +2178,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       has_own_parking: false,
       parkingNumber1: null,
       parkingNumber2: null,
-      hasDeposit: 0,
+      hasDeposit: '',
       password: '',
       observation: '',
       errors: [],
@@ -2368,9 +2369,10 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     function deleteExtension(id) {
       if (!window.confirm('¿Seguro que quieres eliminar la extensión?')) return;
       axios["delete"]("/extensions/".concat(id)).then(function () {
-        return extensions.value = extensions.value.filter(function (extension) {
+        extensions.value = extensions.value.filter(function (extension) {
           return extension.id != id;
         });
+        results.value = _toConsumableArray(extensions.value);
       })["catch"](function (error) {
         return console.log(error.response.data);
       });
@@ -3941,13 +3943,6 @@ var render = function render() {
     staticClass: "form-group row"
   }, [_vm._m(10), _vm._v(" "), _c("div", {
     staticClass: "col-5"
-  }, [_c("div", {
-    staticClass: "form-check form-check-inline me-0"
-  }, [_c("label", {
-    staticClass: "form-check-label me-2",
-    attrs: {
-      "for": "radio1"
-    }
   }, [_c("input", {
     directives: [{
       name: "model",
@@ -3955,49 +3950,20 @@ var render = function render() {
       value: _vm.hasDeposit,
       expression: "hasDeposit"
     }],
-    staticClass: "form-check-input ms-0",
+    staticClass: "form-control",
     attrs: {
-      type: "radio",
-      id: "radio1"
+      type: "text"
     },
     domProps: {
-      value: 1,
-      checked: _vm._q(_vm.hasDeposit, 1)
+      value: _vm.hasDeposit
     },
     on: {
-      change: function change($event) {
-        _vm.hasDeposit = 1;
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.hasDeposit = $event.target.value;
       }
     }
-  }), _vm._v("\n                  Sí\n                ")])]), _vm._v(" "), _c("div", {
-    staticClass: "form-check form-check-inline me-0"
-  }, [_c("label", {
-    staticClass: "form-check-label me-2",
-    attrs: {
-      "for": "radio2"
-    }
-  }, [_c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.hasDeposit,
-      expression: "hasDeposit"
-    }],
-    staticClass: "form-check-input ms-0",
-    attrs: {
-      type: "radio",
-      id: "radio2"
-    },
-    domProps: {
-      value: 0,
-      checked: _vm._q(_vm.hasDeposit, 0)
-    },
-    on: {
-      change: function change($event) {
-        _vm.hasDeposit = 0;
-      }
-    }
-  }), _vm._v("\n                  No\n                ")])])])]), _vm._v(" "), _vm._m(11), _vm._v(" "), _c("div", {
+  })])]), _vm._v(" "), _vm._m(11), _vm._v(" "), _c("div", {
     staticClass: "row my-3"
   }, [_c("div", {
     staticClass: "form-group col-6"
@@ -4581,8 +4547,8 @@ var render = function render() {
     attrs: {
       id: "extensions"
     }
-  }, [_setup.results && _setup.results.length ? _c("div", {
-    staticClass: "table-responsive",
+  }, [_c("div", {
+    staticClass: "table-responsive pb-0",
     attrs: {
       id: "extensions-table-wrap"
     }
@@ -4592,11 +4558,11 @@ var render = function render() {
     directives: [{
       name: "show",
       rawName: "v-show",
-      value: _vm.items && _vm.items.length,
-      expression: "items && items.length"
+      value: _setup.extensions && _setup.extensions.length,
+      expression: "extensions && extensions.length"
     }],
     attrs: {
-      collection: _vm.items
+      collection: _setup.extensions
     },
     model: {
       value: _setup.results,
@@ -4611,7 +4577,7 @@ var render = function render() {
       target: "_blank",
       href: "/extensions/export"
     }
-  }, [_vm._v("\n        Exportar XLS\n      ")])], 1), _vm._v(" "), _c("table", {
+  }, [_vm._v("\n        Exportar XLS\n      ")])], 1), _vm._v(" "), _setup.results && _setup.results.length ? _c("table", {
     staticClass: "table"
   }, [_vm._m(0), _vm._v(" "), _c("tbody", _vm._l(_setup.results, function (extension) {
     return _c("tr", {
@@ -4640,7 +4606,9 @@ var render = function render() {
     }, [_c("i", {
       staticClass: "material-icons"
     }, [_vm._v("delete")])])])]);
-  }), 0)])]) : _vm._e(), _vm._v(" "), _vm._m(1)]);
+  }), 0)]) : _c("div", {
+    staticClass: "alert alert-info"
+  }, [_vm._v("\n      No hay extensiones disponibles para mostrar\n    ")])]), _vm._v(" "), _vm._m(1)]);
 };
 var staticRenderFns = [function () {
   var _vm = this,
@@ -5465,11 +5433,11 @@ var render = function render() {
       click: _vm.clearForm
     }
   }, [_vm._v("\n            Cancelar\n          ")]) : _vm._e(), _vm._v(" "), _c("button", {
-    staticClass: "btn btn-light",
+    staticClass: "btn btn-primary w-100 justify-content-center mt-3",
     attrs: {
       type: "submit"
     }
-  }, [_vm._v("\n            " + _vm._s(_vm.resident && _vm.resident.id ? "actualizar" : "agregar") + "\n          ")])])])])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("\n            " + _vm._s(_vm.resident && _vm.resident.id ? "Actualizar" : "Agregar") + "\n          ")])])])])]), _vm._v(" "), _c("div", {
     staticClass: "col-md-8"
   }, [_c("div", {
     staticClass: "form-section mb-0",
@@ -5489,10 +5457,11 @@ var render = function render() {
       staticClass: "material-icons"
     }, [_vm._v("done")]) : _vm._e()]), _vm._v(" "), _c("td", [resident.disability ? _c("i", {
       staticClass: "material-icons"
-    }, [_vm._v("done")]) : _vm._e()]), _vm._v(" "), _c("td", [_c("button", {
-      staticClass: "btn btn-link",
+    }, [_vm._v("done")]) : _vm._e()]), _vm._v(" "), _c("td", {
+      staticClass: "d-flex align-items-center"
+    }, [_c("a", {
       attrs: {
-        type: "button"
+        href: "#"
       },
       on: {
         click: function click($event) {
@@ -10228,7 +10197,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".form-check {\n  padding-left: 0;\n}\n.form-check label input {\n  margin-top: 0;\n  margin-right: 0.5em;\n}\nul.vehicle-list {\n  padding: 0 !important;\n  margin-bottom: 15px;\n  display: flex;\n  flex-flow: row wrap;\n}\nul.vehicle-list .vehicle-list li {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  flex: 1 0 100%;\n  padding: 5px 15px !important;\n  border-radius: 5px;\n  background: #efefef;\n}\nul.vehicle-list .vehicle-list li input {\n  max-width: 120px;\n  margin-left: 10px;\n  padding: 5px 10px;\n  border-radius: 5px;\n  background: #fff;\n}\nul.vehicle-list .vehicle-list li span {\n  cursor: pointer;\n  font-weight: 600;\n}\n.form-section {\n  padding: 15px;\n  border: 1px solid #dee2e6;\n  border-radius: 7px;\n}\n.form-section > h4 {\n  color: #0a47e4 !important;\n  margin: 0 0 24px;\n  font-size: 1.2em;\n}\n.color-card {\n  color: #fff;\n  background: linear-gradient(45deg, #3c00f5, #424896) !important;\n}\n.color-card .form-group {\n  display: flex;\n  margin-bottom: 20px;\n}\n.color-card h4 {\n  color: #fff !important;\n}\n.color-card label {\n  flex: 1 0 74px;\n}\n.dropdown-toggler i.material-symbols-outlined {\n  font-size: 1.5em;\n  margin-left: 5px;\n  color: #9f9f9f;\n}\n.text-red {\n  color: red !important;\n}\nh4 {\n  color: #fff;\n  padding: 0;\n  background: none;\n  box-shadow: none;\n}\n.plates-input {\n  text-transform: uppercase;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".form-check {\n  padding-left: 0;\n}\n.form-check label input {\n  margin-top: 0;\n  margin-right: 0.5em;\n}\n.form-check .form-check-input {\n  margin-left: 0;\n  margin-right: 0.5rem;\n}\nul.vehicle-list {\n  padding: 0 !important;\n  margin-bottom: 15px;\n  display: flex;\n  flex-flow: row wrap;\n}\nul.vehicle-list .vehicle-list li {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  flex: 1 0 100%;\n  padding: 5px 15px !important;\n  border-radius: 5px;\n  background: #efefef;\n}\nul.vehicle-list .vehicle-list li input {\n  max-width: 120px;\n  margin-left: 10px;\n  padding: 5px 10px;\n  border-radius: 5px;\n  background: #fff;\n}\nul.vehicle-list .vehicle-list li span {\n  cursor: pointer;\n  font-weight: 600;\n}\n.form-section {\n  padding: 15px;\n  border: 1px solid #dee2e6;\n  border-radius: 7px;\n}\n.form-section > h4 {\n  color: #0a47e4 !important;\n  margin: 0 0 24px;\n  font-size: 1.2em;\n}\n.color-card {\n  color: #fff;\n  background: linear-gradient(45deg, #3c00f5, #424896) !important;\n}\n.color-card .form-group {\n  display: flex;\n  margin-bottom: 20px;\n}\n.color-card h4 {\n  color: #fff !important;\n}\n.color-card label {\n  flex: 1 0 74px;\n}\n.dropdown-toggler i.material-symbols-outlined {\n  font-size: 1.5em;\n  margin-left: 5px;\n  color: #9f9f9f;\n}\n.text-red {\n  color: red !important;\n}\nh4 {\n  color: #fff;\n  padding: 0;\n  background: none;\n  box-shadow: none;\n}\n.plates-input {\n  text-transform: uppercase;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

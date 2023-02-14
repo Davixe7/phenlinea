@@ -27,11 +27,18 @@ class PetitionController extends Controller
       return PetitionResource::collection(auth()->user()->petitions()->orderBy('created_at', 'DESC')->get());
     }
 
-    $path = public_path("qr/pqrs_" . Str::slug(auth()->user()->name) . "_qr.svg");
-    \QrCode::size(500)->format('svg')->generate(url("unidades/" . Str::slug(auth()->user()->name) . "/pqrs"), $path);
-    $qr = ['path' => $path, 'url' => url("qr/pqrs_" . Str::slug(auth()->user()->name) . "_qr.svg")];
+    $path    = "qr/pqrs_" . auth()->id() . "_qr.svg";
+    $qr_path = public_path( $path );
+    $qr_url  = url($path);
+    $admin_pqrs_url  = url("unidades/" . auth()->id() . "/pqrs");
 
+    \QrCode::size(500)
+    ->format('svg')
+    ->generate($admin_pqrs_url, $qr_path);
+
+    $qr = ['path' => $qr_path, 'url' => url($path)];
     $pqrss = auth()->user()->petitions()->orderBy('created_at', 'DESC')->get();
+
     return view('admin.petitions.index', compact('pqrss', 'qr'));
   }
 
@@ -57,13 +64,13 @@ class PetitionController extends Controller
       'description' => 'required'
     ]);
     $petition = Petition::create([
-      'admin_id'     => $request->admin_id,
-      'name'         => $request->name,
-      'apto'         => $request->apto,
-      'phone'        => $request->phone,
-      'phone_2'      => $request->phone_2,
-      'description'  => $request->description,
-      'status'       => 'pending'
+      'admin_id'       => $request->admin_id,
+      'name'           => $request->name,
+      'extension_name' => $request->extension_name,
+      'phone'          => $request->phone,
+      'phone_2'        => $request->phone_2,
+      'description'    => $request->description,
+      'status'         => 'pending'
     ]);
 
     $media = null;
@@ -80,18 +87,17 @@ class PetitionController extends Controller
     ]);
 
     $data = [
-      'id'        => $petition->id,
-      'status'    => $petition->status,
-      'phone'     => $petition->admin->name == 'Jardines Del Eden' ? '584147912134' : '57' . $petition->phone,
-
+      'id'         => $petition->id,
+      'status'     => $petition->status,
+      'phone'      => $petition->admin->name == 'admin' ? '584147912134' : '57' . $petition->phone,
       'adminName'  => $petition->admin->name,
-      'adminPhone' => $petition->admin->phone,
-      'media_url' => $media ? $media->original_url : null
+      'adminPhone' => '57' . $petition->admin->phone,
+      'media_url'  => $media ? $media->original_url : null
     ];
 
     $client->post('http://161.35.60.29/api/pqrs', ['query' => $data]);
 
-    return redirect()->route('pqrs.create', ['admin' => Str::slug($petition->admin->name)])->with(['message' => 'Petición creada con éxito']);
+    return redirect()->route('pqrs.create', ['admin' => $request->admin_id])->with(['message' => 'Petición creada con éxito']);
   }
 
   public function markAsRead(Petition $petition)
@@ -106,10 +112,9 @@ class PetitionController extends Controller
     $data = [
       'id'        => $petition->id,
       'status'    => $petition->status,
-      'phone'     => '57' . $petition->phone,
-
+      'phone'     => $petition->admin->name == 'admin' ? '584147912134' : '57' . $petition->phone,
       'adminName'  => $petition->admin->name,
-      'adminPhone' => $petition->admin->phone,
+      'adminPhone' => '57' . $petition->admin->phone,
       'media_url'  => null
     ];
 
@@ -164,7 +169,7 @@ class PetitionController extends Controller
       'name'         => $request->name        ?: $petition->name,
       'description'  => $request->description ?: $petition->description,
       'phone'        => $request->phone       ?: $petition->phone,
-      'status'       => $request->answer      ? 'answered' : $petition->status,
+      'status'       => $request->answer      ? 'replied' : $petition->status,
       'answer'       => $request->answer,
       'replied_at'   => $request->answer ? now() : $petition->replied_at
     ]);
@@ -185,10 +190,10 @@ class PetitionController extends Controller
     $data = [
       'id'        => $petition->id,
       'status'    => $petition->status,
-      'phone'     => '57' . $petition->phone,
+      'phone'     => $petition->admin->name == 'admin' ? '584147912134' : '57' . $petition->phone,
 
       'adminName'  => $petition->admin->name,
-      'adminPhone' => $petition->admin->phone,
+      'adminPhone' => '57' . $petition->admin->phone,
       'media_url'  => null
     ];
 

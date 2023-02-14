@@ -17,11 +17,17 @@ class CreatePetitionsTable extends Migration
       $table->bigIncrements('id');
       $table->timestamps();
       $table->unsignedBigInteger('admin_id');
+      $table->string('extension_name')->nullable();
       $table->string('name');
       $table->string('phone');
-      $table->string('phone_2');
+      $table->string('phone_2')->nullable();
+
       $table->text('description');
-      $table->enum('status', ['pending', 'approved', 'denied'])->default('pending');
+      $table->text('answer')->nullable();
+      $table->timestamp('read_at')->nullable();
+      $table->timestamp('replied_at')->nullable();
+
+      $table->enum('status', ['pending', 'read', 'replied'])->default('pending');
     });
   }
   

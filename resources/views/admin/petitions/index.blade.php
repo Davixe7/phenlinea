@@ -23,7 +23,7 @@
               </div>
             </div>
             <div class="col-6 flex justify-end align-items-center">
-              <q-btn href="https://phenlinea.com/pqrs/qr/?date={{ now() }}" flat icon="sym_o_qr_code_2" label="Descargar QR">
+              <q-btn href="/pqrs/qr/?date={{ now() }}" flat icon="sym_o_qr_code_2" label="Descargar QR">
               </q-btn>
             </div>
           </div>
@@ -62,6 +62,7 @@
         </template>
       </q-table>
     </div>
+
     <div class="col-4 q-px-md" v-if="currentPqrs">
       <q-card class="q-mb-md">
         <q-card-section style="height: 80px; font-size: 1.25rem; display: flex; align-items: center;">
@@ -179,24 +180,21 @@
       function markAsRead(pqrs) {
         currentPqrs.value = pqrs
         if (pqrs.read_at != null) return
-        axios.post('https://phenlinea.com/pqrs/' + currentPqrs.value.id + '/markAsRead', {
-            _method: 'PUT'
-          })
-          .then(response => {
-            rows.value.splice(rows.value.indexOf(pqrs), 1, response.data.data)
-          })
+        axios.post(`/pqrs/${currentPqrs.value.id}/markAsRead`, {_method: 'PUT'})
+        .then(response => {
+          currentPqrs.value = {...response.data.data}
+          rows.value.splice(rows.value.indexOf(pqrs), 1, currentPqrs.value)
+        })
       }
 
       function reply() {
-        let data = {
-          ...currentPqrs.value,
-          _method: 'PUT'
-        }
-        axios.post('https://phenlinea.com/pqrs/' + currentPqrs.value.id, data)
-          .then(response => {
-            rows.value.splice(rows.value.indexOf(currentPqrs.value), 1, response.data.data)
-            Quasar.Notify.create('Respuesta enviada')
-          })
+        let data = {...currentPqrs.value,_method: 'PUT'}
+        axios.post(`/pqrs/${currentPqrs.value.id}`, data)
+        .then(response => {
+          rows.value.splice(rows.value.indexOf(currentPqrs.value), 1, {...response.data.data})
+          currentPqrs.value = {...response.data.data}
+          Quasar.Notify.create('Respuesta enviada')
+        })
       }
 
       Vue.onMounted(() => {

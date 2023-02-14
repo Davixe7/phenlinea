@@ -66,8 +66,8 @@
             <button v-if="resident" type="button" class="btn btn-link" @click="clearForm">
               Cancelar
             </button>
-            <button type="submit" class="btn btn-light">
-              {{ resident && resident.id ? 'actualizar' : 'agregar' }}
+            <button type="submit" class="btn btn-primary w-100 justify-content-center mt-3">
+              {{ resident && resident.id ? 'Actualizar' : 'Agregar' }}
             </button>
           </div>
         </form>
@@ -110,10 +110,10 @@
                 <td>
                   <i v-if="resident.disability" class="material-icons">done</i>
                 </td>
-                <td>
-                  <button type="button" class="btn btn-link" @click="editResident(resident)">
+                <td class="d-flex align-items-center">
+                  <a href="#" @click="editResident(resident)">
                     <i class="material-icons">edit</i>
-                  </button>
+                  </a>
                   <a href="#" @click="removeResident(resident.id)">
                     <i class="material-icons">close</i>
                   </a>

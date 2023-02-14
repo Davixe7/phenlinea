@@ -118,18 +118,7 @@
                 Cuarto útil
               </label>
               <div class="col-5">
-                <div class="form-check form-check-inline me-0">
-                  <label for="radio1" class="form-check-label me-2">
-                    <input class="form-check-input ms-0" type="radio" id="radio1" v-model="hasDeposit" :value="1" />
-                    Sí
-                  </label>
-                </div>
-                <div class="form-check form-check-inline me-0">
-                  <label for="radio2" class="form-check-label me-2">
-                    <input class="form-check-input ms-0" type="radio" id="radio2" v-model="hasDeposit" :value="0" />
-                    No
-                  </label>
-                </div>
+                <input type="text" class="form-control" v-model="hasDeposit"/>
               </div>
             </div>
 
@@ -309,7 +298,7 @@ export default {
       has_own_parking: false,
       parkingNumber1: null,
       parkingNumber2: null,
-      hasDeposit: 0,
+      hasDeposit: '',
       password: '',
       observation: '',
 
@@ -336,7 +325,7 @@ export default {
       this.has_own_parking = newVal.has_own_parking
       this.parkingNumber1 = newVal.parking_number1
       this.parkingNumber2 = newVal.parking_number2
-      this.hasDeposit = newVal.has_deposit
+      this.hasDeposit     = newVal.has_deposit
 
       this.vehicles = (newVal.vehicles) ? newVal.vehicles : []
       this.observation = newVal.observation
@@ -460,6 +449,10 @@ export default {
   padding-left: 0;
   label {
     input { margin-top: 0; margin-right: .5em; }
+  }
+  .form-check-input {
+    margin-left: 0;
+    margin-right: .5rem;
   }
 }
 

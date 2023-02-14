@@ -1,14 +1,14 @@
 <template>
   <div id="extensions">
-    <div v-if="results && results.length" id="extensions-table-wrap" class="table-responsive">
+    <div id="extensions-table-wrap" class="table-responsive pb-0">
       <div class="d-flex align-items-center pe-2">
         <h1>
           Extensiones
         </h1>
 
         <SearchForm
-          :collection="items"
-          v-show="items && items.length"
+          :collection="extensions"
+          v-show="extensions && extensions.length"
           v-model="results">
         </SearchForm>
 
@@ -19,7 +19,7 @@
           Exportar XLS
         </a>
       </div>
-      <table class="table">
+      <table class="table" v-if="results && results.length">
         <thead>
           <th>Apto.</th>
           <th>Mascotas</th>
@@ -53,6 +53,9 @@
           </tr>
         </tbody>
       </table>
+      <div class="alert alert-info" v-else>
+        No hay extensiones disponibles para mostrar
+      </div>
     </div>
 
     <div class="fab-container">
@@ -81,13 +84,16 @@ function deleteExtension(id) {
   if (!window.confirm('¿Seguro que quieres eliminar la extensión?')) return
 
   axios.delete(`/extensions/${id}`)
-    .then(() => extensions.value = extensions.value.filter(extension => extension.id != id))
+    .then(() => {
+      extensions.value = extensions.value.filter(extension => extension.id != id)
+      results.value    = [...extensions.value]
+    })
     .catch(error => console.log(error.response.data))
 }
 
 onMounted(() => {
   extensions.value = [...props.items]
-  results.value = [...extensions.value]
+  results.value    = [...extensions.value]
 })
 </script>
 

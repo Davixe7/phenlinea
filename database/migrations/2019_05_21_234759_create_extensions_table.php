@@ -33,12 +33,10 @@ class CreateExtensionsTable extends Migration
       $table->string('owner_phone')->nullable();
       $table->string('email')->nullable();
       
-      
       $table->boolean('has_own_parking')->default(true)->nullable();
       $table->string('parking_number1')->nullable();
       $table->string('parking_number2')->nullable();
-
-      $table->boolean('has_deposit')->default(0);
+      $table->string('deposit')->nullable();
 
       $table->integer('pets_count')->nullable()->default(0);
       $table->json('vehicles')->nullable();

@@ -26,7 +26,7 @@ class Extension extends Authenticatable implements HasMedia
     'has_own_parking',
     'parking_number1',
     'parking_number2',
-    'has_deposit',
+    'deposit',
     'vehicles',
     'observation',
     'email',

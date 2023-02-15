@@ -67,7 +67,7 @@ class ExtensionController extends Controller
         'emergency_contact_name'=> $request->emergency_contact_name,
         
         'pets_count'       => $request->pets_count ?: 0,
-        'has_deposit'      => $request->has_deposit,
+        'deposit'          => $request->deposit,
         
         'has_own_parking'  => $request->has_own_parking,
         'parking_number1'  => $request->parking_number1,

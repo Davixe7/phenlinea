@@ -325,7 +325,7 @@ export default {
       this.has_own_parking = newVal.has_own_parking
       this.parkingNumber1 = newVal.parking_number1
       this.parkingNumber2 = newVal.parking_number2
-      this.hasDeposit     = newVal.has_deposit
+      this.hasDeposit     = newVal.deposit
 
       this.vehicles = (newVal.vehicles) ? newVal.vehicles : []
       this.observation = newVal.observation
@@ -423,7 +423,7 @@ export default {
         vehicles: this.vehicles,
         observation: this.observation,
         pets_count: this.petsCount,
-        has_deposit: this.hasDeposit,
+        deposit: this.deposit,
       }
       return data
     },

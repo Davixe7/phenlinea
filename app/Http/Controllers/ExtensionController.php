@@ -103,7 +103,7 @@ class ExtensionController extends Controller
         'emergency_contact'=> $request->emergency_contact,
         'emergency_contact_name'=> $request->emergency_contact_name,
         'pets_count'       => $request->pets_count,
-        'has_deposit'      => ($request->has_deposit != $extension->has_deposit) ? $request->has_deposit : $extension->has_deposit,
+        'deposit'          => ($request->deposit != $extension->deposit) ? $request->deposit : $extension->deposit,
         'has_own_parking'  => ($request->has_own_parking != $extension->has_own_parking) ? $request->has_own_parking : $extension->has_own_parking,
         'parking_number1'  => $request->parking_number1,
         'parking_number2'  => $request->parking_number2,

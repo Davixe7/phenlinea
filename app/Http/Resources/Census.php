@@ -30,7 +30,7 @@ class Census extends JsonResource
         'emergency_contact'     => $this->emergency_contact,
         'emergency_contact_name'     => $this->emergency_contact_name,
         'pets_count'      => $this->pets_count,
-        'has_deposit'     => $this->has_deposit,
+        'deposit'         => $this->deposit,
         
         'has_own_parking' => $this->has_own_parking,
         'parking_number1' => $this->parking_number1,

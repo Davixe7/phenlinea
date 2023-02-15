@@ -158,25 +158,29 @@ class WhatsappController extends Controller
       return;
     }
 
-    $path = '';
+    $phones = collect($phones)->filter(function($phone){ return ($phone && ($phone[0] == '3')); })->toArray();
 
+    $path = '';
+    $media_url = '';
+    
     if ($file = $request->file('attachment')) {
       $clearFileName = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
       $fileName = $clearFileName . time() . "." . $file->extension();
-      $path = $file->storeAs('whatsapp_attachments', $fileName);
+      $path = $file->storeAs('app/public/whatsapp_attachments', $fileName);
+      $media_url = asset("/storage/whatsapp_attachments/{$fileName}");
       Storage::append('batches.log', $path);
     }
 
     $response = $this->client->post('http://161.35.60.29/api/whatsapp-batches', [
-      'query' => [
+      'form_params' => [
         'admin_id'              => auth()->id(),
         'admin_name'            => auth()->user()->name,
         'admin_phone'           => auth()->user()->phone,
         'whatsapp_instance_id'  => auth()->user()->whatsapp_instance_id,
         'message'               => $request->message,
-        'receivers'             => implode(',', $phones)
-      ],
-      'multipart' => $path ? [['name' => 'attachment', 'contents' => fopen(storage_path('app/' . $path), 'r')]] : []
+        'receivers'             => implode(',', $phones),
+        'media_url'             => $media_url
+      ]
     ]);
 
     if ($request->expectsJson()) {

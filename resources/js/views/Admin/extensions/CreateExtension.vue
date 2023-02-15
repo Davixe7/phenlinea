@@ -118,7 +118,7 @@
                 Cuarto útil
               </label>
               <div class="col-5">
-                <input type="text" class="form-control" v-model="hasDeposit"/>
+                <input type="text" class="form-control" v-model="deposit"/>
               </div>
             </div>
 
@@ -298,7 +298,7 @@ export default {
       has_own_parking: false,
       parkingNumber1: null,
       parkingNumber2: null,
-      hasDeposit: '',
+      deposit: '',
       password: '',
       observation: '',
 
@@ -325,7 +325,7 @@ export default {
       this.has_own_parking = newVal.has_own_parking
       this.parkingNumber1 = newVal.parking_number1
       this.parkingNumber2 = newVal.parking_number2
-      this.hasDeposit     = newVal.deposit
+      this.deposit     = newVal.deposit
 
       this.vehicles = (newVal.vehicles) ? newVal.vehicles : []
       this.observation = newVal.observation

@@ -2179,7 +2179,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       has_own_parking: false,
       parkingNumber1: null,
       parkingNumber2: null,
-      hasDeposit: '',
+      deposit: '',
       password: '',
       observation: '',
       errors: [],
@@ -2203,7 +2203,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       this.has_own_parking = newVal.has_own_parking;
       this.parkingNumber1 = newVal.parking_number1;
       this.parkingNumber2 = newVal.parking_number2;
-      this.hasDeposit = newVal.deposit;
+      this.deposit = newVal.deposit;
       this.vehicles = newVal.vehicles ? newVal.vehicles : [];
       this.observation = newVal.observation;
     }
@@ -3948,20 +3948,20 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.hasDeposit,
-      expression: "hasDeposit"
+      value: _vm.deposit,
+      expression: "deposit"
     }],
     staticClass: "form-control",
     attrs: {
       type: "text"
     },
     domProps: {
-      value: _vm.hasDeposit
+      value: _vm.deposit
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.hasDeposit = $event.target.value;
+        _vm.deposit = $event.target.value;
       }
     }
   })])]), _vm._v(" "), _vm._m(11), _vm._v(" "), _c("div", {

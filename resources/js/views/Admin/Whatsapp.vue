@@ -180,6 +180,7 @@ function send() {
       message.value = ''
       receivers.value = []
       attachmentInput.value.value = ''
+      props.history.unshift( response.data.data );
       alert('Mensaje enviado exitosamente')
     })
     .catch(error => console.log(error))

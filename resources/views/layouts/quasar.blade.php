@@ -9,9 +9,11 @@
 </head>
 
 <body>
-  <div id="q-app">
-    @include('layouts.navbar')
-    @yield('content')
+  <div id="app">
+    <div id="q-app">
+      @include('layouts.navbar')
+      @yield('content')
+    </div>
   </div>
 
   <!-- Scripts -->
@@ -21,4 +23,5 @@
   <script src="https://cdn.jsdelivr.net/npm/quasar@2.11.4/dist/icon-set/material-symbols-outlined.umd.prod.js"></script>
   @yield('scripts')
 </body>
+
 </html>

@@ -154,11 +154,12 @@ class WhatsappController extends Controller
       $phones = array_filter($phones_2->merge($phones_1)->toArray());
     }
 
+    $phones = collect($phones)->filter(function($phone){ return ($phone && ($phone[0] == '3')); })->toArray();
     if (!$phones || !count($phones)) {
-      return;
+      return response()->json(['data'=>'Error'], 422);
     }
 
-    $phones = collect($phones)->filter(function($phone){ return ($phone && ($phone[0] == '3')); })->toArray();
+    $receivers = implode(',', $phones);
 
     $path = '';
     $media_url = '';
@@ -178,13 +179,22 @@ class WhatsappController extends Controller
         'admin_phone'           => auth()->user()->phone,
         'whatsapp_instance_id'  => auth()->user()->whatsapp_instance_id,
         'message'               => $request->message,
-        'receivers'             => implode(',', $phones),
+        'receivers'             => $receivers,
         'media_url'             => $media_url
       ]
     ]);
 
+    return $response->getBody();
+
+    $response_body = json_encode(json_decode($response->getBody()));
+    Storage::append('batches.log', $response_body);
+
+    return $response;
+
+    $response = json_decode($response_body, true);
+
     if ($request->expectsJson()) {
-      return response()->json(['data' => 'Message sent successfully']);
+      return response()->json(['data' => $response]);
     }
     return redirect()->route('whatsapp.index')->with(['message' => 'Mensaje enviado exitosamente']);
   }

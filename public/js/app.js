@@ -2101,6 +2101,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         message.value = '';
         receivers.value = [];
         attachmentInput.value.value = '';
+        props.history.unshift(response.data.data);
         alert('Mensaje enviado exitosamente');
       })["catch"](function (error) {
         return console.log(error);

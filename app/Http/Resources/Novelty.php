@@ -15,7 +15,9 @@ class Novelty extends JsonResource
   public function toArray($request)
   {
     $data = parent::toArray($request);
-    $data['pictures'] = MediaResource::collection($this->getMedia('pictures'));
+    $data['pictures']     = MediaResource::collection($this->getMedia('pictures'));
+    $data['pictures_url'] = $this->getMedia('pictures')->pluck('original_url')->toArray();
+    
     return $data;
   }
 }

@@ -28,7 +28,14 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        //$schedule->call(function(){})->everyMinute();
+        $schedule->call(function(){
+            
+            DB::table('admins')->update([
+                'whatsapp_instance_id' => null,
+                'whatsapp_status'      => 'offline',
+            ]);
+            
+        })->daily();
     }
 
     /**

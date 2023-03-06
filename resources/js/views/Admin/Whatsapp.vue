@@ -179,7 +179,8 @@ function send() {
     .then(response => {
       message.value = ''
       receivers.value = []
-      attachmentInput.value.value = ''
+      attachmentInput.value = ''
+      attachment.value = ''
       props.history.unshift( response.data.data );
       alert('Mensaje enviado exitosamente')
     })

@@ -87,6 +87,7 @@ Route::name('admin.')->prefix('admin')->middleware('auth:web')->group(function (
   Route::resource('users', 'Admin\UserController');
   Route::resource('admins', 'Admin\AdminController');
   Route::resource('payments', 'Admin\PaymentController');
+  Route::get('porterias/export', 'Admin\PorteriaController@export');
   Route::resource('porterias', 'Admin\PorteriaController');
   Route::resource('extensions', 'ExtensionController');
 

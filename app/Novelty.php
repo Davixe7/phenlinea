@@ -12,7 +12,7 @@ class Novelty extends Model implements HasMedia
 
   protected $fillable = ['title', 'description', 'porteria_id'];
   protected $hidden   = ['updated_at'];
-  protected $appends  = ['excerpt','pictures_url'];
+  protected $appends  = ['excerpt'];
   protected $casts     = [
     'excerpt'  => 'string',
     'read'     => 'integer'
@@ -26,7 +26,4 @@ class Novelty extends Model implements HasMedia
     return substr($this->description, 0, 80) . '...';
   }
 
-  public function getPicturesUrlAttribute(){
-    $this->getMedia('pictures')->pluck('url')->toArray();
-  }
 }

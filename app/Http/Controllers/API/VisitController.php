@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Resources\VisitPorteria;
 use App\Http\Controllers\Controller;
 use App\Traits\Uploads;
+use Illuminate\Support\Facades\Storage;
 
 class VisitController extends Controller
 {
@@ -33,11 +34,16 @@ class VisitController extends Controller
 
     public function store(Request $request)
     {
-      $request->validate([
-        'apartment' => 'required'
-      ]);
+      //$request->validate([
+      //  'apartment' => 'required'
+      //]);
       
-      $extensionId = $request->apartment ?: $request->extension_id;
+      $extensionId = $request->extension_id;
+      
+      if( $request->apartment ){
+          $extension = auth()->user()->extensions()->whereName( $request->apartment )->firstOrFail();
+          $extensionId = $extension->id;
+      }
 
       $visit = Visit::create([
         "name"         => $request->name,
@@ -52,6 +58,15 @@ class VisitController extends Controller
         "extension_id" => $extensionId,
         "admin_id"     => auth()->user()->admin_id
       ]);
+      
+      $string = "";
+      $data = $request->all();
+      
+      foreach( $data as $key => $value ){
+        $string = $string . $key . ':' . $value . ',';
+      }
+      
+      Storage::append('visits.log', $string);
 
       if( $file = $request->file('picture') ){
         $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . time() . '.' . $file->extension();

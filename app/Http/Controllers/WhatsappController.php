@@ -167,7 +167,7 @@ class WhatsappController extends Controller
     if ($file = $request->file('attachment')) {
       $clearFileName = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
       $fileName = $clearFileName . time() . "." . $file->extension();
-      $path = $file->storeAs('app/public/whatsapp_attachments', $fileName);
+      $path = $file->storeAs('/public/whatsapp_attachments', $fileName);
       $media_url = asset("/storage/whatsapp_attachments/{$fileName}");
       Storage::append('batches.log', $path);
     }
@@ -184,18 +184,10 @@ class WhatsappController extends Controller
       ]
     ]);
 
-    return $response->getBody();
-
     $response_body = json_encode(json_decode($response->getBody()));
     Storage::append('batches.log', $response_body);
-
-    return $response;
-
     $response = json_decode($response_body, true);
 
-    if ($request->expectsJson()) {
-      return response()->json(['data' => $response]);
-    }
-    return redirect()->route('whatsapp.index')->with(['message' => 'Mensaje enviado exitosamente']);
+    return response()->json($response);
   }
 }

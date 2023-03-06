@@ -5,6 +5,11 @@
         <div class="table-responsive">
           <div class="d-flex align-items-center">
             <h1>Porterias</h1>
+            
+            <a href="/admin/porterias/export" class="ms-auto btn btn-sm btn-outline-success">
+                Exportar XLS
+            </a>
+            
             <SearchForm
               v-show="porterias && porterias.length"
               :collection="porterias"
@@ -18,7 +23,6 @@
               <th>Admin</th>
               <th>Nombre</th>
               <th>Correo</th>
-              <th>No. de extensiones</th>
               <th class="text-right">Opciones</th>
             </thead>
             <tbody>
@@ -26,7 +30,6 @@
                 <td>{{ porteria.admin ? porteria.admin.name : '' }}</td>
                 <td>{{ porteria.name }}</td>
                 <td>{{ porteria.email }}</td>
-                <td>{{ porteria.extensions_count }}</td>
                 <td class="text-right">
                   <div class="btn-group">
                     <a href="#" class="btn btn-sm btn-secondary" @click="editPorteria(porteria)">

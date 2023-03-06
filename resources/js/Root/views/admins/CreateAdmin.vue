@@ -101,7 +101,13 @@ function loadPicture() {
 function storeAdmin() {
   axios.post('/admin/admins', loadData())
   .then(response => emits('adminStored', response.data.data))
-  .catch(error => errors.value = error.response.data.errors)
+  .catch(error   => {
+      if(error.response.status = '422'){
+          errors.value = error.response.data.errors
+          return
+      }
+      alert('Error al actualizar')
+  })
 }
 
 function updateAdmin() {
@@ -109,7 +115,13 @@ function updateAdmin() {
   data.append('_method', 'PUT');
   axios.post('/admin/admins/' + props.admin.id, data)
   .then(response => emits('adminUpdated', response.data.data))
-  .catch(error   => console.log(error))
+  .catch(error   => {
+      if(error.response.status = '422'){
+          errors.value = error.response.data.errors
+          return
+      }
+      alert('Error al actualizar')
+  })
 }
 
 function loadData() {

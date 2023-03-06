@@ -27,7 +27,7 @@ class VisitPorteria extends JsonResource
         "plate"     => $this->plate,
         "checkin"   => $this->checkin,
         "checkout"  => $this->checkout,
-        "extension" => $this->extension ? $this->extension->only(['id','name']) : null,
+        "extension" => $this->extension ? ['id' => intval($this->extension->name), 'name'=>$this->extension->name] : null,
         "admin_id"  => $this->admin_id,
         "picture"   => $this->getFirstMediaUrl('picture')
       ];

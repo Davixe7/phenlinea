@@ -60,6 +60,10 @@ class InvoiceController extends Controller
     ]);
 
     $date = $request->year . '-' . $request->month . '-01';
+    
+    if( Invoice::where('date', $date)->count() ){
+        DB::table('invoices')->where('date', $date)->delete();
+    }
 
     if (!Storage::exists($folder = 'public/invoices')) {
       Storage::makeDirectory($folder);

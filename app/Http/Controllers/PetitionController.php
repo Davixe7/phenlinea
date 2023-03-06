@@ -120,7 +120,7 @@ class PetitionController extends Controller
 
     $client->post('http://161.35.60.29/api/pqrs', ['query' => $data]);
 
-    return response()->json(['data' => $petition]);
+    return new PetitionResource( $petition );
   }
 
   /**

@@ -9,7 +9,8 @@ class ExtensionsExport implements FromCollection
 {
     public function collection()
     {
-      $exts = request()->admin->extensions()->get(['name', 'phone_1', 'phone_2', 'admin_id']);
+      $admin = request()->admin ?: auth()->user(); 
+      $exts = $admin->extensions()->get(['name', 'phone_1', 'phone_2', 'admin_id']);
       return $exts;
     }
 }

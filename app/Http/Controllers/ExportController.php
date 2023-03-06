@@ -8,10 +8,16 @@ use App\Http\Resources\ResidentExport;
 use Rap2hpoutre\FastExcel\FastExcel;
 use Rap2hpoutre\FastExcel\SheetCollection;
 use App\Admin;
+use DB;
 
 class ExportController extends Controller
 {
-  public function exportCensus(Admin $admin){
+  public function exportCensus(Admin $admin = null){
+      
+    if( !$admin && auth()->user()->nit ){
+        $admin = auth()->user();
+    }
+    
     $extensions = ExtensionsExport::collection( $admin->extensions )->toArray(true);
     $residents  = ResidentExport::collection( $admin->residents )->toArray(true);
     

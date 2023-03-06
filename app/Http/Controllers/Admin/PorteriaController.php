@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Http\Resources\Porteria as PorteriaResource;
 use App\Http\Requests\StorePorteria as StorePorteriaRequest;
 use App\Http\Controllers\Controller;
+use Rap2hpoutre\FastExcel\FastExcel;
+use Illuminate\Support\Facades\DB;
 
 class PorteriaController extends Controller
 {
@@ -23,7 +25,7 @@ class PorteriaController extends Controller
   
   public function index()
   {
-    $porterias = Porteria::orderBy('created_at', 'DESC')->with('admin')->withCount('extensions')->get();
+    $porterias = Porteria::orderBy('created_at', 'DESC')->with('admin')->get();
     $admins    = Admin::orderBy('name', 'ASC')->get();
 
     return view('super.porterias.index', compact('porterias', 'admins'));
@@ -86,6 +88,16 @@ class PorteriaController extends Controller
   * @param  \App\Porteria  $porteria
   * @return \Illuminate\Http\Response
   */
+  
+  public function export(Request $request){
+    $porterias = Porteria
+                ::select('porterias.id', 'porterias.name', 'porterias.email')
+                ->withCount('extensions')
+                ->get();
+                
+    return (new FastExcel( $porterias ))->download("phln_porterias_" . time() . ".xlsx");
+  }
+  
   public function update(Request $request, Porteria $porteria)
   {
     $request->validate([

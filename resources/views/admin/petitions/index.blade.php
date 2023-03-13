@@ -23,7 +23,17 @@
               </div>
             </div>
             <div class="col-6 flex justify-end align-items-center">
-              <q-btn href="/pqrs/qr/?date={{ now() }}" flat icon="sym_o_qr_code_2" label="Descargar QR">
+              <q-btn flat icon="sym_o_qr_code_2" label="Descargar QR">
+              <q-menu>
+                <q-list style="min-width: 100px">
+                  <q-item clickable v-close-popup href="/pqrs/qr/?date={{ now() }}">
+                    <q-item-section>Formato simple</q-item-section>
+                  </q-item>
+                  <q-item clickable v-close-popup href="/pqrs/qr/?date={{ now() }}&type=template">
+                    <q-item-section>Con plantilla informativa</q-item-section>
+                  </q-item>
+                </q-list>
+              </q-menu>
               </q-btn>
             </div>
           </div>
@@ -147,140 +157,140 @@
   }
 </style>
 <script>
-  const app = Vue.createApp({
-    setup() {
-      const search = Vue.ref('')
-      const currentPqrs = Vue.ref(null)
+const app = Vue.createApp({
+  setup() {
+    const search = Vue.ref('')
+    const currentPqrs = Vue.ref(null)
 
-      const rows = Vue.ref([])
-      const filters = Vue.ref([{
-          value: 'read_at',
-          label: 'No leídos'
-        },
-        {
-          value: 'replied_at',
-          label: 'Sin responder'
-        },
-        {
-          value: 'all',
-          label: 'Todos'
-        },
-      ])
-
-      const filter = Vue.ref({
+    const rows = Vue.ref([])
+    const filters = Vue.ref([{
+        value: 'read_at',
+        label: 'No leídos'
+      },
+      {
+        value: 'replied_at',
+        label: 'Sin responder'
+      },
+      {
         value: 'all',
         label: 'Todos'
+      },
+    ])
+
+    const filter = Vue.ref({
+      value: 'all',
+      label: 'Todos'
+    })
+
+    const results = Vue.computed(() => {
+      if (filter.value.value == 'all') return [...rows.value]
+      return rows.value.filter(f => f[filter.value.value] == null)
+    })
+
+    function markAsRead(pqrs) {
+      currentPqrs.value = pqrs
+      if (pqrs.read_at != null) return
+      axios.post(`/pqrs/${currentPqrs.value.id}/markAsRead`, {_method: 'PUT'})
+      .then(response => {
+        currentPqrs.value = {...response.data.data}
+        rows.value.splice(rows.value.indexOf(pqrs), 1, currentPqrs.value)
       })
+    }
 
-      const results = Vue.computed(() => {
-        if (filter.value.value == 'all') return [...rows.value]
-        return rows.value.filter(f => f[filter.value.value] == null)
+    function reply() {
+      let data = {...currentPqrs.value,_method: 'PUT'}
+      axios.post(`/pqrs/${currentPqrs.value.id}`, data)
+      .then(response => {
+        rows.value.splice(rows.value.indexOf(currentPqrs.value), 1, {...response.data.data})
+        currentPqrs.value = {...response.data.data}
+        Quasar.Notify.create('Respuesta enviada')
       })
+    }
 
-      function markAsRead(pqrs) {
-        currentPqrs.value = pqrs
-        if (pqrs.read_at != null) return
-        axios.post(`/pqrs/${currentPqrs.value.id}/markAsRead`, {_method: 'PUT'})
-        .then(response => {
-          currentPqrs.value = {...response.data.data}
-          rows.value.splice(rows.value.indexOf(pqrs), 1, currentPqrs.value)
-        })
-      }
+    Vue.onMounted(() => {
+      axios.get('/pqrs').then(response => rows.value = response.data.data)
+    })
 
-      function reply() {
-        let data = {...currentPqrs.value,_method: 'PUT'}
-        axios.post(`/pqrs/${currentPqrs.value.id}`, data)
-        .then(response => {
-          rows.value.splice(rows.value.indexOf(currentPqrs.value), 1, {...response.data.data})
-          currentPqrs.value = {...response.data.data}
-          Quasar.Notify.create('Respuesta enviada')
-        })
-      }
+    //Lightbox configuration
+    const visibleRef = Vue.ref(false)
+    const indexRef = Vue.ref(0)
+    const showImg = (index) => {
+      indexRef.value = index
+      visibleRef.value = true
+    }
+    const onHide = () => visibleRef.value = false
 
-      Vue.onMounted(() => {
-        axios.get('/pqrs').then(response => rows.value = response.data.data)
-      })
+    return {
+      visibleRef,
+      indexRef,
+      showImg,
+      onHide,
 
-      //Lightbox configuration
-      const visibleRef = Vue.ref(false)
-      const indexRef = Vue.ref(0)
-      const showImg = (index) => {
-        indexRef.value = index
-        visibleRef.value = true
-      }
-      const onHide = () => visibleRef.value = false
+      search,
+      rows,
+      results,
+      filters,
+      filter,
+      currentPqrs,
+      markAsRead,
+      reply,
+      columns: [{
+          align: 'left',
+          name: 'id',
+          label: 'Código',
+          field: 'id',
+          sortable: true
+        },
+        {
+          align: 'left',
+          name: 'created_at',
+          label: 'Creado',
+          field: 'created_at',
+          sortable: true
+        },
+        {
+          align: 'left',
+          name: 'read_at',
+          label: 'Leído',
+          field: 'read_at',
+          sortable: true
+        },
+        {
+          align: 'left',
+          name: 'replied_at',
+          label: 'Respuesta enviada',
+          field: 'replied_at',
+          sortable: true
+        },
+        {
+          align: 'left',
+          name: 'name',
+          label: 'Nombres',
+          field: 'name',
+          sortable: true
+        },
+        {
+          align: 'left',
+          name: 'phone',
+          label: 'Teléfono',
+          field: 'phone',
+          sortable: true
+        },
+        {
+          align: 'right',
+          name: 'action',
+          label: 'Acciones'
+        },
+      ],
+    }
+  },
+})
 
-      return {
-        visibleRef,
-        indexRef,
-        showImg,
-        onHide,
+app.use(Quasar)
+Quasar.lang.set(Quasar.lang.es)
+Quasar.iconSet.set(Quasar.iconSet.materialSymbolsOutlined)
 
-        search,
-        rows,
-        results,
-        filters,
-        filter,
-        currentPqrs,
-        markAsRead,
-        reply,
-        columns: [{
-            align: 'left',
-            name: 'id',
-            label: 'Código',
-            field: 'id',
-            sortable: true
-          },
-          {
-            align: 'left',
-            name: 'created_at',
-            label: 'Creado',
-            field: 'created_at',
-            sortable: true
-          },
-          {
-            align: 'left',
-            name: 'read_at',
-            label: 'Leído',
-            field: 'read_at',
-            sortable: true
-          },
-          {
-            align: 'left',
-            name: 'replied_at',
-            label: 'Respuesta enviada',
-            field: 'replied_at',
-            sortable: true
-          },
-          {
-            align: 'left',
-            name: 'name',
-            label: 'Nombres',
-            field: 'name',
-            sortable: true
-          },
-          {
-            align: 'left',
-            name: 'phone',
-            label: 'Teléfono',
-            field: 'phone',
-            sortable: true
-          },
-          {
-            align: 'right',
-            name: 'action',
-            label: 'Acciones'
-          },
-        ],
-      }
-    },
-  })
-
-  app.use(Quasar)
-  Quasar.lang.set(Quasar.lang.es)
-  Quasar.iconSet.set(Quasar.iconSet.materialSymbolsOutlined)
-
-  app.use(VueEasyLightbox)
-  app.mount('#q-app')
+app.use(VueEasyLightbox)
+app.mount('#q-app')
 </script>
 @endsection

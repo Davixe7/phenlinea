@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Petition as PetitionResource;
 use App\Petition;
 use App\Admin;
-use Illuminate\Support\Str;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use GuzzleHttp\Client;
 
 class PetitionController extends Controller
@@ -27,19 +27,9 @@ class PetitionController extends Controller
       return PetitionResource::collection(auth()->user()->petitions()->orderBy('created_at', 'DESC')->get());
     }
 
-    $path    = "qr/pqrs_" . auth()->id() . "_qr.svg";
-    $qr_path = public_path( $path );
-    $qr_url  = url($path);
-    $admin_pqrs_url  = url("unidades/" . auth()->id() . "/pqrs");
-
-    \QrCode::size(500)
-    ->format('svg')
-    ->generate($admin_pqrs_url, $qr_path);
-
-    $qr = ['path' => $qr_path, 'url' => url($path)];
     $pqrss = auth()->user()->petitions()->orderBy('created_at', 'DESC')->get();
 
-    return view('admin.petitions.index', compact('pqrss', 'qr'));
+    return view('admin.petitions.index', compact('pqrss'));
   }
 
   /**
@@ -227,19 +217,25 @@ class PetitionController extends Controller
     return response()->json(['data' => "Petition $petition->id deleted successfuly"]);
   }
 
-  public function qr()
+  public function qr(Request $request)
   {
-    $adminId = auth()->id();
-    $path = public_path("qr/pqrs_" . $adminId . "_qr.svg");
+    $admin_id = auth()->id();
+    $url      = route('pqrs.create', ['admin' => $admin_id]);
+    $filename = 'qr_' . now() . '.jpg';
+    $path     = public_path("qr/pqrs_{$admin_id}_qr.jpeg");
 
-    if (!is_file($path)) {
-      \QrCode::size(500)->format('svg')->generate(url("unidades/" . auth()->user()->slug . "/pqrs"), $path);
+    QrCode::size(410)->format('png')->generate($url, $path);
+    $qr = \Image::make( $path );
+
+    if( $request->type == 'template' ){
+      $template_path = public_path("qr/pqrs_{$admin_id}_template_qr.jpeg");
+      $template = \Image::make( storage_path('app/qrs/template.jpeg') );
+      $template->insert($path, 'top-right', 76, 558)->save( $template_path );
+
+      return response()->download($template_path, $filename, ['Content-Type' => 'image/jpg+xml']);
     }
-    $qr = [
-      'path' => $path,
-      'url'  => url("qr/pqrs_" . $adminId . "_qr.svg")
-    ];
+
     ob_end_clean();
-    return response()->download($qr['path'], 'qr_' . now() .  '.svg', ['Content-Type' => 'image/svg+xml']);
+    return response()->download($path, $filename, ['Content-Type' => 'image/jpg+xml']);
   }
 }

@@ -72,8 +72,12 @@ class AdminController extends Controller
     return view('admins.edit', ['admin'=>$admin]);
   }
 
-  public function update(StoreAdminRequest $request, Admin $admin)
+  public function update(Request $request, Admin $admin)
   {
+    $request->validate([
+      'nit' => 'required|unique:admins,nit,' . $admin->id
+    ]);
+
     $profile_picture = $this->upload($request, 'picture');
     $profile_picture = $profile_picture ? $profile_picture[0]['url'] : null;
     $admin->update([

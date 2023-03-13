@@ -78,8 +78,6 @@ class AdminController extends Controller
       'nit' => 'required|unique:admins,nit,' . $admin->id
     ]);
 
-    $profile_picture = $this->upload($request, 'picture');
-    $profile_picture = $profile_picture ? $profile_picture[0]['url'] : null;
     $admin->update([
       'name'     => ($request->name) ?: $admin->name,
       'phone'    => ($request->phone) ?: $admin->phone,
@@ -90,7 +88,6 @@ class AdminController extends Controller
       'password' => ($request->password) ? bcrypt($request->password) : $admin->password,
       'contact_email' => ($request->contact_email) ?: $admin->contact_email,
       'status'        => $request->status,
-      'picture'       => $profile_picture ?: $admin->picture,
       'slug'          => Str::slug($request->name) ?: $admin->slug
     ]);
 

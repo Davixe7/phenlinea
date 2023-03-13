@@ -3,7 +3,7 @@
     <div class="form-group">
       <label for="admin_id">Administrador</label>
       <select name="admin_id" id="admin_id" class="form-control" v-model="porteria.admin_id" required>
-        <option v-for="admin in admins" :value="admin.id">{{ admin.id + ' ' + admin.name }}</option>
+        <option v-for="admin in admins" :value="admin.id">{{ admin.name }}</option>
       </select>
     </div>
 

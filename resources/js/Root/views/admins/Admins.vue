@@ -137,7 +137,8 @@ const AdminsModal   = ref(null)
 const PaymentsModal = ref(null)
 
 function appendAdmin(admin) {
-  admins.value.push(admin)
+  results.value = [...props.admins]
+  results.value.push(admin)
   $(AdminsModal.value).modal('hide')
 }
 
@@ -154,14 +155,16 @@ function editPayment(admin) {
 }
 
 function updateAdmin(admin) {
-  admins.value = props.admins.splice( props.admins.indexOf( admin.value ), 1, admin )
+  props.admins = props.admins.splice( props.admins.indexOf( admin.value ), 1, admin )
   $(AdminsModal.value).modal('hide')
 }
 
 function deleteAdmin(id) {
   if (!window.confirm('¿Seguro que quieres eliminar al administrador?')) return
   axios.delete(`/admin/admins/${id}`)
-  .then(()     => admins.value = admins.filter(admin => admin.id != id))
+  .then(()     => {
+    props.admins = props.admins.filter(admin => admin.id != id)
+  })
   .catch(error => errors.value = error.response.data.errors)
 }
 

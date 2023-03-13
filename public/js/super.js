@@ -1725,7 +1725,11 @@ __webpack_require__.r(__webpack_exports__);
       axios.post('/admin/admins', loadData()).then(function (response) {
         return emits('adminStored', response.data.data);
       })["catch"](function (error) {
-        return errors.value = error.response.data.errors;
+        if (error.response.status = '422') {
+          errors.value = error.response.data.errors;
+          return;
+        }
+        alert('Error al actualizar');
       });
     }
     function updateAdmin() {
@@ -1734,7 +1738,11 @@ __webpack_require__.r(__webpack_exports__);
       axios.post('/admin/admins/' + props.admin.id, data).then(function (response) {
         return emits('adminUpdated', response.data.data);
       })["catch"](function (error) {
-        return console.log(error);
+        if (error.response.status = '422') {
+          errors.value = error.response.data.errors;
+          return;
+        }
+        alert('Error al actualizar');
       });
     }
     function loadData() {
@@ -3520,7 +3528,12 @@ var render = function render() {
     staticClass: "table-responsive"
   }, [_c("div", {
     staticClass: "d-flex align-items-center"
-  }, [_c("h1", [_vm._v("Porterias")]), _vm._v(" "), _c(_setup.SearchForm, {
+  }, [_c("h1", [_vm._v("Porterias")]), _vm._v(" "), _c("a", {
+    staticClass: "ms-auto btn btn-sm btn-outline-success",
+    attrs: {
+      href: "/admin/porterias/export"
+    }
+  }, [_vm._v("\n              Exportar XLS\n          ")]), _vm._v(" "), _c(_setup.SearchForm, {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -3542,7 +3555,7 @@ var render = function render() {
   })], 1), _vm._v(" "), _setup.results && _setup.results.length ? _c("table", {
     staticClass: "table"
   }, [_vm._m(0), _vm._v(" "), _c("tbody", _vm._l(_setup.results, function (porteria) {
-    return _c("tr", [_c("td", [_vm._v(_vm._s(porteria.admin ? porteria.admin.name : ""))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(porteria.name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(porteria.email))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(porteria.extensions_count))]), _vm._v(" "), _c("td", {
+    return _c("tr", [_c("td", [_vm._v(_vm._s(porteria.admin ? porteria.admin.name : ""))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(porteria.name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(porteria.email))]), _vm._v(" "), _c("td", {
       staticClass: "text-right"
     }, [_c("div", {
       staticClass: "btn-group"
@@ -3632,7 +3645,7 @@ var staticRenderFns = [function () {
   var _vm = this,
     _c = _vm._self._c,
     _setup = _vm._self._setupProxy;
-  return _c("thead", [_c("th", [_vm._v("Admin")]), _vm._v(" "), _c("th", [_vm._v("Nombre")]), _vm._v(" "), _c("th", [_vm._v("Correo")]), _vm._v(" "), _c("th", [_vm._v("No. de extensiones")]), _vm._v(" "), _c("th", {
+  return _c("thead", [_c("th", [_vm._v("Admin")]), _vm._v(" "), _c("th", [_vm._v("Nombre")]), _vm._v(" "), _c("th", [_vm._v("Correo")]), _vm._v(" "), _c("th", {
     staticClass: "text-right"
   }, [_vm._v("Opciones")])]);
 }, function () {

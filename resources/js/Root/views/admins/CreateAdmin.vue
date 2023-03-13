@@ -61,18 +61,6 @@
       </select>
     </div>
 
-    <div class="form-group">
-      <label for="picture">
-        Foto de Perfil
-        <span v-if="admin && admin.picture">
-          <a :href="'/' + admin.picture" target="_blank">
-            Ver actual
-          </a>
-        </span>
-      </label>
-      <input type="file" class="form-control" name="picture" ref="pictureInput" @change="loadPicture">
-    </div>
-
     <div class="form-group text-right">
       <button v-if="!editing" class="btn btn-primary" @click="storeAdmin">Enviar</button>
       <button v-else class="btn btn-primary" @click="updateAdmin">Actualizar</button>
@@ -85,18 +73,12 @@ import { ref, watch } from 'vue'
 
 const props = defineProps(['admin', 'editing'])
 const errors = ref({})
-const new_picture = ref(null)
-const pictureInput = ref(null)
 
 const emits = defineEmits(['adminStored', 'adminUpdated'])
 
 watch(props.admin, (newAdmin, oldAdmin) => {
   if (!newAdmin.id) clearForm()
 })
-
-function loadPicture() {
-  new_picture.value = pictureInput.value.files[0];
-}
 
 function storeAdmin() {
   axios.post('/admin/admins', loadData())
@@ -127,13 +109,11 @@ function updateAdmin() {
 function loadData() {
   let data = new FormData();
   Object.keys(props.admin).forEach(key => data.append(key, props.admin[key]))
-  data.append('picture', new_picture.value)
   return data;
 }
 
 function clearForm() {
   errors.value = []
-  pictureInput.value = ''
 }
 </script>
 

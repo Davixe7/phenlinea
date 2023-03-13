@@ -40,9 +40,7 @@ class AdminController extends Controller
   }
 
   public function store(StoreAdminRequest $request)
-  {
-    $profile_picture = $this->upload($request, 'picture');
-    
+  { 
     $admin = Admin::create([
       'contact_email'      => $request->contact_email,
       'nit'      => $request->nit,
@@ -54,8 +52,6 @@ class AdminController extends Controller
       'email'      => $request->email,
       'password'   => bcrypt( $request->password ),
       'slug'       => Str::slug($request->name),
-      
-      'picture'    => $profile_picture ? $profile_picture[0]['url'] : null
     ]);
     
     if( $admin ){

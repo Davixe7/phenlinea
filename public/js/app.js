@@ -2100,7 +2100,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       axios.post('/whatsapp/send', data).then(function (response) {
         message.value = '';
         receivers.value = [];
-        attachmentInput.value.value = '';
+        attachmentInput.value = '';
+        attachment.value = '';
         props.history.unshift(response.data.data);
         alert('Mensaje enviado exitosamente');
       })["catch"](function (error) {

@@ -72,8 +72,12 @@ class AdminController extends Controller
     return view('admins.edit', ['admin'=>$admin]);
   }
 
-  public function update(StoreAdminRequest $request, Admin $admin)
+  public function update(Request $request, Admin $admin)
   {
+    $request->validate([
+      'nit' => 'required|unique:admins,nit,' . $admin->id
+    ]);
+
     $admin->update([
       'name'     => ($request->name) ?: $admin->name,
       'phone'    => ($request->phone) ?: $admin->phone,

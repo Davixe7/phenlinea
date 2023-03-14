@@ -26,7 +26,7 @@ class PorteriaController extends Controller
   public function index()
   {
     $porterias = Porteria::orderBy('created_at', 'DESC')->with('admin')->get();
-    $admins    = Admin::orderBy('name', 'ASC')->get();
+    $admins    = Admin::orderBy('id', 'ASC')->get();
 
     return view('super.porterias.index', compact('porterias', 'admins'));
   }

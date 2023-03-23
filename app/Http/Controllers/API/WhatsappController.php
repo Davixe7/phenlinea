@@ -52,7 +52,7 @@ class WhatsappController
     if ($file = $request->file('media')) {
       $media             = $extension->addMedia($file)->toMediaCollection('deliveries');
       $data['type']      = 'media';
-      $data['media_url'] = $extension->getFirstMedia('deliveries')->original_url;
+      $data['media_url'] = $extension->getMedia('deliveries')->last()->getUrl();
     }
 
     foreach( $extension->valid_whatsapp_phone_numbers as $phone ){

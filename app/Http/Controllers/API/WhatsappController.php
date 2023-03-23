@@ -41,35 +41,22 @@ class WhatsappController
       'type'         => 'text',
       'message'      => $this->getMessage( $extension->name, $extension->admin->name )
     ];
-
-    $media = null;
-
+    
+    //if( $extension->name == '1000' ){
+    //  $data['number'] = '584147912134';
+    //  $response = $this->api->post('send.php', ['query' => $data]);
+    //  return $response->getBody();
+    //}
+    
+    $media             = null;
     if ($file = $request->file('media')) {
       $media             = $extension->addMedia($file)->toMediaCollection('deliveries');
       $data['type']      = 'media';
       $data['media_url'] = $extension->getFirstMedia('deliveries')->original_url;
     }
-    
-    
-    if( $extension->name == '1000' ){
-      $data['number'] = '584147912134';
-      $response = $this->api->post('send.php', ['query' => $data]);
-      return $response->getBody();
-    }
 
-    $phonesCount = 2;
-    $validPhones = [];
-
-    for($i = 0; $i < $phonesCount; $i++){
-      $index = $i + 1;
-      $phone_first_number = $extension["phone_{$index}"] ?
-                            $extension["phone_{$index}"][0] : null;
-      if( $phone_first_number != '3'){ continue; }
-      $validPhones[] = '57' . $extension["phone_{$index}"];
-    }
-
-    foreach( $validPhones as $phone ){
-      $data['number'] = $phone;
+    foreach( $extension->valid_whatsapp_phone_numbers as $phone ){
+      $data['number'] = '57' . $phone;
       $this->api->post('send.php', ['query' => $data]);
     }
 

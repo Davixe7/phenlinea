@@ -10,6 +10,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 class Extension extends Authenticatable implements HasMedia
 {
   use InteractsWithMedia;
+  
   protected $fillable = [
     'name',
     'password',
@@ -162,5 +163,13 @@ class Extension extends Authenticatable implements HasMedia
       $plates .= $v['plate'] . " ";
     });
     return str_replace(" "," - ",trim($plates));
+  }
+  
+  public function getValidWhatsappPhoneNumbersAttribute(){
+    $numbers = collect([$this->phone_1, $this->phone_2, $this->phone_3, $this->phone_4]);
+    $numbers = $numbers->filter(function($number){
+        return $number && $number[0] == '3';
+    });
+    return $numbers->take(2)->toArray();
   }
 }

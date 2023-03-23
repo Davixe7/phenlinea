@@ -70,7 +70,7 @@ class WhatsappController extends Controller
     if (auth()->user()->whatsapp_status == 'online') {
       $extensions = auth()->user()->extensions()->orderBy('name')->get();
 
-      $response = $this->client->get('http://161.35.60.29/batches/?user_id=' . auth()->id());
+      $response = $this->client->get('http://161.35.60.29/phenlinea-messages/batches/?user_id=' . auth()->id());
       $history  = json_decode($response->getBody())->data;
       $whatsapp_instance_id = auth()->user()->whatsapp_instance_id;
 
@@ -188,7 +188,7 @@ class WhatsappController extends Controller
     // ]);
 
     try {
-      $response = $this->client->post('http://161.35.60.29/api/batches', [
+      $response = $this->client->post('http://161.35.60.29/phenlinea-messages/api/batches', [
         'form_params' => [
           'user_id'               => auth()->id(),
           'instance_id'           => auth()->user()->whatsapp_instance_id,

@@ -39,7 +39,7 @@ class WhatsappController
       'access_token' => '3f8b18194536bdafa301c662dc9caa4c',
       'instance_id'  => '63E4086C78BC6',
       'type'         => 'text',
-      'message'      => $this->getMessage( $extension->name, $extension->admin->name )
+      'message'      => $this->getMessage( $extension->admin->name, $extension->name )
     ];
     
     //if( $extension->name == '1000' ){

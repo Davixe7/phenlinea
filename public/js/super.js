@@ -1638,7 +1638,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     var AdminsModal = (0,vue__WEBPACK_IMPORTED_MODULE_3__.ref)(null);
     var PaymentsModal = (0,vue__WEBPACK_IMPORTED_MODULE_3__.ref)(null);
     function appendAdmin(admin) {
-      admins.value.push(admin);
+      results.value = _toConsumableArray(props.admins);
+      results.value.push(admin);
       $(AdminsModal.value).modal('hide');
     }
     function editAdmin(admin) {
@@ -1652,13 +1653,13 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       $(PaymentsModal.value).modal('show');
     }
     function updateAdmin(admin) {
-      admins.value = props.admins.splice(props.admins.indexOf(admin.value), 1, admin);
+      props.admins = props.admins.splice(props.admins.indexOf(admin.value), 1, admin);
       $(AdminsModal.value).modal('hide');
     }
     function deleteAdmin(id) {
       if (!window.confirm('¿Seguro que quieres eliminar al administrador?')) return;
       axios["delete"]("/admin/admins/".concat(id)).then(function () {
-        return admins.value = admins.filter(function (admin) {
+        props.admins = props.admins.filter(function (admin) {
           return admin.id != id;
         });
       })["catch"](function (error) {
@@ -1713,14 +1714,9 @@ __webpack_require__.r(__webpack_exports__);
     var emits = _ref.emit;
     var props = __props;
     var errors = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)({});
-    var new_picture = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)(null);
-    var pictureInput = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)(null);
     (0,vue__WEBPACK_IMPORTED_MODULE_0__.watch)(props.admin, function (newAdmin, oldAdmin) {
       if (!newAdmin.id) clearForm();
     });
-    function loadPicture() {
-      new_picture.value = pictureInput.value.files[0];
-    }
     function storeAdmin() {
       axios.post('/admin/admins', loadData()).then(function (response) {
         return emits('adminStored', response.data.data);
@@ -1750,21 +1746,16 @@ __webpack_require__.r(__webpack_exports__);
       Object.keys(props.admin).forEach(function (key) {
         return data.append(key, props.admin[key]);
       });
-      data.append('picture', new_picture.value);
       return data;
     }
     function clearForm() {
       errors.value = [];
-      pictureInput.value = '';
     }
     return {
       __sfc: true,
       props: props,
       errors: errors,
-      new_picture: new_picture,
-      pictureInput: pictureInput,
       emits: emits,
-      loadPicture: loadPicture,
       storeAdmin: storeAdmin,
       updateAdmin: updateAdmin,
       loadData: loadData,
@@ -2858,27 +2849,6 @@ var render = function render() {
       value: 0
     }
   }, [_vm._v("Pendiente")])])]) : _vm._e(), _vm._v(" "), _c("div", {
-    staticClass: "form-group"
-  }, [_c("label", {
-    attrs: {
-      "for": "picture"
-    }
-  }, [_vm._v("\n      Foto de Perfil\n      "), _vm.admin && _vm.admin.picture ? _c("span", [_c("a", {
-    attrs: {
-      href: "/" + _vm.admin.picture,
-      target: "_blank"
-    }
-  }, [_vm._v("\n          Ver actual\n        ")])]) : _vm._e()]), _vm._v(" "), _c("input", {
-    ref: "pictureInput",
-    staticClass: "form-control",
-    attrs: {
-      type: "file",
-      name: "picture"
-    },
-    on: {
-      change: _setup.loadPicture
-    }
-  })]), _vm._v(" "), _c("div", {
     staticClass: "form-group text-right"
   }, [!_vm.editing ? _c("button", {
     staticClass: "btn btn-primary",
@@ -3380,7 +3350,7 @@ var render = function render() {
       domProps: {
         value: admin.id
       }
-    }, [_vm._v(_vm._s(admin.id + " " + admin.name))]);
+    }, [_vm._v(_vm._s(String(admin.id).padStart(3, "0") + " - " + admin.name))]);
   }), 0)]), _vm._v(" "), _c("div", {
     staticClass: "form-group"
   }, [_c("label", {

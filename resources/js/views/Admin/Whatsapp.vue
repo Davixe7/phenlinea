@@ -80,7 +80,7 @@
                   {{ batch.message }}
                 </td>
                 <td>
-                  {{ batch.receivers_numbers.split(',').length }}
+                  {{ batch.numbers.split(',').length }}
                 </td>
                 <td>
                   {{ new Date(batch.created_at).toLocaleString('es-CO', { timezone: 'America/Colombia' }) }}

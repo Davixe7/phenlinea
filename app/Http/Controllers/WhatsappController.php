@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Admin;
 use App\Extension;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -29,7 +30,9 @@ class WhatsappController extends Controller
   //Instance ID Invalidated
   public function createInstance()
   {
-    $response    = $this->client->post('createinstance.php', ['query' => ['access_token' => '3f8b18194536bdafa301c662dc9caa4c']]);
+    $query   = ['access_token' => '3f8b18194536bdafa301c662dc9caa4c'];
+    $headers = [['accept'=>'application/json']];
+    $response    = $this->client->post('createinstance.php', compact('query', 'headers'));
     $instance_id = json_decode($response->getBody(), true)['instance_id'];
     return $instance_id;
   }
@@ -67,7 +70,7 @@ class WhatsappController extends Controller
     if (auth()->user()->whatsapp_status == 'online') {
       $extensions = auth()->user()->extensions()->orderBy('name')->get();
 
-      $response = $this->client->get('http://161.35.60.29/api/whatsapp-batches/?user_id=' . auth()->id());
+      $response = $this->client->get('http://161.35.60.29/batches/?user_id=' . auth()->id());
       $history  = json_decode($response->getBody())->data;
       $whatsapp_instance_id = auth()->user()->whatsapp_instance_id;
 
@@ -169,23 +172,38 @@ class WhatsappController extends Controller
       $fileName = $clearFileName . time() . "." . $file->extension();
       $path = $file->storeAs('/public/whatsapp_attachments', $fileName);
       $media_url = asset("/storage/whatsapp_attachments/{$fileName}");
-      Storage::append('batches.log', $path);
+      Storage::append('batch_messages_media.log', $path);
     }
 
-    $response = $this->client->post('http://161.35.60.29/api/whatsapp-batches', [
-      'form_params' => [
-        'admin_id'              => auth()->id(),
-        'admin_name'            => auth()->user()->name,
-        'admin_phone'           => auth()->user()->phone,
-        'whatsapp_instance_id'  => auth()->user()->whatsapp_instance_id,
-        'message'               => $request->message,
-        'receivers'             => $receivers,
-        'media_url'             => $media_url
-      ]
-    ]);
+    // $response = $this->client->post('http://161.35.60.29/api/whatsapp-batches', [
+    //   'form_params' => [
+    //     'admin_id'              => auth()->id(),
+    //     'admin_name'            => auth()->user()->name,
+    //     'admin_phone'           => auth()->user()->phone,
+    //     'whatsapp_instance_id'  => auth()->user()->whatsapp_instance_id,
+    //     'message'               => $request->message,
+    //     'receivers'             => $receivers,
+    //     'media_url'             => $media_url
+    //   ]
+    // ]);
+
+    try {
+      $response = $this->client->post('http://161.35.60.29/api/batches', [
+        'form_params' => [
+          'user_id'               => auth()->id(),
+          'instance_id'           => auth()->user()->whatsapp_instance_id,
+          'message'               => $request->message,
+          'numbers'               => $receivers,
+          'media_url'             => $media_url
+        ]
+      ]);
+    }
+    catch(ClientException $e){
+      return $e->getMessage();
+    }
 
     $response_body = json_encode(json_decode($response->getBody()));
-    Storage::append('batches.log', $response_body);
+    Storage::append('batchs_messages_response.log', $response_body);
     $response = json_decode($response_body, true);
 
     return response()->json($response);

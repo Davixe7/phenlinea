@@ -3565,7 +3565,7 @@ var render = function render() {
   }, [_c("table", {
     staticClass: "table"
   }, [_vm._m(0), _vm._v(" "), _c("tbody", _vm._l(_vm.history, function (batch) {
-    return _c("tr", [_c("td", [_vm._v("\n                " + _vm._s(batch.message) + "\n              ")]), _vm._v(" "), _c("td", [_vm._v("\n                " + _vm._s(batch.receivers_numbers.split(",").length) + "\n              ")]), _vm._v(" "), _c("td", [_vm._v("\n                " + _vm._s(new Date(batch.created_at).toLocaleString("es-CO", {
+    return _c("tr", [_c("td", [_vm._v("\n                " + _vm._s(batch.message) + "\n              ")]), _vm._v(" "), _c("td", [_vm._v("\n                " + _vm._s(batch.numbers.split(",").length) + "\n              ")]), _vm._v(" "), _c("td", [_vm._v("\n                " + _vm._s(new Date(batch.created_at).toLocaleString("es-CO", {
       timezone: "America/Colombia"
     })) + "\n              ")])]);
   }), 0)])]) : _vm._e()]), _vm._v(" "), _c("div", {

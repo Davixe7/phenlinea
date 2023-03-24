@@ -14,11 +14,11 @@
 
         <a
           target="_blank"
-          href="/extensions/export"
+          href="extensions/export"
           class="ms-3 btn btn-sm btn-outline btn-outline-success">
           Exportar XLS
         </a>
-      </div>
+      </div> 
       <table class="table" v-if="results && results.length">
         <thead>
           <th>Apto.</th>
@@ -40,10 +40,10 @@
             <td>{{ extension.phone_1 }}</td>
             <td>{{ extension.phone_2 }}</td>
             <td>
-              <a :href="`/extensions/${extension.id}/visitors`">
+              <a :href="`extensions/${extension.id}/visitors`">
                 <i class="material-icons">lock_open</i>
               </a>
-              <a :href="`/extensions/${extension.id}/edit`">
+              <a :href="`extensions/${extension.id}/edit`">
                 <i class="material-icons">visibility</i>
               </a>
               <a href="#" @click="deleteExtension(extension.id)">
@@ -59,7 +59,7 @@
     </div>
 
     <div class="fab-container">
-      <a href="/extensions/create" class="btn btn-primary btn-circle">
+      <a href="extensions/create" class="btn btn-primary btn-circle">
         <i class="material-icons">add</i>
       </a>
     </div>
@@ -83,7 +83,7 @@ const props = defineProps({
 function deleteExtension(id) {
   if (!window.confirm('¿Seguro que quieres eliminar la extensión?')) return
 
-  axios.delete(`/extensions/${id}`)
+  axios.delete(`extensions/${id}`)
     .then(() => {
       extensions.value = extensions.value.filter(extension => extension.id != id)
       results.value    = [...extensions.value]

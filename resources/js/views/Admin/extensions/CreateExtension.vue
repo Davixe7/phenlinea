@@ -168,11 +168,11 @@
               <label class="mt-2">
                 Carros
               </label>
-              <ul class="vehicle-list">
+              <ul class="vehicle-list"> 
                 <li v-for="car in cars">
                   <div>{{ car.plate }}</div>
-                  <input type="text" v-model="car.tag" placeholder="TAG">
-                  <span @click="removeVehicle(car.plate)">&times;</span>
+                  <input type="text" v-model="car.tag" placeholder="TAG" class="form-control form-control-sm ms-auto">
+                  <span @click="removeVehicle(car.plate)" class="btn btn-link">&times;</span>
                 </li>
               </ul>
             </div>
@@ -212,7 +212,7 @@
             <div class="form-group">
               <label for="line1" title="requerido">
                 Línea 1 <span class="text-red">*</span>
-                <img src="/img/icons8-whatsapp.svg" style="width: 20px; height: 20px; margin-left: auto;">
+                <img :src="`${appUrl}/img/icons8-whatsapp.svg`" style="width: 20px; height: 20px; margin-left: auto;">
               </label>
               <input type="tel" class="form-control" :class="{ 'is-invalid': errors.phone_1 }" maxlength="10"
                 minlength="10" v-model="phone_1" required>
@@ -223,7 +223,7 @@
                 <span>
                   Línea 2
                 </span>
-                <img src="/img/icons8-whatsapp.svg" style="width: 20px; height: 20px; margin-left: auto;">
+                <img :src="`${appUrl}/img/icons8-whatsapp.svg`" style="width: 20px; height: 20px; margin-left: auto;">
               </label>
               <input type="tel" class="form-control" :class="{ 'is-invalid': errors.phone_2 }" maxlength="10"
                 minlength="10" v-model="phone_2">
@@ -248,7 +248,7 @@
               :loading="loading">
               Registrar Extensión
             </button>
-            <a v-if="editing" href="/extensions" class="btn btn-link">
+            <a v-if="editing" :href="`${appUrl}/extensions`" class="btn btn-link">
               Terminar
             </a>
             <button dark v-if="editing" class="btn btn-secondary justify-content-center text-center"
@@ -303,7 +303,8 @@ export default {
       observation: '',
 
       errors: [],
-      loading: false
+      loading: false,
+      appUrl: process.env.MIX_APP_URL
     }
   },
   watch: {
@@ -370,7 +371,7 @@ export default {
         axios.post('/extensions', data).then(response => {
           this.extension = response.data.data
           this.$toasted.success('Datos guardados exitosamente')
-          window.location.href = `/extensions/${this.extension.id}/edit`
+          window.location.href = `${this.appUrl}extensions/${this.extension.id}/edit`
         }, error => {
           this.errors = error.response.data.errors
           this.$toasted.error('Error al guardar el censo')
@@ -378,7 +379,7 @@ export default {
           this.loading = false
         })
       }
-    },
+    }, 
     updateCensus() {
       if (this.$refs.storeCensusForm.reportValidity()) {
         let data = this.loadData()
@@ -461,8 +462,9 @@ ul.vehicle-list {
   margin-bottom: 15px;
   display: flex;
   flex-flow: row wrap;
+  width: 100%;
 
-  .vehicle-list li {
+  li {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -477,6 +479,7 @@ ul.vehicle-list {
       padding: 5px 10px;
       border-radius: 5px;
       background: #fff;
+      margin-left: auto;
     }
 
     span {

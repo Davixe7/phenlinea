@@ -5,10 +5,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <link rel="icon" href="/img/favicon.png">
+  <link rel="icon" href="{{ asset('img/favicon.png') }}">
   <title>PHenlinea</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="/css/app.css">
+  <link rel="stylesheet" href="{{ asset('css/app.css') }}">
   <style>
     #app {
       font-family: "Roboto", sans-serif;
@@ -97,7 +97,7 @@
             <form method="POST" action="{{ route('login') }}">
               @csrf
               <div class="form-title">
-                <img src="/img/144x144.png" alt="">
+                <img src="{{ asset('img/144x144.png') }}" alt="">
                 <div>
                   Panel de Administración
                 </div>
@@ -134,7 +134,7 @@
           </div>
         </div>
         <div class="d-none d-sm-block col-md-8 p-0" style="overflow-x: hidden; overflow-y: auto; max-height: 100vh;">
-          <img src="/img/slide-admins-2.jpg" alt="" style="width: 100%;">
+          <img src="{{ asset('img/slide-admins-2.jpg') }}" alt="" style="width: 100%;">
         </div>
       </div>
     </div>

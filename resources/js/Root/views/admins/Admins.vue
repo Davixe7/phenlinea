@@ -8,7 +8,7 @@
           <SearchForm
             v-if="admins && admins.length"
             v-model="results"
-            :collection="admins"
+            :collection="rows"
             :attribute="'name'">
           </SearchForm>
         </div>
@@ -17,11 +17,11 @@
         <thead>
           <th>Nombre</th>
           <th>NIT</th>
-          <th>Dirección</th>
           <th>Celular</th>
           <th>Celular 2</th>
           <th>Correo</th>
           <th>Status</th>
+          <th>WA-ID</th>
           <th class="text-right">
             Opciones
           </th>
@@ -30,22 +30,27 @@
           <tr v-for="admin in results">
             <td>{{ admin.name }}</td>
             <td>{{ admin.nit }}</td>
-            <td>{{ admin.address }}</td>
             <td>{{ admin.phone }}</td>
             <td>{{ admin.phone_2 }}</td>
             <td>{{ admin.email }}</td>
             <td>{{ admin.status }}</td>
+            <td>
+              <div class="d-flex">
+                <input class="form-control form-control-sm" v-model="admin.whatsapp_group_id">
+                <button class="btn btn-primary btn-sm" @click="updateWhatsappGroupId(admin)">
+                  {{ loading ? 'cargando' : 'guardar' }}
+                </button>
+              </div>
+            </td>
 
             <td class="text-right">
               <div class="btn-group">
                 <a :href="`/admin/admins/${admin.id}/export`" class="btn btn-xs btn-link">
-                  exportar
+                  e
                 </a>
                 <a :href="`/admin/admins/${admin.id}/edit-permissions`" class="btn btn-xs btn-link">
                   <i class="material-icons">lock</i>
                 </a>
-                <button class="btn btn-xs btn-link" @click="editPayment(admin)"><i
-                    class="material-icons">list</i></button>
                 <button class="btn btn-xs btn-link" @click="editAdmin(admin)"><i
                     class="material-icons">edit</i></button>
                 <button class="btn btn-xs btn-link" @click="deleteAdmin(admin.id)"><i
@@ -132,6 +137,8 @@ const paymentToEdit = ref(null)
 const editing = ref(false)
 const results = ref([])
 const errors = ref({})
+const rows   = ref([])
+const loading = ref(false)
 
 const AdminsModal   = ref(null)
 const PaymentsModal = ref(null)
@@ -155,7 +162,7 @@ function editPayment(admin) {
 }
 
 function updateAdmin(admin) {
-  props.admins = props.admins.splice( props.admins.indexOf( admin.value ), 1, admin )
+  rows.value.splice( rows.value.indexOf( adminToEdit ), 1, admin )
   $(AdminsModal.value).modal('hide')
 }
 
@@ -168,7 +175,20 @@ function deleteAdmin(id) {
   .catch(error => errors.value = error.response.data.errors)
 }
 
-onMounted(() => results.value = [...props.admins])
+function updateWhatsappGroupId(admin){
+  axios.post(`/admin/admins/${admin.id}`, {...admin, _method: 'PUT'})
+  .then(response => {
+    console.log( 'Admin whatsapp group id updated' );
+  })
+  .catch(error=>{
+    console.log(error.response)
+  })
+}
+
+onMounted(() => {
+  rows.value    = [...props.admins]
+  results.value = [...props.admins]
+})
 </script>
 
 <style>

@@ -20,7 +20,8 @@ mix.setPublicPath( publicPath )
 //   ]
 // })
 
-mix.js('resources/js/app.js', 'js')
+mix
+//.js('resources/js/app.js', 'js')
 .js('resources/js/super.js', 'js')
 .vue()
 // .version()

@@ -26,10 +26,10 @@
               <q-btn flat icon="sym_o_qr_code_2" label="Descargar QR">
               <q-menu>
                 <q-list style="min-width: 100px">
-                  <q-item clickable v-close-popup href="/pqrs/qr/?date={{ now() }}">
+                  <q-item clickable v-close-popup href="pqrs/qr/?date={{ now() }}">
                     <q-item-section>Formato simple</q-item-section>
                   </q-item>
-                  <q-item clickable v-close-popup href="/pqrs/qr/?date={{ now() }}&type=template">
+                  <q-item clickable v-close-popup href="pqrs/qr/?date={{ now() }}&type=template">
                     <q-item-section>Con plantilla informativa</q-item-section>
                   </q-item>
                 </q-list>
@@ -190,7 +190,7 @@ const app = Vue.createApp({
     function markAsRead(pqrs) {
       currentPqrs.value = pqrs
       if (pqrs.read_at != null) return
-      axios.post(`/pqrs/${currentPqrs.value.id}/markAsRead`, {_method: 'PUT'})
+      axios.post(`pqrs/${currentPqrs.value.id}/markAsRead`, {_method: 'PUT'})
       .then(response => {
         currentPqrs.value = {...response.data.data}
         rows.value.splice(rows.value.indexOf(pqrs), 1, currentPqrs.value)
@@ -199,7 +199,7 @@ const app = Vue.createApp({
 
     function reply() {
       let data = {...currentPqrs.value,_method: 'PUT'}
-      axios.post(`/pqrs/${currentPqrs.value.id}`, data)
+      axios.post(`pqrs/${currentPqrs.value.id}`, data)
       .then(response => {
         rows.value.splice(rows.value.indexOf(currentPqrs.value), 1, {...response.data.data})
         currentPqrs.value = {...response.data.data}
@@ -208,7 +208,7 @@ const app = Vue.createApp({
     }
 
     Vue.onMounted(() => {
-      axios.get('/pqrs').then(response => rows.value = response.data.data)
+      axios.get('pqrs').then(response => rows.value = response.data.data)
     })
 
     //Lightbox configuration

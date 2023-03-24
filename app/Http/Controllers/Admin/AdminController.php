@@ -81,14 +81,15 @@ class AdminController extends Controller
     $admin->update([
       'name'     => ($request->name) ?: $admin->name,
       'phone'    => ($request->phone) ?: $admin->phone,
-      'phone_2'  => ($request->phone_2) ?: '',
+      'phone_2'  => ($request->phone_2) ?: $admin->phone_2,
       'nit'      => ($request->nit) ?: $admin->nit,
       'address'  => ($request->address) ?: $admin->address,
       'email'    => ($request->email) ?: $admin->email,
       'password' => ($request->password) ? bcrypt($request->password) : $admin->password,
       'contact_email' => ($request->contact_email) ?: $admin->contact_email,
-      'status'        => $request->status,
-      'slug'          => Str::slug($request->name) ?: $admin->slug
+      'status'        => $request->status ?: $admin->status,
+      'slug'          => Str::slug($request->name) ?: $admin->slug,
+      'whatsapp_group_id' => $request->whatsapp_group_id ?: $admin->whatsapp_group_id
     ]);
 
     return new AdminResource( $admin );

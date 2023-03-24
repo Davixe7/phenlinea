@@ -12,9 +12,9 @@
             
             <SearchForm
               v-show="porterias && porterias.length"
+              v-model="results"
               :collection="porterias"
               :attribute="'name'"
-              v-model="results"
               class="ml-auto mr-1">
             </SearchForm>
           </div>
@@ -116,17 +116,19 @@ function appendPorteria(porteria) {
 }
 
 function updatePorteria(porteria) {
-  porterias.value = porterias.value.splice(porterias.value.indexOf(porteriaToEdit), 1, porteria)
+  porterias.value.splice(porterias.value.indexOf(porteriaToEdit), 1, porteria)
   $(PorteriasModal.value).modal('hide')
   // $toasted.success('Porteria actualizada exitosamente', { position: 'bottom-left' })
 }
 
 function deletePorteria(id) {
-  if (!window.confirm('¿Seguro que quieres eliminar la porteria?')) return
+  if (!window.confirm('驴Seguro que quieres eliminar la porteria?')) return
   axios.delete(`/admin/porterias/${id}`)
   .then(response => porterias.value = porterias.value.filter(porteria => porteria.id != id))
   .catch(error   => errors.value = error.response.data.errors)
 }
 
-onMounted(() => porterias.value = [...props.rows]);
+onMounted(() => {
+  porterias.value = [...props.rows]
+});
 </script>

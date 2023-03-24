@@ -1,6 +1,10 @@
 <template>
   <div id="create-admin" v-if="admin">
     <div class="form-group">
+      <label for="name">ID Grupo Whatsapp</label>
+      <input type="text" class="form-control" id="whatsapp_group_id" v-model="admin.whatsapp_group_id">
+    </div>
+    <div class="form-group">
       <label for="name">Nombre</label>
       <input type="text" class="form-control" id="name" v-model="admin.name">
     </div>

@@ -25,7 +25,8 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
     'slug',
     'status',
     'whatsapp_instance_id',
-    'whatsapp_status'
+    'whatsapp_status',
+    'whatsapp_group_id'
   ];
 
   protected $hidden   = ['password', 'created_at', 'updated_at'];

@@ -14,17 +14,14 @@
   display: flex;
   margin-bottom: 10px;
 }
-
 .content-header .title {
   margin-bottom: 0;
 }
-
 .content-header .date {
   font-size: 0.95em;
   display: block;
   color: #9f9f9f;
 }
-
 .content-header .options-dropdown i.material-icons {
   cursor: pointer;
   font-size: 1.25em;
@@ -35,38 +32,6 @@
   margin-bottom: 10px;
 }
 
-@font-face {
-  font-family: "Material Icons";
-  font-style: normal;
-  font-weight: 400;
-  src: url(/fonts/MaterialIcons-Regular.eot?4674f8ded773cb03e824323bfc950537);
-  /* For IE6-8 */
-  src: local("Material Icons"), local("./../fonts/MaterialIcons-Regular"), url(/fonts/MaterialIcons-Regular.woff2?cff684e59ffb052d72cb8d5e49471553) format("woff2"), url(/fonts/MaterialIcons-Regular.woff?83bebaf37c09c7e1c3ee52682892ae14) format("woff"), url(/fonts/MaterialIcons-Regular.ttf?5e7382c63da0098d634a356ff441614e) format("truetype");
-}
-
-.material-icons {
-  font-family: "Material Icons";
-  font-weight: normal;
-  font-style: normal;
-  font-size: 24px;
-  /* Preferred icon size */
-  display: inline-block;
-  line-height: 1;
-  text-transform: none;
-  letter-spacing: normal;
-  word-wrap: normal;
-  white-space: nowrap;
-  direction: ltr;
-  /* Support for all WebKit browsers. */
-  -webkit-font-smoothing: antialiased;
-  /* Support for Safari and Chrome. */
-  text-rendering: optimizeLegibility;
-  /* Support for Firefox. */
-  -moz-osx-font-smoothing: grayscale;
-  /* Support for IE. */
-  font-feature-settings: "liga";
-}
-
 .navbar {
   margin-bottom: 1rem;
 }
@@ -74,7 +39,6 @@
 .navbar-nav .nav-item .nav-link {
   white-space: nowrap;
 }
-
 @media (min-width: 769px) {
   .navbar-nav .nav-item .nav-link {
     font-size: 0.9em;
@@ -93,12 +57,10 @@
     z-index: 9000;
     position: relative;
   }
-
   #app.mobile-navbar-active .ph-navbar-wrap .ph-navbar {
     height: 100%;
     justify-content: space-between;
   }
-
   #app.mobile-navbar-active .ph-navbar-wrap .ph-navbar-nav {
     display: flex;
   }
@@ -127,37 +89,29 @@
   padding: 0;
   list-style-type: none;
 }
-
 .ph-navbar-nav li {
   padding: 1em;
   text-align: center;
 }
-
 .ph-navbar-nav li a {
   color: rgba(255, 255, 255, 0.705);
   font-size: 14px;
   text-decoration: none;
 }
-
-.ph-navbar-nav li a:hover,
-.ph-navbar-nav li a .active {
+.ph-navbar-nav li a:hover, .ph-navbar-nav li a .active {
   color: #fff;
 }
-
 @media (min-width: 991px) {
   .ph-navbar-nav {
     display: flex;
   }
-
   .ph-navbar-nav:not(:last-child) {
     margin: 0 auto;
   }
-
   .ph-navbar-nav li {
     border-right: 1px solid rgba(255, 255, 255, 0.3);
     padding: 0.5em 1em;
   }
-
   .ph-navbar-nav li:last-child {
     border-right: none;
   }
@@ -173,53 +127,41 @@
   height: 40px;
   width: 40px;
 }
-
 .ph-navbar-toggler svg path {
   fill: #fff;
 }
 
 @media (min-width: 991px) {
-  .ph-navbar,
-  .ph-navbar-nav {
+  .ph-navbar, .ph-navbar-nav {
     flex-flow: row nowrap;
     align-items: center;
   }
-
-  .ph-navbar-brand,
-  .ph-navbar-nav li {
+  .ph-navbar-brand, .ph-navbar-nav li {
     text-align: left;
   }
-
   .ph-navbar-brand {
     padding: 0;
   }
-
   .ph-navbar-toggler {
     display: none;
   }
 }
-
 @media (min-width: 1200px) {
   .ph-navbar {
     width: 1140px;
   }
 }
-
 @media (min-width: 1440px) {
   .ph-navbar {
     width: 1335px;
   }
 }
-
 #app.mobile-navbar-active {
   height: 100vh;
   overflow: hidden;
 }
 
-h1,
-h2,
-h3,
-h4 {
+h1, h2, h3, h4 {
   color: #000;
   margin-bottom: 10px;
 }
@@ -298,17 +240,14 @@ i.material-icons {
   flex-flow: column nowrap;
   margin-bottom: 10px;
 }
-
 .page-title h1 {
   margin-bottom: 10px;
 }
-
 @media (min-width: 768px) {
   .page-title {
     flex-flow: row nowrap;
     align-items: center;
   }
-
   .page-title h1 {
     margin-bottom: 0;
   }
@@ -422,7 +361,7 @@ i.material-icons {
   height: 8px;
   border-radius: 50%;
   background: #4CAF50;
-  border: 5px solid #bdf5bd;
+  border: 5px solid rgb(189, 245, 189);
   box-sizing: content-box;
 }
 
@@ -458,7 +397,6 @@ i.material-icons {
   font-size: 0.85em;
   margin: 0 10px 5px 0;
 }
-
 .pill.pill-sm i.material-icons {
   font-size: 1.25em;
 }
@@ -479,12 +417,10 @@ i.material-icons {
   from {
     transform: rotateZ(0);
   }
-
   to {
     transform: rotateZ(360deg);
   }
 }
-
 .post-card {
   margin-bottom: 1em;
 }
@@ -543,8 +479,7 @@ h2 {
   font-size: 0.85rem !important;
 }
 
-.table th,
-.table td {
+.table th, .table td {
   padding: 0.75rem 1.15rem;
 }
 
@@ -561,5 +496,3 @@ h2 {
   font-weight: 500;
   color: rgba(0, 0, 0, 0.75);
 }
-
-

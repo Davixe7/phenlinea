@@ -70,7 +70,7 @@ class WhatsappController extends Controller
     if (auth()->user()->whatsapp_status == 'online') {
       $extensions = auth()->user()->extensions()->orderBy('name')->get();
 
-      $response = $this->client->get('http://161.35.60.29/phenlinea-messages/batches/?user_id=' . auth()->id());
+      $response = $this->client->get('http://161.35.60.29/phenlinea-messages/public/api/batches/?user_id=' . auth()->id());
       $history  = json_decode($response->getBody())->data;
       $whatsapp_instance_id = auth()->user()->whatsapp_instance_id;
 
@@ -98,6 +98,8 @@ class WhatsappController extends Controller
   {
     $data    = json_encode($request->all());
     $arrData = json_decode($data);
+
+    Storage::append('whatsapp_hook.log', json_encode($arrData));
 
     if ($arrData->event == 'ready') {
       $phone = explode(':', $arrData->data->id)[0];
@@ -166,7 +168,7 @@ class WhatsappController extends Controller
 
     $path = '';
     $media_url = '';
-    
+
     if ($file = $request->file('attachment')) {
       $clearFileName = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
       $fileName = $clearFileName . time() . "." . $file->extension();
@@ -188,7 +190,7 @@ class WhatsappController extends Controller
     // ]);
 
     try {
-      $response = $this->client->post('http://161.35.60.29/phenlinea-messages/api/batches', [
+      $response = $this->client->post('http://161.35.60.29/phenlinea-messages/public/api/batches', [
         'form_params' => [
           'user_id'               => auth()->id(),
           'instance_id'           => auth()->user()->whatsapp_instance_id,

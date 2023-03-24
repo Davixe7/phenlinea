@@ -7,12 +7,12 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>{{ config('app.name', 'PHenlinea') }}</title>
   <link rel="dns-prefetch" href="//fonts.gstatic.com">
-  <link href="/img/favicon.png" rel="icon">
+  <link href="{{ asset('img/favicon.png') }}" rel="icon">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,600,700" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+  <link href="{{ asset('css/app.css') }}" rel="stylesheet">
   <style>
     .navbar.bg-dark {
       background: #4b7094 !important;
@@ -88,7 +88,7 @@
       @yield('content')
     </div>
   </main>
-  <script src="{{ mix('js/app.js') }}" defer></script>
+  <script src="{{ asset('js/app.js') }}" defer></script>
   @yield('scripts')
 </body>
 </html>

@@ -8,7 +8,7 @@
   <link rel="dns-prefetch" href="//fonts.gstatic.com">
   <link href="/img/favicon.png" rel="icon">  
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+  <link href="{{ asset('css/app.css') }}" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,600,700" rel="stylesheet">
   @yield('styles')
@@ -26,7 +26,7 @@
           @yield('content')
     </div>
   </main>
-  <script src="{{ mix('js/super.js') }}" defer></script>
+  <script src="{{ asset('js/super.js') }}" defer></script>
   @yield('scripts')
 </body>
 

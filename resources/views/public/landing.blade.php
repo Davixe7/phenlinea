@@ -6,7 +6,7 @@
   <title>PHEnlinea</title>
   <link rel="icon" href="/img/favicon.png">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-  <link rel="stylesheet" href="/css/landing.css">
+  <link rel="stylesheet" href="{{ asset('css/landing.css') }}">
   <style>
     .custom-navbar-brand {
       margin-right: 40px;
@@ -103,7 +103,7 @@
       <a
         href="/"
         class="custom-navbar-brand">
-        <img src="/img/logo.png" alt="logo phenlinea">
+        <img src="{{ asset('img/logo.png') }}" alt="logo phenlinea">
       </a>
       <ul class="custom-navbar-nav" style="margin-left: 0;">
         <li>
@@ -200,28 +200,28 @@
               </ol>
               <div class="carousel-inner">
                 <div class="carousel-item active">
-                  <img src="/img/600/1.jpg" class="d-block mx-auto" alt="...">
+                  <img src="{{ asset('/img/600/1.jpg') }}" class="d-block mx-auto" alt="...">
                 </div>
                 <div class="carousel-item">
-                  <img src="/img/600/2.jpg" class="d-block mx-auto" alt="...">
+                  <img src="{{ asset('/img/600/2.jpg') }}" class="d-block mx-auto" alt="...">
                 </div>
                 <div class="carousel-item">
-                  <img src="/img/600/3.jpg" class="d-block mx-auto" alt="...">
+                  <img src="{{ asset('/img/600/3.jpg') }}" class="d-block mx-auto" alt="...">
                 </div>
                 <div class="carousel-item">
-                  <img src="/img/600/4.jpg" class="d-block mx-auto" alt="...">
+                  <img src="{{ asset('/img/600/4.jpg') }}" class="d-block mx-auto" alt="...">
                 </div>
                 <div class="carousel-item">
-                  <img src="/img/600/5.jpg" class="d-block mx-auto" alt="...">
+                  <img src="{{ asset('/img/600/5.jpg') }}" class="d-block mx-auto" alt="...">
                 </div>
                 <div class="carousel-item">
-                  <img src="/img/600/6.jpg" class="d-block mx-auto" alt="...">
+                  <img src="{{ asset('/img/600/6.jpg') }}" class="d-block mx-auto" alt="...">
                 </div>
                 <div class="carousel-item">
-                  <img src="/img/600/7.jpg" class="d-block mx-auto" alt="...">
+                  <img src="{{ asset('/img/600/7.jpg') }}" class="d-block mx-auto" alt="...">
                 </div>
                 <div class="carousel-item">
-                  <img src="/img/600/8.jpg" class="d-block mx-auto" alt="...">
+                  <img src="{{ asset('/img/600/8.jpg') }}" class="d-block mx-auto" alt="...">
                 </div>
               </div>
 
@@ -260,28 +260,28 @@
               </ol>
               <div class="carousel-inner">
                 <div class="carousel-item active">
-                  <img src="/img/cartelera.jpg" class="d-block mx-auto" alt="...">
+                  <img src="{{ asset('/img/cartelera.jpg') }}" class="d-block mx-auto" alt="...">
                 </div>
                 <div class="carousel-item">
-                  <img src="/img/pqr.jpg" class="d-block mx-auto" alt="...">
+                  <img src="{{ asset('/img/pqr.jpg') }}" class="d-block mx-auto" alt="...">
                 </div>
                 <div class="carousel-item">
-                  <img src="/img/manuales.jpg" class="d-block mx-auto" alt="...">
+                  <img src="{{ asset('/img/manuales.jpg') }}" class="d-block mx-auto" alt="...">
                 </div>
                 <div class="carousel-item">
-                  <img src="/img/notificaciones.jpg" class="d-block mx-auto" alt="...">
+                  <img src="{{ asset('/img/notificaciones.jpg') }}" class="d-block mx-auto" alt="...">
                 </div>
                 <div class="carousel-item">
-                  <img src="/img/encuestas.jpg" class="d-block mx-auto" alt="...">
+                  <img src="{{ asset('/img/encuestas.jpg') }}" class="d-block mx-auto" alt="...">
                 </div>
                 <div class="carousel-item">
-                  <img src="/img/clasificados.jpg" class="d-block mx-auto" alt="...">
+                  <img src="{{ asset('/img/clasificados.jpg') }}" class="d-block mx-auto" alt="...">
                 </div>
                 <div class="carousel-item">
-                  <img src="/img/domicilios.jpg" class="d-block mx-auto" alt="...">
+                  <img src="{{ asset('/img/domicilios.jpg') }}" class="d-block mx-auto" alt="...">
                 </div>
                 <div class="carousel-item">
-                  <img src="/img/links.jpg" class="d-block mx-auto" alt="...">
+                  <img src="{{ asset('/img/links.jpg') }}" class="d-block mx-auto" alt="...">
                 </div>
               </div>
 
@@ -307,11 +307,11 @@
         </ul>
         <div class="mobile-app-links">
           <a href="https://play.google.com/store/apps/details?id=com.phenlinea.inquilinos" target="_blank" class="d-inline-block mr-2">
-            <img src="/img/googleplay.svg" style="width: 140px;" alt="">
+            <img src="{{ asset('/img/googleplay.svg')}}" style="width: 140px;" alt="">
           </a>
           <a href="#" class="d-inline-block text-left" style="color: #000;">
             <span>Proximamente...</span><br />
-            <img src="/img/appstore.svg" style="width: 140px;" alt="">
+            <img src="{{ asset('/img/appstore.svg')}}" style="width: 140px;" alt="">
           </a>
         </div>
         <div class="contact-bar">
@@ -333,7 +333,7 @@
             <div class="card-body">
               <div class="message">¡Hola, somos PHEnlinea!<br> También brindamos asesoria personalizada gratuita!</div>
               <div class="whatsapp-input text-right">
-                <img src="/img/logo-whatsapp.svg" class="logo-whatsapp" onclick="document.querySelector('.whatsapp-card').classList.add('active')">
+                <img src="{{asset('/img/logo-whatsapp.svg')}}" class="logo-whatsapp" onclick="document.querySelector('.whatsapp-card').classList.add('active')">
                 <a href="https://api.whatsapp.com/send?phone=573053181323&text=Hola,%20estoy%20interesad@%20en%20PHEnLinea" title="contacto whatsapp" target="_blank">
                   <span class="text">Contactar a PHEnlinea.com</span>
                   <svg version="1.1" width="30px" height="25.714px" viewBox="625 347.143 30 25.714">

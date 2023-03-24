@@ -124,7 +124,7 @@
       }
     },
     mounted(){
-      axios.get('/novelties').then(response => this.rows = response.data.data)
+      axios.get('novelties').then(response => this.rows = response.data.data)
     }
   })
 

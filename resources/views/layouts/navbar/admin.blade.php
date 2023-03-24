@@ -18,6 +18,6 @@
 <li>
   <a href="{{ route('whatsapp.index') }}">
     <span class="mr-2">Mensajes Whatsapp</span>
-    <img src="/img/icons8-whatsapp.svg" style="width: 20px; height: 20px;">
+    <img src="{{ asset('img/icons8-whatsapp.svg') }}" style="width: 20px; height: 20px;">
   </a>
 </li>

@@ -189,11 +189,10 @@ class WhatsappController extends Controller
     //   ]
     // ]);
 
-   $admin_name = auth()->user()->name;
-
-   $message = "*Unidad: {$admin_name}*\n\n";
-   $message = $message . "{$request->message}\n\n";
-   $message = $message . "Servicio prestado por PHenlinea.com";
+    $admin_name = auth()->user()->name;
+    $message = "*Unidad: {$admin_name}*\n\n";
+    $message = $message . "{$request->message}\n\n";
+    $message = $message . "Servicio prestado por PHenlinea.com";
 
     try {
       $response = $this->client->post('http://api.phenlinea.com/api/batches', [

@@ -248,7 +248,7 @@
               :loading="loading">
               Registrar Extensión
             </button>
-            <a v-if="editing" :href="`${appUrl}/extensions`" class="btn btn-link">
+            <a v-if="editing" :href="`${appUrl}extensions`" class="btn btn-link">
               Terminar
             </a>
             <button dark v-if="editing" class="btn btn-secondary justify-content-center text-center"

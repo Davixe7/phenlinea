@@ -9,13 +9,45 @@ use App\Petition;
 use App\Admin;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Storage;
 
 class PetitionController extends Controller
 {
+  protected $client;
+
   public function __construct()
   {
     //$this->middleware('modules:requests');
+    $this->client = new Client([
+      'base_uri' => 'http://asistbot.com/api/',
+      'verify' => false
+    ]);
   }
+
+  public function getMessage($petition){
+    if( ($petition->read_at == null) && ($petition->replied_at == null) ){
+      $status = 'Pendiente';
+    }
+    else if( $petition->read_at != null && ($petition->replied_at == null)){
+      $status = 'Leído';
+    }
+    else {
+      $status = "Respuesta enviada";
+    }
+
+    $petitionId = str_pad($petition->id, 4, '0', STR_PAD_LEFT);
+    $statuses   = ['pending'=>'pendiente', 'read'=>'Leído', 'replied'=>'Respuesta enviada'];
+    $status     = $statuses[ $petition->status ];
+    $link       = route('pqrs.show', compact('petition'));
+
+    $message = "Unidad: *{$petition->admin->name}* \n\n";
+    $message .= "Su PQRS ha sido actualizado con éxito. Y su código de seguimiento es el *{$petitionId}* \n\n";
+    $message .= "Estado: *{$status}* \n\n";
+    $message .= "Link de seguimiento del estado: {$link} \n\n";
+    $message .= "Servicio prestado por PHenlinea.com";
+    return $message;
+  }
+
   /**
    * Display a listing of the resource.
    *
@@ -53,6 +85,7 @@ class PetitionController extends Controller
     $request->validate([
       'description' => 'required'
     ]);
+
     $petition = Petition::create([
       'admin_id'       => $request->admin_id,
       'name'           => $request->name,
@@ -63,29 +96,13 @@ class PetitionController extends Controller
       'status'         => 'pending'
     ]);
 
-    $media = null;
-
     if ($request->hasFile('media')) {
       foreach ($request->media as $file) {
-        $media = $petition->addMedia($file)->toMediaCollection('attachments');
+        $petition->addMedia($file)->toMediaCollection('attachments');
       }
     }
 
-    $client = new Client([
-      'base_uri' => 'http://asistbot.com/api/',
-      'verify' => false
-    ]);
-
-    $data = [
-      'id'         => $petition->id,
-      'status'     => $petition->status,
-      'phone'      => $petition->admin->name == 'admin' ? '584147912134' : '57' . $petition->phone,
-      'adminName'  => $petition->admin->name,
-      'adminPhone' => '57' . $petition->admin->phone,
-      'media_url'  => $media ? $media->original_url : null
-    ];
-
-    $client->post('http://161.35.60.29/api/pqrs', ['query' => $data]);
+    $this->notifyPetitionUpdate($petition);
 
     return redirect()->route('pqrs.create', ['admin' => $request->admin_id])->with(['message' => 'Petición creada con éxito']);
   }
@@ -93,23 +110,7 @@ class PetitionController extends Controller
   public function markAsRead(Petition $petition)
   {
     $petition->update(['read_at' => now(), 'status' => 'read']);
-
-    $client = new Client([
-      'base_uri' => 'http://asistbot.com/api/',
-      'verify' => false
-    ]);
-
-    $data = [
-      'id'        => $petition->id,
-      'status'    => $petition->status,
-      'phone'     => $petition->admin->name == 'admin' ? '584147912134' : '57' . $petition->phone,
-      'adminName'  => $petition->admin->name,
-      'adminPhone' => '57' . $petition->admin->phone,
-      'media_url'  => null
-    ];
-
-    $client->post('http://161.35.60.29/api/pqrs', ['query' => $data]);
-
+    $this->notifyPetitionUpdate($petition);
     return new PetitionResource( $petition );
   }
 
@@ -123,26 +124,11 @@ class PetitionController extends Controller
   {
     if ((auth()->user()) && (auth()->user()->nit != null) && ($petition->read_at == null)) {
       $petition->update(['read_at' => now()]);
-      $client = new Client([
-        'base_uri' => 'http://asistbot.com/api/',
-        'verify' => false
-      ]);
-
-      $data = [
-        'id'        => $petition->id,
-        'status'    => $petition->status,
-        'phone'     => '57' . $petition->phone,
-
-        'adminName'  => $petition->admin->name,
-        'adminPhone' => $petition->admin->phone,
-        'media_url'  => null
-      ];
-
-      $client->post('http://161.35.60.29/api/pqrs', ['query' => $data]);
+      $this->notifyPetitionUpdate($petition);
     }
-    $attachments = $petition->getMedia('attachments')->map(function ($media) {
-      return $media->original_url;
-    });
+
+    $attachments = $petition->getMedia('attachments')->pluck('original_url')->toArray();
+    
     return view('public.pqrs.show', ['pqrs' => $petition, 'attachments' => $attachments]);
   }
 
@@ -172,27 +158,11 @@ class PetitionController extends Controller
       }
     }
 
-    $client = new Client([
-      'base_uri' => 'http://asistbot.com/api/',
-      'verify' => false
-    ]);
+    $this->notifyPetitionUpdate($petition);
 
-    $data = [
-      'id'        => $petition->id,
-      'status'    => $petition->status,
-      'phone'     => $petition->admin->name == 'admin' ? '584147912134' : '57' . $petition->phone,
-
-      'adminName'  => $petition->admin->name,
-      'adminPhone' => '57' . $petition->admin->phone,
-      'media_url'  => null
-    ];
-
-    $client->post('http://161.35.60.29/api/pqrs', ['query' => $data]);
-
-    if ($request->expectsJson()) {
-      return response()->json(['data' => $petition]);
-    }
-    return redirect()->route('pqrs.show', ['petition' => $petition])->with('Peticion actualizada con éxito');
+    return $request->expectsJson()
+    ? response()->json(['data' => $petition])
+    : redirect()->route('pqrs.show', ['petition' => $petition])->with('Peticion actualizada con éxito');
   }
 
   public function deletePicture(Request $request, Petition $petition)
@@ -237,5 +207,18 @@ class PetitionController extends Controller
 
     ob_end_clean();
     return response()->download($path, $filename, ['Content-Type' => 'image/jpg+xml']);
+  }
+
+  public function notifyPetitionUpdate($petition){
+    $data = [
+      'access_token' => env('ASISTBOT_ACCESS_TOKEN'),
+      'instance_id'  => env('ASISTBOT_INSTANCE_ID'),
+      'number'       => $petition->phone,
+      'message'      => $this->getMessage($petition),
+      'type'         => 'text'
+    ];
+
+    $response = $this->client->post('send.php', ['query'=>$data]);
+    Storage::append('pqrs.log', $response->getBody());
   }
 }

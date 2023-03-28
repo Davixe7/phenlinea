@@ -144,8 +144,8 @@ const AdminsModal   = ref(null)
 const PaymentsModal = ref(null)
 
 function appendAdmin(admin) {
-  results.value = [...props.admins]
-  results.value.push(admin)
+  rows.value.push(admin)
+  results.value = [...rows.value]
   $(AdminsModal.value).modal('hide')
 }
 

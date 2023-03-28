@@ -24,30 +24,6 @@ class PetitionController extends Controller
     ]);
   }
 
-  public function getMessage($petition){
-    if( ($petition->read_at == null) && ($petition->replied_at == null) ){
-      $status = 'Pendiente';
-    }
-    else if( $petition->read_at != null && ($petition->replied_at == null)){
-      $status = 'Leído';
-    }
-    else {
-      $status = "Respuesta enviada";
-    }
-
-    $petitionId = str_pad($petition->id, 4, '0', STR_PAD_LEFT);
-    $statuses   = ['pending'=>'pendiente', 'read'=>'Leído', 'replied'=>'Respuesta enviada'];
-    $status     = $statuses[ $petition->status ];
-    $link       = route('pqrs.show', compact('petition'));
-
-    $message = "Unidad: *{$petition->admin->name}* \n\n";
-    $message .= "Su PQRS ha sido actualizado con éxito. Y su código de seguimiento es el *{$petitionId}* \n\n";
-    $message .= "Estado: *{$status}* \n\n";
-    $message .= "Link de seguimiento del estado: {$link} \n\n";
-    $message .= "Servicio prestado por PHenlinea.com";
-    return $message;
-  }
-
   /**
    * Display a listing of the resource.
    *
@@ -123,7 +99,7 @@ class PetitionController extends Controller
   public function show(Petition $petition)
   {
     if ((auth()->user()) && (auth()->user()->nit != null) && ($petition->read_at == null)) {
-      $petition->update(['read_at' => now()]);
+      $petition->update(['read_at' => now(), 'status'=>'read']);
       $this->notifyPetitionUpdate($petition);
     }
 
@@ -207,6 +183,20 @@ class PetitionController extends Controller
 
     ob_end_clean();
     return response()->download($path, $filename, ['Content-Type' => 'image/jpg+xml']);
+  }
+
+  public function getMessage($petition){
+    $petitionId = str_pad($petition->id, 4, '0', STR_PAD_LEFT);
+    $statuses   = ['pending'=>'pendiente', 'read'=>'Leído', 'replied'=>'Respuesta enviada'];
+    $status     = $statuses[ $petition->status ];
+    $link       = route('pqrs.show', compact('petition'));
+
+    $message = "Unidad: *{$petition->admin->name}* \n\n";
+    $message .= "Su PQRS ha sido actualizado con éxito. Y su código de seguimiento es el *{$petitionId}* \n\n";
+    $message .= "Estado: *{$status}* \n\n";
+    $message .= "Link de seguimiento del estado: {$link} \n\n";
+    $message .= "Servicio prestado por PHenlinea.com";
+    return $message;
   }
 
   public function notifyPetitionUpdate($petition){

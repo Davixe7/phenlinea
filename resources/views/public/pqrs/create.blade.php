@@ -51,7 +51,7 @@
             </div>
             <div class="form-group">
                 <label>Nro apartamento</label>
-                <input class="form-control" type="text" name="apto" required>
+                <input class="form-control" type="text" name="extension_name" required>
             </div>
             <div class="form-group">
                 <label>Nombre y apellidos</label>

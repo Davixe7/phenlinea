@@ -213,7 +213,7 @@ class PetitionController extends Controller
     $data = [
       'access_token' => env('ASISTBOT_ACCESS_TOKEN'),
       'instance_id'  => env('ASISTBOT_INSTANCE_ID'),
-      'number'       => $petition->phone,
+      'number'       => '57' . $petition->phone,
       'message'      => $this->getMessage($petition),
       'type'         => 'text'
     ];

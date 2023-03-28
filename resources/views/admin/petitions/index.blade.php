@@ -92,7 +92,7 @@
               Apto
             </div>
             <div>
-              @{{ currentPqrs.apto }}
+              @{{ currentPqrs.extension_name }}
             </div>
           </div>
           <div class="flex justify-between">

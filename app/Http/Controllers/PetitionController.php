@@ -59,7 +59,8 @@ class PetitionController extends Controller
   public function store(Request $request)
   {
     $request->validate([
-      'description' => 'required'
+      'description' => 'required',
+      'extension_name' => 'string|max:4'
     ]);
 
     $petition = Petition::create([

@@ -12,7 +12,7 @@ class Petition extends Model implements HasMedia
   protected $fillable = [
     'admin_id',
     'answer',
-    'apto',
+    'extension_name',
     'description',
     'name',
     'phone',

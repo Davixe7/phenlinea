@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', ['title'=>'Detalle del PQRS'])
 @section('styles')
 <style>
   .card {

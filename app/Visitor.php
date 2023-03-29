@@ -44,7 +44,7 @@ class Visitor extends Model
         ->color(83, 151, 212)
         ->backgroundColor(0, 0, 0)
         ->style('round')
-        ->errorCorrection('H')
+        ->errorCorrection('L')
         ->merge('https://phenlinea.com/img/logo_qr.png', .3, true)
         ->format('png')
         ->generate(json_encode($data), $path);

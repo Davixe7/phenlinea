@@ -14,4 +14,7 @@ class Checkin extends Model
     public function visitor(){
         return $this->belongsTo('App\Visitor');
     }
+    public function extension(){
+        return $this->belongsTo('App\Extension');
+    }
 }

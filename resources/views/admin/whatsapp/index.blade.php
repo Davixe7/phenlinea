@@ -61,11 +61,6 @@
     font-family: Monospace;
   }
 
-  .table-responsive tbody td {
-    font-size: .9em;
-    font-weight: 400;
-  }
-
   #qrPreloader {
     display: flex;
     height: 250px;

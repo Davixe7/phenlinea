@@ -26,13 +26,6 @@
       color: #fff;
     }
 
-    .table-responsive {
-      border-radius: 5px;
-      background: #fff;
-      padding-bottom: 2.75rem;
-      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, .15);
-    }
-
     .navbar-nav .nav-item a.nav-link {
       padding-left: 1rem;
       padding-right: 1rem;

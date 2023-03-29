@@ -13,12 +13,12 @@
   <div class="phenlinea-navbar__actions">
     @auth
       {{ auth()->user()->name }}
+      <form action="{{ route('logout') }}" method="post" id="logoutForm">
+        @csrf
+      </form>
+      <button type="button" class="btn btn-round" onclick="document.querySelector('#logoutForm').submit()">
+        <i class="material-symbols-outlined">logout</i>
+      </button>
     @endauth
-    <form action="{{ route('logout') }}" method="post" id="logoutForm">
-      @csrf
-    </form>
-    <button type="button" class="btn btn-round" onclick="document.querySelector('#logoutForm').submit()">
-      <i class="material-symbols-outlined">logout</i>
-    </button>
   </div>
 </div>

@@ -24,7 +24,7 @@ class WhatsappController extends Controller
   public function __construct()
   {
     $this->query = ['access_token' => '3f8b18194536bdafa301c662dc9caa4c'];
-    $this->client = new Client(['base_uri' => 'https://asistbot.com/api/']);
+    $this->client = new Client(['base_uri' => 'http://asistbot.com/api/', 'verify'=>false]);
   }
 
   //Instance ID Invalidated
@@ -66,7 +66,10 @@ class WhatsappController extends Controller
   }
 
   public function comunity(){
-    $response = $this->client->get('http://api.phenlinea.com/api/batches/?user_id=' . auth()->id()); 
+    $response = $this->client->get('http://api.phenlinea.com/api/batches/', ['query'=>[
+      'user_id' => auth()->id(),
+      'type'    => 'comunity',
+    ]]); 
     $history  = json_decode($response->getBody())->data;
     $mode = 'comunity';
     return view('admin.whatsapp.comunity', compact('history', 'mode'));
@@ -83,7 +86,7 @@ class WhatsappController extends Controller
     try {
       $response = $this->client->post('http://api.phenlinea.com/api/batches', ['form_params'=>[
         'user_id'      => auth()->id(),
-        'group_id'     => auth()->user()->group_id,
+        'group_id'     => auth()->user()->whatsapp_group_id,
         'message'      => $request->message,
         'media_url'    => $media_url
       ]]);
@@ -103,8 +106,9 @@ class WhatsappController extends Controller
   {
     if (auth()->user()->whatsapp_status == 'online') {
       $extensions = auth()->user()->extensions()->orderBy('name')->get();
+      $query      = ['user_id'=>auth()->id(), 'type'=>'batch'];
 
-      $response = $this->client->get('http://api.phenlinea.com/api/batches/?user_id=' . auth()->id()); 
+      $response = $this->client->get('http://api.phenlinea.com/api/batches/', [$query]); 
       $history  = json_decode($response->getBody())->data;
       $whatsapp_instance_id = auth()->user()->whatsapp_instance_id;
 

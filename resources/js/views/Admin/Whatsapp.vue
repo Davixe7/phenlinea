@@ -69,7 +69,7 @@
               <th>
                 Mensaje
               </th>
-              <th>
+              <th v-if="mode!='comunity'">
                 Cant.
               </th>
               <th>
@@ -81,7 +81,7 @@
                 <td>
                   {{ batch.message }}
                 </td>
-                <td>
+                <td v-if="mode!='comunity'">
                   {{ batch.numbers.split(',').length }}
                 </td>
                 <td>
@@ -94,7 +94,7 @@
       </div>
 
       <div class="col-lg-3" style="text-align: right">
-        <div class="card mb-3">
+        <div class="card mb-3" v-if="mode!='comunity'">
           <div class="card-body">
             <div class="monospace">
               status

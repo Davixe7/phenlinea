@@ -66,6 +66,9 @@ class WhatsappController extends Controller
   }
 
   public function comunity(){
+    if( !auth()->user()->whatsapp_group_id ){
+      return view('admin.whatsapp.disabled');
+    }
     $response = $this->client->get('http://api.phenlinea.com/api/batches/', ['query'=>[
       'user_id' => auth()->id(),
       'type'    => 'comunity',

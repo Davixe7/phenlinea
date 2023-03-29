@@ -81,10 +81,10 @@
               <td>
                 <div class="btn-group">
                   <button class="btn btn-sm btn-link" onclick="window.confirm('Seguro que desea eliminar la solicitud?') ? document.querySelector('#petition-destroy-form-{{$petition->id}}').submit() : ''">
-                    <i class="material-icons" title="eliminar">delete</i>
+                    <i class="material-symbols-outlined" title="eliminar">delete</i>
                   </button>
                   <a href="{{ route('petitions.show', ['petition'=>$petition->id]) }}" class="btn btn-sm btn-link">
-                    <i class="material-icons" title="detalles">visibility</i>
+                    <i class="material-symbols-outlined" title="detalles">visibility</i>
                   </a>
                 </div>
                 <form action="{{ route('petitions.destroy', ['petition'=>$petition->id]) }}" id="petition-destroy-form-{{$petition->id}}" method="post">

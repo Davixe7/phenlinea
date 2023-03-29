@@ -27,18 +27,18 @@
     
     <div id="alert-sent" v-show="sent">
       <div class="alert alert-success">
-        <i class="material-icons">check</i>
+        <i class="material-symbols-outlined">check</i>
         Enviamos su contraseña en un mensaje al número telefónico que indicó.
       </div>
       <div class="alert alert-info">
-        <i class="material-icons">info</i>
+        <i class="material-symbols-outlined">info</i>
         Si tiene problemas para recibir el mensaje, pongase en contacto con la administración de su unidad.
       </div>
       <button
         @click="$emit('passwordSent')"
         class="btn btn-secondary btn-login">
         Volver al ingreso
-        <i class="material-icons ml-auto">arrow_forward</i>
+        <i class="material-symbols-outlined ml-auto">arrow_forward</i>
       </button>
     </div>
     

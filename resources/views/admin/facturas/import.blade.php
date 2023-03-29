@@ -35,7 +35,7 @@ h6 {
               Descargue el formato requerido y cargue los datos al archivo XLSX
             </p>
             <button class="btn btn-success" style="flex: 1 0 auto;" href="{{ asset('phenlinea_formato_factura.xlsx') }}">
-              <i class="material-icons mr-2">arrow_circle_down</i>
+              <i class="material-symbols-outlined mr-2">arrow_circle_down</i>
               Descargar Formato
             </button>
           </div>
@@ -97,20 +97,20 @@ h6 {
             <div class="row text-left">
               <div class="form-group col-md-4">
                 <label for="#" class="mb-2">
-                  <i class="material-icons">calendar_today</i>
+                  <i class="material-symbols-outlined">calendar_today</i>
                   Periodo
                 </label>
                 <input type="date" name="periodo" class="form-control" value="" required>
               </div>
               <div class="form-group col-md-4">
                 <label for="#" class="mb-2">
-                  <i class="material-icons">calendar_today</i>
+                  <i class="material-symbols-outlined">calendar_today</i>
                   Emisión</label>
                 <input type="date" name="emision" class="form-control" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" required>
               </div>
               <div class="form-group col-md-4">
                 <label for="#" class="mb-2">
-                  <i class="material-icons">calendar_today</i>
+                  <i class="material-symbols-outlined">calendar_today</i>
                   Pagar antes de</label>
                 <input type="date" name="limite" class="form-control" required>
               </div>

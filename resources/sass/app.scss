@@ -1,7 +1,7 @@
 // Fonts
 @import 'variables';
 @import 'cards';
-// @import '_material-icons';
+// @import '_material-symbols-outlined';
 @import 'navbar';
 @import 'phnavbar';
 @import 'buttons';
@@ -63,7 +63,7 @@ input[type=search].form-control {
   bottom: 20px;
   right: 20px;
 }
-i.material-icons {
+i.material-symbols-outlined {
   vertical-align: middle;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -139,8 +139,8 @@ i.material-icons {
   flex-flow: row nowrap;
   align-items: center;
 }
-.form-section h4 i.material-icons,
-.form-section label i.material-icons {
+.form-section h4 i.material-symbols-outlined,
+.form-section label i.material-symbols-outlined {
   margin-right: 7px;
 }
 .form-section label {
@@ -213,7 +213,7 @@ i.material-icons {
   border: 1px solid #e0e0e0;
   background: #fff;
 }
-.pill .material-icons {
+.pill .material-symbols-outlined {
   margin-right: 5px;
 }
 .pill.selected {
@@ -224,7 +224,7 @@ i.material-icons {
   padding: 3px 10px 3px 8px;
   font-size: .85em;
   margin: 0 10px 5px 0;
-  i.material-icons {
+  i.material-symbols-outlined {
     font-size: 1.25em;
   }
 }

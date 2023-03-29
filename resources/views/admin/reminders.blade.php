@@ -51,7 +51,7 @@
             <h2>{{ $reminder->title }}</h2>
             <div class="btn-group dropdown">
               <button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown">
-                <i class="material-icons">more_vert</i>
+                <i class="material-symbols-outlined">more_vert</i>
               </button>
               <div class="dropdown-menu dropdown-menu-right">
                 <button type="button" class="dropdown-item" onclick="if( confirm('¿Seguro que desea eliminar la publicacion?') ){ document.querySelector('#delete-post-{{ $reminder->id }}-form').submit() }">

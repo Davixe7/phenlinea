@@ -139,7 +139,7 @@
         </li>
       </ul>
       <button class="btn sidenav-toggler ml-auto" onclick="document.querySelector('.custom-sidenav').classList.toggle('active')">
-        <i class="material-icons">menu</i>
+        <i class="material-symbols-outlined">menu</i>
       </button>
     </div>
 
@@ -326,7 +326,7 @@
               <span>Soporte via WhatsApp</span>
               <div class="ml-auto">
                 <span onclick="document.querySelector('.whatsapp-card').classList.remove('active')">
-                  <i class="material-icons" style="color: #fff;">close</i>
+                  <i class="material-symbols-outlined" style="color: #fff;">close</i>
                 </span>
               </div>
             </div>

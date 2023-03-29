@@ -2754,7 +2754,7 @@ var render = function render() {
       outlined: ""
     }
   }, [_c("v-card-title", [_c("i", {
-    staticClass: "material-icons mr-3"
+    staticClass: "material-symbols-outlined mr-3"
   }, [_vm._v("\n      receipt_long\n    ")]), _vm._v("\n    Consultar Facturas\n  ")]), _vm._v(" "), _c("v-card-text", [_c("form", {
     ref: "facturaForm"
   }, [_c("v-autocomplete", {
@@ -2987,7 +2987,7 @@ var render = function render() {
       href: _vm.url
     }
   }, [_c("span", [_vm._v("Descargar Excel")]), _vm._v(" "), _c("i", {
-    staticClass: "material-icons ml-auto"
+    staticClass: "material-symbols-outlined ml-auto"
   }, [_vm._v("arrow_circle_down")])])], 1);
 };
 var staticRenderFns = [];
@@ -3329,7 +3329,7 @@ var staticRenderFns = [function () {
   return _c("div", {
     staticClass: "alert alert-success"
   }, [_c("i", {
-    staticClass: "material-icons"
+    staticClass: "material-symbols-outlined"
   }, [_vm._v("check")]), _vm._v("\n      Enviamos su contraseña en un mensaje al número telefónico que indicó.\n    ")]);
 }, function () {
   var _vm = this,
@@ -3337,7 +3337,7 @@ var staticRenderFns = [function () {
   return _c("div", {
     staticClass: "alert alert-info"
   }, [_c("i", {
-    staticClass: "material-icons"
+    staticClass: "material-symbols-outlined"
   }, [_vm._v("info")]), _vm._v("\n      Si tiene problemas para recibir el mensaje, pongase en contacto con la administración de su unidad.\n    ")]);
 }, function () {
   var _vm = this,
@@ -3348,7 +3348,7 @@ var staticRenderFns = [function () {
       href: "/admins/login"
     }
   }, [_vm._v("\n      Volver al ingreso\n      "), _c("i", {
-    staticClass: "material-icons ml-auto"
+    staticClass: "material-symbols-outlined ml-auto"
   }, [_vm._v("arrow_forward")])]);
 }];
 render._withStripped = true;
@@ -4733,7 +4733,7 @@ var render = function render() {
       }
     }
   }, [_c("i", {
-    staticClass: "material-icons",
+    staticClass: "material-symbols-outlined",
     staticStyle: {
       width: "24px"
     }
@@ -5058,7 +5058,7 @@ var render = function render() {
       }
     }
   }, [_vm._v("\n      Volver al ingreso\n      "), _c("i", {
-    staticClass: "material-icons ml-auto"
+    staticClass: "material-symbols-outlined ml-auto"
   }, [_vm._v("arrow_forward")])])])]);
 };
 var staticRenderFns = [function () {
@@ -5067,7 +5067,7 @@ var staticRenderFns = [function () {
   return _c("div", {
     staticClass: "alert alert-success"
   }, [_c("i", {
-    staticClass: "material-icons"
+    staticClass: "material-symbols-outlined"
   }, [_vm._v("check")]), _vm._v("\n      Enviamos su contraseña en un mensaje al número telefónico que indicó.\n    ")]);
 }, function () {
   var _vm = this,
@@ -5075,7 +5075,7 @@ var staticRenderFns = [function () {
   return _c("div", {
     staticClass: "alert alert-info"
   }, [_c("i", {
-    staticClass: "material-icons"
+    staticClass: "material-symbols-outlined"
   }, [_vm._v("info")]), _vm._v("\n      Si tiene problemas para recibir el mensaje, pongase en contacto con la administración de su unidad.\n    ")]);
 }];
 render._withStripped = true;
@@ -5433,13 +5433,13 @@ var render = function render() {
     staticClass: "table"
   }, [_vm._m(2), _vm._v(" "), _c("tbody", _vm._l(_vm.residents, function (resident) {
     return _c("tr", [_c("td", [_vm._v(_vm._s(resident.name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(resident.age))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(resident.dni))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(resident.card))]), _vm._v(" "), _c("td", [resident.is_owner ? _c("i", {
-      staticClass: "material-icons"
+      staticClass: "material-symbols-outlined"
     }, [_vm._v("done")]) : _vm._e()]), _vm._v(" "), _c("td", [resident.is_resident ? _c("i", {
-      staticClass: "material-icons"
+      staticClass: "material-symbols-outlined"
     }, [_vm._v("done")]) : _vm._e()]), _vm._v(" "), _c("td", [resident.is_authorized ? _c("i", {
-      staticClass: "material-icons"
+      staticClass: "material-symbols-outlined"
     }, [_vm._v("done")]) : _vm._e()]), _vm._v(" "), _c("td", [resident.disability ? _c("i", {
-      staticClass: "material-icons"
+      staticClass: "material-symbols-outlined"
     }, [_vm._v("done")]) : _vm._e()]), _vm._v(" "), _c("td", {
       staticClass: "d-flex align-items-center"
     }, [_c("a", {
@@ -5452,7 +5452,7 @@ var render = function render() {
         }
       }
     }, [_c("i", {
-      staticClass: "material-icons"
+      staticClass: "material-symbols-outlined"
     }, [_vm._v("edit")])]), _vm._v(" "), _c("a", {
       attrs: {
         href: "#"
@@ -5463,25 +5463,25 @@ var render = function render() {
         }
       }
     }, [_c("i", {
-      staticClass: "material-icons"
+      staticClass: "material-symbols-outlined"
     }, [_vm._v("close")])])])]);
   }), 0)])]) : _c("div", {
     staticClass: "alert alert-info"
   }, [_c("i", {
-    staticClass: "material-icons"
+    staticClass: "material-symbols-outlined"
   }, [_vm._v("error_outline")]), _vm._v("\n        No hay registros de residente para mostrar\n      ")])])])]);
 };
 var staticRenderFns = [function () {
   var _vm = this,
     _c = _vm._self._c;
   return _c("h4", [_c("i", {
-    staticClass: "material-icons"
+    staticClass: "material-symbols-outlined"
   }, [_vm._v("account_circle")]), _vm._v("\n        Información personal\n      ")]);
 }, function () {
   var _vm = this,
     _c = _vm._self._c;
   return _c("h4", [_c("i", {
-    staticClass: "material-icons"
+    staticClass: "material-symbols-outlined"
   }, [_vm._v("supervisor_account")]), _vm._v(" Núcleo Familiar\n      ")]);
 }, function () {
   var _vm = this,
@@ -10252,7 +10252,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.v-card[data-v-182ff4dd] {\n  padding: 15px;\n  border-radius: 8px;\n  /* border: none !important;\n  box-shadow: 0 1px 15px 2px rgba(0,0,0,.1); */\n}\n.v-card__title[data-v-182ff4dd] {\n  color: #0a47e4 !important;\n  font-size: 1.2em;\n  font-weight: 500;\n}\n.v-card__title .material-icons[data-v-182ff4dd] {\n  color: #0a47e4 !important;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.v-card[data-v-182ff4dd] {\n  padding: 15px;\n  border-radius: 8px;\n  /* border: none !important;\n  box-shadow: 0 1px 15px 2px rgba(0,0,0,.1); */\n}\n.v-card__title[data-v-182ff4dd] {\n  color: #0a47e4 !important;\n  font-size: 1.2em;\n  font-weight: 500;\n}\n.v-card__title .material-symbols-outlined[data-v-182ff4dd] {\n  color: #0a47e4 !important;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

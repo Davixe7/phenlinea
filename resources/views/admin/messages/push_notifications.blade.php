@@ -81,7 +81,7 @@
         </div>
         {{--<div class="ml-auto">
                             <button type="button" class="btn btn-link btn-sm" onclick="if( confirm('¿Seguro que desea eliminar el registro?') ){ document.querySelector('#log-form-{{ $log->id }}').submit() }">
-        <i class="material-icons">delete</i>
+        <i class="material-symbols-outlined">delete</i>
         </button>
       </div>--}}
       </li>

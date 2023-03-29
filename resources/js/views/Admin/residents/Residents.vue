@@ -4,7 +4,7 @@
     <div class="col-md-4">
       <div class="form-section">
         <h4>
-          <i class="material-icons">account_circle</i>
+          <i class="material-symbols-outlined">account_circle</i>
           Información personal
         </h4>
         <form action="" id="create-resident-form" ref="storeResidentForm" @submit.prevent="storeResident">
@@ -77,7 +77,7 @@
     <div class="col-md-8">
       <div class="form-section mb-0" style="padding-bottom: 7px;">
         <h4>
-          <i class="material-icons">supervisor_account</i> Núcleo Familiar
+          <i class="material-symbols-outlined">supervisor_account</i> Núcleo Familiar
         </h4>
         <div v-if="residents && residents.length" class="table-wrap">
           <table class="table">
@@ -99,23 +99,23 @@
                 <td>{{ resident.dni }}</td>
                 <td>{{ resident.card }}</td>
                 <td>
-                  <i v-if="resident.is_owner" class="material-icons">done</i>
+                  <i v-if="resident.is_owner" class="material-symbols-outlined">done</i>
                 </td>
                 <td>
-                  <i v-if="resident.is_resident" class="material-icons">done</i>
+                  <i v-if="resident.is_resident" class="material-symbols-outlined">done</i>
                 </td>
                 <td>
-                  <i v-if="resident.is_authorized" class="material-icons">done</i>
+                  <i v-if="resident.is_authorized" class="material-symbols-outlined">done</i>
                 </td>
                 <td>
-                  <i v-if="resident.disability" class="material-icons">done</i>
+                  <i v-if="resident.disability" class="material-symbols-outlined">done</i>
                 </td>
                 <td class="d-flex align-items-center">
                   <a href="#" @click="editResident(resident)">
-                    <i class="material-icons">edit</i>
+                    <i class="material-symbols-outlined">edit</i>
                   </a>
                   <a href="#" @click="removeResident(resident.id)">
-                    <i class="material-icons">close</i>
+                    <i class="material-symbols-outlined">close</i>
                   </a>
                 </td>
               </tr>
@@ -123,7 +123,7 @@
           </table>
         </div>
         <div v-else class="alert alert-info">
-          <i class="material-icons">error_outline</i>
+          <i class="material-symbols-outlined">error_outline</i>
           No hay registros de residente para mostrar
         </div>
       </div>

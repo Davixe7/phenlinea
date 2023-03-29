@@ -2429,7 +2429,7 @@ var render = function render() {
         href: "/admin/admins/".concat(admin.id, "/edit-permissions")
       }
     }, [_c("i", {
-      staticClass: "material-icons"
+      staticClass: "material-symbols-outlined"
     }, [_vm._v("lock")])]), _vm._v(" "), _c("button", {
       staticClass: "btn btn-xs btn-link",
       on: {
@@ -2438,7 +2438,7 @@ var render = function render() {
         }
       }
     }, [_c("i", {
-      staticClass: "material-icons"
+      staticClass: "material-symbols-outlined"
     }, [_vm._v("edit")])]), _vm._v(" "), _c("button", {
       staticClass: "btn btn-xs btn-link",
       on: {
@@ -2447,7 +2447,7 @@ var render = function render() {
         }
       }
     }, [_c("i", {
-      staticClass: "material-icons"
+      staticClass: "material-symbols-outlined"
     }, [_vm._v("delete")])])])])]);
   }), 0)]) : _vm._e()]), _vm._v(" "), !_setup.results || !_setup.results.length ? _c("div", {
     staticClass: "alert alert-info"
@@ -2466,7 +2466,7 @@ var render = function render() {
       }
     }
   }, [_c("i", {
-    staticClass: "material-icons"
+    staticClass: "material-symbols-outlined"
   }, [_vm._v("add")])])]), _vm._v(" "), _c("div", {
     ref: "AdminsModal",
     staticClass: "modal fade",
@@ -2955,7 +2955,7 @@ var render = function render() {
   }, [_c("div", {
     staticClass: "header"
   }, [_c("i", {
-    staticClass: "material-icons"
+    staticClass: "material-symbols-outlined"
   }, [_vm._v("supervised_user_circle")]), _vm._v(" "), _c("div", {
     staticClass: "user-info"
   }, [_c("div", {
@@ -3036,7 +3036,7 @@ var render = function render() {
   }), 0) : _c("div", {
     staticClass: "alert alert-info px-2 mt-2"
   }, [_c("i", {
-    staticClass: "material-icons mr-2"
+    staticClass: "material-symbols-outlined mr-2"
   }, [_vm._v("error_outline")]), _vm._v(" No hay registro de pagos para el año actual\n  ")]), _vm._v(" "), _vm.user.isAdmin ? _c("div", {
     staticClass: "text-right"
   }, [!_vm.editing ? _c("button", {
@@ -3092,7 +3092,7 @@ var render = function render() {
       }
     }
   }, [_c("i", {
-    staticClass: "material-icons"
+    staticClass: "material-symbols-outlined"
   }, [_vm._v("add")])]), _vm._v(" "), _c("div", {
     staticClass: "col"
   }, [_c("div", {
@@ -3605,7 +3605,7 @@ var render = function render() {
         }
       }
     }, [_c("i", {
-      staticClass: "material-icons"
+      staticClass: "material-symbols-outlined"
     }, [_vm._v("edit")])]), _vm._v(" "), _c("a", {
       staticClass: "btn btn-sm btn-secondary",
       attrs: {
@@ -3617,7 +3617,7 @@ var render = function render() {
         }
       }
     }, [_c("i", {
-      staticClass: "material-icons"
+      staticClass: "material-symbols-outlined"
     }, [_vm._v("delete")])])])])]);
   }), 0)]) : _c("div", {
     staticClass: "alert alert-info"
@@ -3637,7 +3637,7 @@ var render = function render() {
       }
     }
   }, [_c("i", {
-    staticClass: "material-icons"
+    staticClass: "material-symbols-outlined"
   }, [_vm._v("add")])])]), _vm._v(" "), _c("div", {
     ref: "PorteriasModal",
     staticClass: "modal fade",
@@ -3896,7 +3896,7 @@ var render = function render() {
         }
       }
     }, [_c("i", {
-      staticClass: "material-icons"
+      staticClass: "material-symbols-outlined"
     }, [_vm._v("edit")])])])]);
   }), 0)]) : _vm._e()]), _vm._v(" "), !_setup.results || !_setup.results.length ? _c("div", {
     staticClass: "alert alert-info"
@@ -3915,7 +3915,7 @@ var render = function render() {
       }
     }
   }, [_c("i", {
-    staticClass: "material-icons"
+    staticClass: "material-symbols-outlined"
   }, [_vm._v("add")])])]), _vm._v(" "), _c("div", {
     ref: "UsersModal",
     staticClass: "modal fade",

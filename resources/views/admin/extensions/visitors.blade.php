@@ -36,7 +36,7 @@
             <td>
               <div class="btn-group">
                 <button type="button" onclick="confirm('Seguro que desea eliminar el registro?') ? document.querySelector('#delete-visitor-{{ $visitor->id }}-form').submit() : ''">
-                  <i class="material-icons">delete</i>
+                  <i class="material-symbols-outlined">delete</i>
                 </button>
                 <form method="POST" action="{{ route('visitors.delete', ['visitor'=>$visitor->id]) }}" id="delete-visitor-{{ $visitor->id }}-form">
                   @csrf
@@ -100,7 +100,7 @@
   </div>
   <div class="fab-container">
     <button type="button" class="btn btn-primary btn-circle" data-toggle="modal" data-target="#create-visitor-form">
-      <i class="material-icons">add</i>
+      <i class="material-symbols-outlined">add</i>
     </button>
   </div>
   <div class="modal" tabindex="-1" id="create-visitor-form">

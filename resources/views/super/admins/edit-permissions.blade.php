@@ -23,7 +23,7 @@
       @endif
       <h1>
         <a href="{{ route('admin.admins.index') }}">
-          <i class="material-icons">
+          <i class="material-symbols-outlined">
             arrow_back
           </i>
         </a>

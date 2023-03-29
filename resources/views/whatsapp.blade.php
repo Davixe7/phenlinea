@@ -208,7 +208,7 @@
             <div class="d-flex align-items-center">
               <input type="file" name="attachment" class="form-control d-none" id="attachmentInput">
               <button type="button" class="btn-round btn-attachment me-3" onclick="document.querySelector('#attachmentInput').click()">
-                <i class="material-icons" style="color: darkgray;">
+                <i class="material-symbols-outlined" style="color: darkgray;">
                   attachment
                 </i>
               </button>
@@ -274,7 +274,7 @@
 
         <div class="card mb-3">
           <div class="card-header">
-            <i class="material-icons">info</i> Recomendación
+            <i class="material-symbols-outlined">info</i> Recomendación
           </div>
           <div class="card-body">
             PHenlínea SAS recomienda el uso responsable del servicio de mensajería masíva
@@ -283,7 +283,7 @@
 
         <div class="card background-info">
           <div class="card-header">
-            <i class="material-icons">info</i> Advertencia
+            <i class="material-symbols-outlined">info</i> Advertencia
           </div>
           <div class="card-body">
             PHenlínea SAS no se hace responsable del uso inapropiado del servicio de mensajería masíva

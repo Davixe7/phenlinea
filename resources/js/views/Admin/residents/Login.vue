@@ -5,7 +5,7 @@
       <div class="d-flex align-items-center justify-content-center">
         <div>
           <a href="#" v-show="activeForm==2" @click.prevent="activeForm=1" class="mr-3">
-            <i class="material-icons" style="width: 24px;">arrow_backwards</i>
+            <i class="material-symbols-outlined" style="width: 24px;">arrow_backwards</i>
           </a>
           <span>{{ activeForm == 1 ? 'Propietarios &amp; Residentes' : 'Recuperar Contraseña' }}</span>
         </div>

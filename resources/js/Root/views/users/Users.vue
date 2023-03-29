@@ -23,7 +23,7 @@
             <td>{{ user.email }}</td>
             <td class="text-right">
               <button class="btn btn-xs btn-link" @click="editUser(user)">
-                <i class="material-icons">edit</i>
+                <i class="material-symbols-outlined">edit</i>
               </button>
             </td>
           </tr>
@@ -38,7 +38,7 @@
     <div class="fab-container">
       <button color="primary" data-toggle="modal" data-target="#userEditModal"
         @click="() => { editing = false; userToEdit = {}; }">
-        <i class="material-icons">add</i>
+        <i class="material-symbols-outlined">add</i>
       </button>
     </div>
 

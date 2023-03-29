@@ -1,7 +1,7 @@
 <template>
   <div id="payments">
     <div class="header">
-      <i class="material-icons">supervised_user_circle</i>
+      <i class="material-symbols-outlined">supervised_user_circle</i>
       <div class="user-info">
         <div class="row">
           <div class="col d-flex align-items-end"><h4 style="color: #000;">{{ admin.name }}</h4></div>
@@ -37,7 +37,7 @@
     </li>
   </ul>
   <div v-else class="alert alert-info px-2 mt-2">
-    <i class="material-icons mr-2">error_outline</i> No hay registro de pagos para el año actual
+    <i class="material-symbols-outlined mr-2">error_outline</i> No hay registro de pagos para el año actual
   </div>
   <div v-if="user.isAdmin" class="text-right">
     <button v-if="!editing" @click="editing = true"  class="btn btn-link">EDITAR</button>

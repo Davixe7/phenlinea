@@ -51,7 +51,7 @@
           </div>
           <div class="ml-auto">
             <button type="button" class="btn btn-link" data-toggle="dropdown">
-              <i class="material-icons">more_vert</i>
+              <i class="material-symbols-outlined">more_vert</i>
             </button>
             <div class="dropdown-menu dropdown-menu-right">
               <button

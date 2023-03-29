@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <button class="fab" @click="importing = !importing">
-      <i class="material-icons">add</i>
+      <i class="material-symbols-outlined">add</i>
     </button>
     <div class="col">
       <div class="table-responsive">

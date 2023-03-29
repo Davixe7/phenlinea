@@ -49,12 +49,12 @@
                   e
                 </a>
                 <a :href="`/admin/admins/${admin.id}/edit-permissions`" class="btn btn-xs btn-link">
-                  <i class="material-icons">lock</i>
+                  <i class="material-symbols-outlined">lock</i>
                 </a>
                 <button class="btn btn-xs btn-link" @click="editAdmin(admin)"><i
-                    class="material-icons">edit</i></button>
+                    class="material-symbols-outlined">edit</i></button>
                 <button class="btn btn-xs btn-link" @click="deleteAdmin(admin.id)"><i
-                    class="material-icons">delete</i></button>
+                    class="material-symbols-outlined">delete</i></button>
               </div>
             </td>
           </tr>
@@ -71,7 +71,7 @@
         data-toggle="modal"
         data-target="#adminEditModal"
         @click="() => { editing = false; adminToEdit = {}; }">
-        <i class="material-icons">add</i>
+        <i class="material-symbols-outlined">add</i>
       </button>
     </div>
 

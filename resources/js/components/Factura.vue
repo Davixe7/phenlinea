@@ -1,7 +1,7 @@
 <template>
   <v-card outlined>
     <v-card-title>
-      <i class="material-icons mr-3">
+      <i class="material-symbols-outlined mr-3">
         receipt_long
       </i>
       Consultar Facturas
@@ -87,7 +87,7 @@ export default {
   font-size: 1.2em;
   font-weight: 500;
 }
-.v-card__title .material-icons {
+.v-card__title .material-symbols-outlined {
   color: #0a47e4 !important;
 }
 </style>

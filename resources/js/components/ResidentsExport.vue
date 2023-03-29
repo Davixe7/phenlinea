@@ -16,7 +16,7 @@
     ></v-autocomplete>
     <a :href="url" class="btn btn-success w-100 d-flex align-items-center" :class="{disabled: !this.admin}">
       <span>Descargar Excel</span>
-      <i class="material-icons ml-auto">arrow_circle_down</i>
+      <i class="material-symbols-outlined ml-auto">arrow_circle_down</i>
     </a>
   </div>
 </template>

@@ -33,9 +33,9 @@
                 <td class="text-right">
                   <div class="btn-group">
                     <a href="#" class="btn btn-sm btn-secondary" @click="editPorteria(porteria)">
-                      <i class="material-icons">edit</i></a>
+                      <i class="material-symbols-outlined">edit</i></a>
                     <a href="#" class="btn btn-sm btn-secondary" @click="deletePorteria(porteria.id)">
-                      <i class="material-icons">delete</i></a>
+                      <i class="material-symbols-outlined">delete</i></a>
                   </div>
                 </td>
               </tr>
@@ -53,7 +53,7 @@
         class="btn btn-primary btn-circle"
         data-toggle="modal"
         data-target="#exampleModal">
-        <i class="material-icons">add</i>
+        <i class="material-symbols-outlined">add</i>
       </button>
     </div>
 

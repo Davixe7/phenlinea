@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', ['title'=>''])
 @section('content')
 <div class="container">
   <extensions-import><extensions-import/>

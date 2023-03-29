@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', ['title'=>'Registre su PQRS'])
 @section('styles')
 <style>
     .table-responsive h1 {

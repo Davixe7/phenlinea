@@ -30,7 +30,7 @@
           <td>
             @if( $url = $visit->getFirstMediaUrl('picture') )
             <a href="{{ $url }}" target="_blank">
-              <img src="{{ $url }}" class="avatar" />
+              <img src="{{ $url }}" class="avatar"/>
             </a>
             @else
             <div class="picture-placeholder"></div>

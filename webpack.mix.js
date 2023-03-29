@@ -24,5 +24,5 @@ mix
 .js('resources/js/app.js', 'js')
 .js('resources/js/super.js', 'js')
 .vue()
-// .version()
+.version()
 .sass('resources/sass/app.scss', 'css');

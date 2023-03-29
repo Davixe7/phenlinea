@@ -119,6 +119,7 @@
       border: 1px solid rgba(217, 217, 217, 1);
     }
   </style>
+@yield('styles')
 </head>
 
 <body>
@@ -129,7 +130,7 @@
     </div>
   </div>
 
-  <script src="{{ asset('js/app.js') }}" defer></script>
+  <script src="{{ mix('js/app.js') }}" defer></script>
   @yield('scripts')
 </body>
 </html>

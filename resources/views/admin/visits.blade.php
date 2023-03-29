@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title'=>'Visitas'])
+@extends('layouts.app', ['title'=>'Visitantes'])
 @section('styles')
 <style>
   .picture-placeholder,

@@ -6,11 +6,12 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-v4-grid-only@1.0.0/dist/bootstrap-grid.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.1/css/bootstrap-grid.min.css" rel="stylesheet"/>
+  <link href="{{ mix('css/app.css') }}" rel="stylesheet">
   <title>Home</title>
   <style>
     body {
@@ -48,6 +49,7 @@
     }
 
     .menu-option {
+      position: relative;
       text-align: center;
       font-weight: 400;
       display: flex;
@@ -120,14 +122,22 @@
       <img src="{{ asset('img/logo.png') }}" alt="" style="width: 120px; margin-top: -20px;">
     </div>
     <div class="phenlinea-navbar__actions">
-      <form action="{{ route('logout') }}" method="post" id="logoutForm">
-        @csrf
-      </form>
-      <button type="button" class="btn btn-round" onclick="document.querySelector('#logoutForm').submit()">
-        <i class="material-symbols-outlined">logout</i>
-      </button>
+      <div class="d-flex align-items-center">
+        @auth
+        <div class="me-3">
+          {{ auth()->user()->name }}
+        </div>
+        @endauth
+        <form action="{{ route('logout') }}" method="post" id="logoutForm">
+          @csrf
+        </form>
+        <button type="button" class="btn btn-round" onclick="document.querySelector('#logoutForm').submit()">
+          <i class="material-symbols-outlined">logout</i>
+        </button>
+      </div>
     </div>
   </div>
+
   <div class="container">
     <div class="menu-options row">
       <div class="col-sm-6 col-lg-3">

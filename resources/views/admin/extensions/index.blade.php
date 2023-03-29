@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title'=>'Extensiones'])
+@extends('layouts.app', ['title'=>'Citofonía y Censo'])
 @section('content')
   <div class="container">
     <extensions :items="{{ json_encode( $extensions ) }}"/>

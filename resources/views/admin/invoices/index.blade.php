@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title'=>'Facturas'])
+@extends('layouts.app', ['title'=>'Facturas PHenlinea'])
 
 @section('styles')
 <style>

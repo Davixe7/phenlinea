@@ -11,6 +11,9 @@
     <img src="{{ asset('img/logo.png') }}" alt="" style="width: 120px; margin-top: -20px;">
   </div>
   <div class="phenlinea-navbar__actions">
+    @auth
+      {{ auth()->user()->name }}
+    @endauth
     <form action="{{ route('logout') }}" method="post" id="logoutForm">
       @csrf
     </form>

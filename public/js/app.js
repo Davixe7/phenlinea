@@ -2073,11 +2073,11 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       attachmentInput.value.click();
     }
     function updateAttachment() {
-      if (attachmentInput.value.files.length) {
-        attachment.value = attachmentInput.value.files[0];
+      if (!attachmentInput.value.files.length) {
+        attachment.value = null;
         return;
       }
-      attachment.value = null;
+      attachment.value = attachmentInput.value.files[0];
     }
     function send() {
       if (!window.confirm('Seguro que desea enviar el mensaje?')) return;
@@ -2103,8 +2103,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       axios.post(url, data).then(function (response) {
         message.value = '';
         receivers.value = [];
-        attachmentInput.value = '';
-        attachment.value = '';
+        attachmentInput.value.value = '';
+        attachment.value = null;
         props.history.unshift(response.data.data);
         alert('Mensaje enviado exitosamente');
       })["catch"](function (error) {

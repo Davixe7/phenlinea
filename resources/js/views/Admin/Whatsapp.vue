@@ -139,9 +139,9 @@ import { computed, ref, onMounted } from 'vue';
 const props = defineProps(['extensions', 'logoutRoute', 'history', 'whatsappInstanceId', 'mode'])
 const attachmentInput = ref(null)
 const ownersOnly = ref(false)
-const search = ref('')
-const message = ref('')
-const receivers = ref([])
+const search     = ref('')
+const message    = ref('')
+const receivers  = ref([])
 const attachment = ref(null)
 
 const results = computed(() => {
@@ -157,11 +157,11 @@ function openFileDialog() {
 }
 
 function updateAttachment() {
-  if (attachmentInput.value.files.length) {
-    attachment.value = attachmentInput.value.files[0]
+  if (!attachmentInput.value.files.length) {
+    attachment.value = null
     return
   }
-  attachment.value = null
+  attachment.value = attachmentInput.value.files[0]
 }
 
 function send() {
@@ -186,8 +186,8 @@ function send() {
     .then(response => {
       message.value = ''
       receivers.value = []
-      attachmentInput.value = ''
-      attachment.value = ''
+      attachmentInput.value.value = ''
+      attachment.value = null
       props.history.unshift(response.data.data);
       alert('Mensaje enviado exitosamente')
     })

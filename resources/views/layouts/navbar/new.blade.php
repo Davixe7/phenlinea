@@ -14,8 +14,8 @@
     <form action="{{ route('logout') }}" method="post" id="logoutForm">
       @csrf
     </form>
-    <a href="#" class="btn btn-round">
+    <button type="button" class="btn btn-round" onclick="document.querySelector('#logoutForm').submit()">
       <i class="material-symbols-outlined">logout</i>
-    </a>
+    </button>
   </div>
 </div>

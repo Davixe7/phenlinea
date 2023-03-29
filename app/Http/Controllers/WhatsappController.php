@@ -72,6 +72,33 @@ class WhatsappController extends Controller
     return view('admin.whatsapp.comunity', compact('history', 'mode'));
   }
 
+  public function sendComunity(Request $request){
+    
+    $media_url = null;
+    if( $file = $request->file('attachment') ){
+      $path      = $file->store('public/whatsapp_attachments');
+      $media_url = asset('storage/' . str_replace('public/', '', $path));
+    }
+
+    try {
+      $response = $this->client->post('http://api.phenlinea.com/api/batches', ['form_params'=>[
+        'user_id'      => auth()->id(),
+        'group_id'     => auth()->user()->group_id,
+        'message'      => $request->message,
+        'media_url'    => $media_url
+      ]]);
+    }
+    catch(ClientException $e){
+      return $e->getMessage();
+    }
+
+    $response_body = json_encode(json_decode($response->getBody()));
+    Storage::append('batchs_messages_response.log', $response_body);
+    $response = json_decode($response_body, true);
+
+    return response()->json($response);
+  }
+
   public function index()
   {
     if (auth()->user()->whatsapp_status == 'online') {

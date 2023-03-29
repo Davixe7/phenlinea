@@ -2081,7 +2081,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     }
     function send() {
       if (!window.confirm('Seguro que desea enviar el mensaje?')) return;
-      if (!receivers.value.length) {
+      if (props.mode != 'comunity' && !receivers.value.length) {
         alert('Debe incluir al menos un destinatario');
         return;
       }
@@ -2091,13 +2091,16 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       }
       var data = new FormData();
       data.append('message', message.value);
-      receivers.value.forEach(function (receiver) {
-        return data.append('receivers[]', receiver);
-      });
+      if (props.mode != 'comunity') {
+        receivers.value.forEach(function (receiver) {
+          return data.append('receivers[]', receiver);
+        });
+      }
       if (attachment.value) {
         data.append('attachment', attachment.value);
       }
-      axios.post('/whatsapp/send', data).then(function (response) {
+      var url = props.mode != 'comunity' ? '/whatsapp/send' : '/whatsapp/comunity';
+      axios.post(url, data).then(function (response) {
         message.value = '';
         receivers.value = [];
         attachmentInput.value = '';
@@ -3377,7 +3380,7 @@ var render = function render() {
     staticClass: "col-lg-3"
   }, [_c("div", {
     staticClass: "card"
-  }, [_vm.mode != "comunity" ? _c("div", {
+  }, [_vm._t("right"), _vm._v(" "), _vm.mode != "comunity" ? _c("div", {
     staticClass: "card-header"
   }, [_vm._v("\n          Seleccionar destinatarios\n          "), _c("div", [_c("i", [_vm._v("\n              Seleccionados " + _vm._s(_setup.receivers.length) + "\n            ")])])]) : _vm._e(), _vm._v(" "), _vm.mode != "comunity" ? _c("div", {
     staticClass: "card-body p-0",
@@ -3494,7 +3497,7 @@ var render = function render() {
         "for": "`checkbox-${extension.id}`"
       }
     }, [_vm._v("\n                " + _vm._s(extension.name) + "\n              ")])]);
-  })], 2)]) : _vm._e()])]), _vm._v(" "), _c("div", {
+  })], 2)]) : _vm._e()], 2)]), _vm._v(" "), _c("div", {
     staticClass: "col-lg-6"
   }, [_vm._t("banner"), _vm._v(" "), _c("div", {
     staticClass: "table-responsive mb-4"

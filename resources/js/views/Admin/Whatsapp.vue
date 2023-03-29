@@ -3,6 +3,7 @@
     <div class="row">
       <div class="col-lg-3">
         <div class="card">
+          <slot name="right"></slot>
           <div v-if="mode!='comunity'" class="card-header">
             Seleccionar destinatarios
             <div>
@@ -165,18 +166,23 @@ function updateAttachment() {
 
 function send() {
   if (!window.confirm('Seguro que desea enviar el mensaje?')) return
-  if (!receivers.value.length) { alert('Debe incluir al menos un destinatario'); return; }
+  if ((props.mode != 'comunity') && !receivers.value.length) { alert('Debe incluir al menos un destinatario'); return; }
   if (!message.value) { alert('Debe incluir un mensaje'); return; }
 
   let data = new FormData()
   data.append('message', message.value)
-  receivers.value.forEach(receiver => data.append('receivers[]', receiver))
+  
+  if( props.mode != 'comunity' ){
+    receivers.value.forEach(receiver => data.append('receivers[]', receiver))
+  }
 
   if (attachment.value) {
     data.append('attachment', attachment.value)
   }
 
-  axios.post('/whatsapp/send', data)
+  let url = props.mode != 'comunity' ? '/whatsapp/send' : '/whatsapp/comunity';
+
+  axios.post(url, data)
     .then(response => {
       message.value = ''
       receivers.value = []

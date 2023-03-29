@@ -27,6 +27,7 @@ Route::get('whatsapp/hook', 'WhatsappController@hook')->name('whatsapp.hook');
 Route::post('whatsapp/hook', 'WhatsappController@hook')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 
 Route::middleware(['auth:admin', 'modules:whatsapp'])->group(function(){
+    Route::post('whatsapp/comunity', 'WhatsappController@sendComunity')->name('whatsapp.sendcomunity');
     Route::get('comunity', 'WhatsappController@comunity')->name('whatsapp.comunity');
     Route::get('whatsapp', 'WhatsappController@index')->name('whatsapp.index');
     Route::get('whatsapp/logout', 'WhatsappController@logout')->name('whatsapp.logout');
@@ -70,7 +71,7 @@ Route::post('extensions/logout', 'Auth\Extension\LoginController@logout')->name(
 Route::post('porterias/logout', 'Auth\Porteria\LoginController@logout')->name('porterias.logout');
 
 Auth::routes();
-//Route::get('home', 'HomeController@index')->middleware(['phoneverified', 'auth:web,admin,extension'])->name('home');
+Route::get('home', 'HomeController@index')->middleware(['phoneverified', 'auth:web,admin,extension'])->name('home');
 
 Route::view('email/verify', 'admin.auth.verify')->middleware('auth')->name('verification.notice');
 Route::post('phone/verify', 'PhoneVerificationController@verifyPhone')->name('verifyphone');

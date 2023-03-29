@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-v4-grid-only@1.0.0/dist/bootstrap-grid.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -122,9 +123,9 @@
       <form action="{{ route('logout') }}" method="post" id="logoutForm">
         @csrf
       </form>
-      <a href="#" class="btn btn-round" onclick="document.querySelector('#logoutForm').submit()">
+      <button type="button" class="btn btn-round" onclick="document.querySelector('#logoutForm').submit()">
         <i class="material-symbols-outlined">logout</i>
-      </a>
+      </button>
     </div>
   </div>
   <div class="container">

@@ -39,8 +39,7 @@ class HomeController extends Controller
           return view('resident.home', ['posts'=>auth()->user()->posts()->whereType('post')->get()]);
           break;
         case 'admin':
-          $extensions = auth()->user()->extensions()->orderBy('name')->get();
-          return view('admin.extensions.index', compact('extensions'));
+          return view('admin.home');
           break;
         case 'web':
           return view('super.users.index', ['users'=>UserResource::collection( \App\User::all() )]);

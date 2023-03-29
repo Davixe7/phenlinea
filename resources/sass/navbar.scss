@@ -1,9 +1,32 @@
-.navbar {
-  margin-bottom: 1rem;
+.phenlinea-navbar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin: 10px auto 20px;
+  padding: 10px 20px;
+
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
-.navbar-nav .nav-item .nav-link {
-  white-space: nowrap;
-  @media(min-width: 769px){
-    font-size: .9em;
-  }
+
+.phenlinea-navbar__title {
+  color: rgba(0, 0, 0, 87%);
+  font-size: 19px;
+  font-weight: 400;
+  letter-spacing: .015em;
+}
+
+.phenlinea-navbar__brand {
+  position: 50%;
+  transform: translateX(-50%);
+  max-height: 50px;
+}
+
+.phenlinea-navbar__actions {
+  display: flex;
+  align-items: center;
+  max-height: 50px;
 }

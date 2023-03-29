@@ -112,7 +112,7 @@
 
 @section('content')
 <Whatsapp :history="{{ json_encode($history) }}" :mode="'comunity'">
-  <template v-slot:banner>
+  <template v-slot:right>
     <div class="card text-white bg-primary mb-3">
       <div class="card-body" style="font-size: 17px; letter-spacing: .007em; line-height: 1.5em; color: #fff;">
         Comunidad QR
@@ -121,13 +121,13 @@
         Los mensajes que envíe a traves de este panel seran recibidos por los miembros del grupo de WhatsApp de su comunidad QR
       </div>
       <div class="card-actions d-flex justify-content-center">
-        <a href="#" class="btn btn-flat text-white">
+        <a href="#" class="btn btn-flat text-white" style="white-space: nowrap;">
           <i class="material-symbols-outlined">link</i>
           <span>
             Copiar link
           </span>
         </a>
-        <a href="#" class="btn btn-flat text-white">
+        <a href="#" class="btn btn-flat text-white" style="white-space: nowrap;">
           <i class="material-symbols-outlined">qr_code</i>
           <span>
             Descargar QR

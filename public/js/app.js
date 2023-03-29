@@ -3568,8 +3568,8 @@ var render = function render() {
     staticClass: "table-responsive"
   }, [_c("table", {
     staticClass: "table"
-  }, [_vm._m(0), _vm._v(" "), _c("tbody", _vm._l(_vm.history, function (batch) {
-    return _c("tr", [_c("td", [_vm._v("\n                " + _vm._s(batch.message) + "\n              ")]), _vm._v(" "), _c("td", [_vm._v("\n                " + _vm._s(batch.numbers.split(",").length) + "\n              ")]), _vm._v(" "), _c("td", [_vm._v("\n                " + _vm._s(new Date(batch.created_at).toLocaleString("es-CO", {
+  }, [_c("thead", [_c("th", [_vm._v("\n              Mensaje\n            ")]), _vm._v(" "), _vm.mode != "comunity" ? _c("th", [_vm._v("\n              Cant.\n            ")]) : _vm._e(), _vm._v(" "), _c("th", [_vm._v("\n              Fecha\n            ")])]), _vm._v(" "), _c("tbody", _vm._l(_vm.history, function (batch) {
+    return _c("tr", [_c("td", [_vm._v("\n                " + _vm._s(batch.message) + "\n              ")]), _vm._v(" "), _vm.mode != "comunity" ? _c("td", [_vm._v("\n                " + _vm._s(batch.numbers.split(",").length) + "\n              ")]) : _vm._e(), _vm._v(" "), _c("td", [_vm._v("\n                " + _vm._s(new Date(batch.created_at).toLocaleString("es-CO", {
       timezone: "America/Colombia"
     })) + "\n              ")])]);
   }), 0)])]) : _vm._e()], 2), _vm._v(" "), _c("div", {
@@ -3577,27 +3577,22 @@ var render = function render() {
     staticStyle: {
       "text-align": "right"
     }
-  }, [_c("div", {
+  }, [_vm.mode != "comunity" ? _c("div", {
     staticClass: "card mb-3"
   }, [_c("div", {
     staticClass: "card-body"
   }, [_c("div", {
     staticClass: "monospace"
-  }, [_vm._v("\n            status\n          ")]), _vm._v(" "), _vm._m(1), _vm._v(" "), _c("div", {
+  }, [_vm._v("\n            status\n          ")]), _vm._v(" "), _vm._m(0), _vm._v(" "), _c("div", {
     staticClass: "monospace"
   }, [_vm._v("\n            " + _vm._s(_vm.whatsappInstanceId) + "\n          ")]), _vm._v(" "), _c("a", {
     staticClass: "btn btn-danger",
     attrs: {
       href: _vm.logoutRoute
     }
-  }, [_vm._v("\n            Cerrar sesión\n          ")])])]), _vm._v(" "), _vm._m(2), _vm._v(" "), _vm._m(3)])])]);
+  }, [_vm._v("\n            Cerrar sesión\n          ")])])]) : _vm._e(), _vm._v(" "), _vm._m(1), _vm._v(" "), _vm._m(2)])])]);
 };
 var staticRenderFns = [function () {
-  var _vm = this,
-    _c = _vm._self._c,
-    _setup = _vm._self._setupProxy;
-  return _c("thead", [_c("th", [_vm._v("\n              Mensaje\n            ")]), _vm._v(" "), _c("th", [_vm._v("\n              Cant.\n            ")]), _vm._v(" "), _c("th", [_vm._v("\n              Fecha\n            ")])]);
-}, function () {
   var _vm = this,
     _c = _vm._self._c,
     _setup = _vm._self._setupProxy;

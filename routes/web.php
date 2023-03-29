@@ -11,6 +11,8 @@
 |
 */
 
+Route::view('home', 'admin.home')->name('home');
+
 Route::get('logout', function(){ auth()->logout(); return redirect('/'); });
 
 Route::get('pqrs/qr', 'PetitionController@qr')->name('pqrs.qr')->middleware('auth:admin');
@@ -25,6 +27,7 @@ Route::get('whatsapp/hook', 'WhatsappController@hook')->name('whatsapp.hook');
 Route::post('whatsapp/hook', 'WhatsappController@hook')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 
 Route::middleware(['auth:admin', 'modules:whatsapp'])->group(function(){
+    Route::get('comunity', 'WhatsappController@comunity')->name('whatsapp.comunity');
     Route::get('whatsapp', 'WhatsappController@index')->name('whatsapp.index');
     Route::get('whatsapp/logout', 'WhatsappController@logout')->name('whatsapp.logout');
     Route::post('whatsapp/send', 'WhatsappController@sendMessage')->name('whatsapp.send');
@@ -67,12 +70,12 @@ Route::post('extensions/logout', 'Auth\Extension\LoginController@logout')->name(
 Route::post('porterias/logout', 'Auth\Porteria\LoginController@logout')->name('porterias.logout');
 
 Auth::routes();
-Route::get('home', 'HomeController@index')->middleware(['phoneverified', 'auth:web,admin,extension'])->name('home');
+//Route::get('home', 'HomeController@index')->middleware(['phoneverified', 'auth:web,admin,extension'])->name('home');
 
 Route::view('email/verify', 'admin.auth.verify')->middleware('auth')->name('verification.notice');
 Route::post('phone/verify', 'PhoneVerificationController@verifyPhone')->name('verifyphone');
 
-Route::get('home', 'HomeController@index')->middleware('phoneverified')->name('home');
+// Route::get('home', 'HomeController@index')->middleware('phoneverified')->name('home');
 Route::get('user', 'Auth\UserController@index')->middleware('auth');
 
 //Route::view('email/verify', 'auth.verify')->name('confirmphone');

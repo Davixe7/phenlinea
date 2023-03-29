@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-lg-3">
         <div class="card">
-          <div class="card-header">
+          <div v-if="mode!='comunity'" class="card-header">
             Seleccionar destinatarios
             <div>
               <i>
@@ -11,7 +11,7 @@
               </i>
             </div>
           </div>
-          <div class="card-body p-0" style="max-height: calc(100vh - 200px); overflow: auto;">
+          <div v-if="mode!='comunity'" class="card-body p-0" style="max-height: calc(100vh - 200px); overflow: auto;">
 
             <input id="extensionsFilter" v-model="search" placeholder="Buscar...">
 
@@ -37,11 +37,12 @@
         </div>
       </div>
       <div class="col-lg-6">
+        <slot name="banner"></slot>
         <div class="table-responsive mb-4">
 
           <textarea id="message" placeholder="Escribe un mensaje" rows="10" v-model="message" class="form-control mb-3"
             required>
-          </textarea>
+            </textarea>
 
           <div style="margin-bottom: -22px;" class="px-3">
             <div class="attachment-alert mb-2">
@@ -52,7 +53,7 @@
               <button type="button" class="btn-round btn-attachment mr-3" @click="openFileDialog()">
               </button>
               <div class="attachmentDetails">
-                {{ attachment? attachment.name : 'ningún archivo seleccionado' }}
+                {{ attachment ? attachment.name : 'ningún archivo seleccionado' }}
               </div>
               <button type="button" class="btn btn-primary ms-auto" @click="send()">
                 Enviar
@@ -111,7 +112,7 @@
 
         <div class="card mb-3">
           <div class="card-header">
-            <i class="material-icons">info</i> Recomendación
+            <i class="material-symbols-outlined">info</i> Recomendación
           </div>
           <div class="card-body">
             PHenlínea SAS recomienda el uso responsable del servicio de mensajería masíva
@@ -120,7 +121,7 @@
 
         <div class="card background-info">
           <div class="card-header">
-            <i class="material-icons">info</i> Advertencia
+            <i class="material-symbols-outlined">info</i> Advertencia
           </div>
           <div class="card-body">
             PHenlínea SAS no se hace responsable del uso inapropiado del servicio de mensajería masíva
@@ -132,9 +133,9 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 
-const props = defineProps(['extensions', 'logoutRoute', 'history', 'whatsappInstanceId'])
+const props = defineProps(['extensions', 'logoutRoute', 'history', 'whatsappInstanceId', 'mode'])
 const attachmentInput = ref(null)
 const ownersOnly = ref(false)
 const search = ref('')
@@ -163,7 +164,7 @@ function updateAttachment() {
 }
 
 function send() {
-  if( !window.confirm('Seguro que desea enviar el mensaje?') ) return
+  if (!window.confirm('Seguro que desea enviar el mensaje?')) return
   if (!receivers.value.length) { alert('Debe incluir al menos un destinatario'); return; }
   if (!message.value) { alert('Debe incluir un mensaje'); return; }
 
@@ -181,7 +182,7 @@ function send() {
       receivers.value = []
       attachmentInput.value = ''
       attachment.value = ''
-      props.history.unshift( response.data.data );
+      props.history.unshift(response.data.data);
       alert('Mensaje enviado exitosamente')
     })
     .catch(error => console.log(error))
@@ -193,9 +194,23 @@ function selectAll() {
 </script>
 
 <style lang="scss">
+#extensionsFilter {
+  height: 50px;
+  width: 100%;
+  text-align: left;
+  padding: 1em;
+  border: 1px solid rgba(0, 0, 0, .15);
+}
+
+.btn-attachment {
+  border: none;
+  box-shadow: none;
+  margin-right: .5em;
+}
+
 .btn-attachment::before {
   content: 'attachment';
-  font-family: 'Material Icons';
+  font-family: 'Material Symbols Outlined';
   font-weight: normal;
   font-style: normal;
   font-size: 24px;

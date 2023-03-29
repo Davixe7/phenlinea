@@ -1,0 +1,29 @@
+.btn {
+  box-shadow: none;
+  outline: none;
+  border: none;
+  text-decoration: none;
+  &:hover {
+    background: rgba(0,0,0,.05);
+  }
+}
+.btn-round {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  text-decoration: none;
+  i {
+    font-size: 24px;
+  }
+}
+.btn-fab {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}

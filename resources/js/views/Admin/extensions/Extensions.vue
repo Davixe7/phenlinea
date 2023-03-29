@@ -1,24 +1,18 @@
 <template>
   <div id="extensions">
     <div id="extensions-table-wrap" class="table-responsive pb-0">
-      <div class="d-flex align-items-center pe-2">
-        <h1>
-          Extensiones
-        </h1>
 
-        <SearchForm
-          :collection="extensions"
-          v-show="extensions && extensions.length"
-          v-model="results">
+      <div class="table-header d-flex align-items-center pe-2 py-2">
+        <SearchForm :collection="extensions" v-show="extensions && extensions.length" v-model="results">
         </SearchForm>
 
-        <a
-          target="_blank"
-          href="extensions/export"
-          class="ms-3 btn btn-sm btn-outline btn-outline-success">
-          Exportar XLS
+        <a target="_blank" href="extensions/export" class="ms-3 btn btn-sm btn-outline btn-outline-success btn-round">
+          <i class="material-symbols-outlined">
+            export_notes
+          </i>
         </a>
-      </div> 
+      </div>
+
       <table class="table" v-if="results && results.length">
         <thead>
           <th>Apto.</th>
@@ -41,13 +35,13 @@
             <td>{{ extension.phone_2 }}</td>
             <td>
               <a :href="`extensions/${extension.id}/visitors`">
-                <i class="material-icons">lock_open</i>
+                <i class="material-symbols-outlined">lock_open</i>
               </a>
               <a :href="`extensions/${extension.id}/edit`">
-                <i class="material-icons">visibility</i>
+                <i class="material-symbols-outlined">visibility</i>
               </a>
               <a href="#" @click="deleteExtension(extension.id)">
-                <i class="material-icons">delete</i>
+                <i class="material-symbols-outlined">delete</i>
               </a>
             </td>
           </tr>
@@ -59,8 +53,8 @@
     </div>
 
     <div class="fab-container">
-      <a href="extensions/create" class="btn btn-primary btn-circle">
-        <i class="material-icons">add</i>
+      <a href="extensions/create" class="btn btn-primary btn-fab">
+        <i class="material-symbols-outlined">add</i>
       </a>
     </div>
 
@@ -86,18 +80,26 @@ function deleteExtension(id) {
   axios.delete(`extensions/${id}`)
     .then(() => {
       extensions.value = extensions.value.filter(extension => extension.id != id)
-      results.value    = [...extensions.value]
+      results.value = [...extensions.value]
     })
     .catch(error => console.log(error.response.data))
 }
 
 onMounted(() => {
   extensions.value = [...props.items]
-  results.value    = [...extensions.value]
+  results.value = [...extensions.value]
 })
 </script>
 
 <style>
+.table-header div:first-child {
+  flex: 1 0 auto;
+}
+
+.table-header div:first-child input {
+  width: 100%;
+}
+
 .extensions-container {
   height: calc(100vh - 112px);
   position: relative;

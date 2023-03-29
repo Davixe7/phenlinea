@@ -2047,7 +2047,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   __name: 'Whatsapp',
-  props: ['extensions', 'logoutRoute', 'history', 'whatsappInstanceId'],
+  props: ['extensions', 'logoutRoute', 'history', 'whatsappInstanceId', 'mode'],
   setup: function setup(__props) {
     var props = __props;
     var attachmentInput = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)(null);
@@ -3377,9 +3377,9 @@ var render = function render() {
     staticClass: "col-lg-3"
   }, [_c("div", {
     staticClass: "card"
-  }, [_c("div", {
+  }, [_vm.mode != "comunity" ? _c("div", {
     staticClass: "card-header"
-  }, [_vm._v("\n          Seleccionar destinatarios\n          "), _c("div", [_c("i", [_vm._v("\n              Seleccionados " + _vm._s(_setup.receivers.length) + "\n            ")])])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("\n          Seleccionar destinatarios\n          "), _c("div", [_c("i", [_vm._v("\n              Seleccionados " + _vm._s(_setup.receivers.length) + "\n            ")])])]) : _vm._e(), _vm._v(" "), _vm.mode != "comunity" ? _c("div", {
     staticClass: "card-body p-0",
     staticStyle: {
       "max-height": "calc(100vh - 200px)",
@@ -3494,9 +3494,9 @@ var render = function render() {
         "for": "`checkbox-${extension.id}`"
       }
     }, [_vm._v("\n                " + _vm._s(extension.name) + "\n              ")])]);
-  })], 2)])])]), _vm._v(" "), _c("div", {
+  })], 2)]) : _vm._e()])]), _vm._v(" "), _c("div", {
     staticClass: "col-lg-6"
-  }, [_c("div", {
+  }, [_vm._t("banner"), _vm._v(" "), _c("div", {
     staticClass: "table-responsive mb-4"
   }, [_c("textarea", {
     directives: [{
@@ -3569,7 +3569,7 @@ var render = function render() {
     return _c("tr", [_c("td", [_vm._v("\n                " + _vm._s(batch.message) + "\n              ")]), _vm._v(" "), _c("td", [_vm._v("\n                " + _vm._s(batch.numbers.split(",").length) + "\n              ")]), _vm._v(" "), _c("td", [_vm._v("\n                " + _vm._s(new Date(batch.created_at).toLocaleString("es-CO", {
       timezone: "America/Colombia"
     })) + "\n              ")])]);
-  }), 0)])]) : _vm._e()]), _vm._v(" "), _c("div", {
+  }), 0)])]) : _vm._e()], 2), _vm._v(" "), _c("div", {
     staticClass: "col-lg-3",
     staticStyle: {
       "text-align": "right"
@@ -3612,7 +3612,7 @@ var staticRenderFns = [function () {
   }, [_c("div", {
     staticClass: "card-header"
   }, [_c("i", {
-    staticClass: "material-icons"
+    staticClass: "material-symbols-outlined"
   }, [_vm._v("info")]), _vm._v(" Recomendación\n        ")]), _vm._v(" "), _c("div", {
     staticClass: "card-body"
   }, [_vm._v("\n          PHenlínea SAS recomienda el uso responsable del servicio de mensajería masíva\n        ")])]);
@@ -3625,7 +3625,7 @@ var staticRenderFns = [function () {
   }, [_c("div", {
     staticClass: "card-header"
   }, [_c("i", {
-    staticClass: "material-icons"
+    staticClass: "material-symbols-outlined"
   }, [_vm._v("info")]), _vm._v(" Advertencia\n        ")]), _vm._v(" "), _c("div", {
     staticClass: "card-body"
   }, [_vm._v("\n          PHenlínea SAS no se hace responsable del uso inapropiado del servicio de mensajería masíva\n        ")])]);
@@ -3666,31 +3666,7 @@ var render = function render() {
     }
   }, [_c("div", {
     staticClass: "row d-flex align-items-center mb-4"
-  }, [_c("h1", {
-    staticClass: "col-md-6 mb-0",
-    staticStyle: {
-      color: "#000"
-    }
-  }, [_vm._v("\n        Censo apartamento\n      ")]), _vm._v(" "), _vm.extension && _vm.extension.id ? _c("div", {
-    staticClass: "col-md-6 text-right d-flex align-items-center justify-content-end"
-  }, [_c("b", [_vm._v("KEY " + _vm._s(_vm.password))]), _vm._v(" "), _c("div", {
-    staticClass: "options-dropdown"
-  }, [_c("div", {
-    staticClass: "dropdown"
-  }, [_vm._m(0), _vm._v(" "), _c("div", {
-    staticClass: "dropdown-menu dropdown-menu-right"
-  }, [_c("a", {
-    staticClass: "dropdown-item",
-    attrs: {
-      href: "#"
-    },
-    on: {
-      click: function click($event) {
-        $event.preventDefault();
-        return _vm.resetPassword();
-      }
-    }
-  }, [_vm._v("Restablecer contraseña")])])])])]) : _vm._e()]), _vm._v(" "), _c("div", {
+  }, [ false ? 0 : _vm._e()]), _vm._v(" "), _c("div", {
     staticClass: "row",
     staticStyle: {
       "margin-bottom": "50px"
@@ -4550,8 +4526,8 @@ var render = function render() {
       id: "extensions-table-wrap"
     }
   }, [_c("div", {
-    staticClass: "d-flex align-items-center pe-2"
-  }, [_c("h1", [_vm._v("\n        Extensiones\n      ")]), _vm._v(" "), _c("SearchForm", {
+    staticClass: "table-header d-flex align-items-center pe-2 py-2"
+  }, [_c("SearchForm", {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -4568,15 +4544,9 @@ var render = function render() {
       },
       expression: "results"
     }
-  }), _vm._v(" "), _c("a", {
-    staticClass: "ms-3 btn btn-sm btn-outline btn-outline-success",
-    attrs: {
-      target: "_blank",
-      href: "extensions/export"
-    }
-  }, [_vm._v("\n        Exportar XLS\n      ")])], 1), _vm._v(" "), _setup.results && _setup.results.length ? _c("table", {
+  }), _vm._v(" "), _vm._m(0)], 1), _vm._v(" "), _setup.results && _setup.results.length ? _c("table", {
     staticClass: "table"
-  }, [_vm._m(0), _vm._v(" "), _c("tbody", _vm._l(_setup.results, function (extension) {
+  }, [_vm._m(1), _vm._v(" "), _c("tbody", _vm._l(_setup.results, function (extension) {
     return _c("tr", {
       key: extension.id
     }, [_c("td", [_vm._v(_vm._s(extension.name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(extension.pets_count))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(extension.vehicles ? extension.vehicles.length : 0))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(extension.has_deposit ? "SÍ" : "NO"))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(extension.owner_phone))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(extension.phone_1))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(extension.phone_2))]), _vm._v(" "), _c("td", [_c("a", {
@@ -4584,13 +4554,13 @@ var render = function render() {
         href: "extensions/".concat(extension.id, "/visitors")
       }
     }, [_c("i", {
-      staticClass: "material-icons"
+      staticClass: "material-symbols-outlined"
     }, [_vm._v("lock_open")])]), _vm._v(" "), _c("a", {
       attrs: {
         href: "extensions/".concat(extension.id, "/edit")
       }
     }, [_c("i", {
-      staticClass: "material-icons"
+      staticClass: "material-symbols-outlined"
     }, [_vm._v("visibility")])]), _vm._v(" "), _c("a", {
       attrs: {
         href: "#"
@@ -4601,13 +4571,26 @@ var render = function render() {
         }
       }
     }, [_c("i", {
-      staticClass: "material-icons"
+      staticClass: "material-symbols-outlined"
     }, [_vm._v("delete")])])])]);
   }), 0)]) : _c("div", {
     staticClass: "alert alert-info"
-  }, [_vm._v("\n      No hay extensiones disponibles para mostrar\n    ")])]), _vm._v(" "), _vm._m(1)]);
+  }, [_vm._v("\n      No hay extensiones disponibles para mostrar\n    ")])]), _vm._v(" "), _vm._m(2)]);
 };
 var staticRenderFns = [function () {
+  var _vm = this,
+    _c = _vm._self._c,
+    _setup = _vm._self._setupProxy;
+  return _c("a", {
+    staticClass: "ms-3 btn btn-sm btn-outline btn-outline-success btn-round",
+    attrs: {
+      target: "_blank",
+      href: "extensions/export"
+    }
+  }, [_c("i", {
+    staticClass: "material-symbols-outlined"
+  }, [_vm._v("\n          export_notes\n        ")])]);
+}, function () {
   var _vm = this,
     _c = _vm._self._c,
     _setup = _vm._self._setupProxy;
@@ -4621,12 +4604,12 @@ var staticRenderFns = [function () {
   return _c("div", {
     staticClass: "fab-container"
   }, [_c("a", {
-    staticClass: "btn btn-primary btn-circle",
+    staticClass: "btn btn-primary btn-fab",
     attrs: {
       href: "extensions/create"
     }
   }, [_c("i", {
-    staticClass: "material-icons"
+    staticClass: "material-symbols-outlined"
   }, [_vm._v("add")])])]);
 }];
 render._withStripped = true;
@@ -10170,7 +10153,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".btn-attachment::before {\n  content: \"attachment\";\n  font-family: \"Material Icons\";\n  font-weight: normal;\n  font-style: normal;\n  font-size: 24px;\n  line-height: 1;\n  letter-spacing: normal;\n  text-transform: none;\n  display: inline-block;\n  white-space: nowrap;\n  word-wrap: normal;\n  direction: ltr;\n  -webkit-font-feature-settings: \"liga\";\n  -webkit-font-smoothing: antialiased;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "#extensionsFilter {\n  height: 50px;\n  width: 100%;\n  text-align: left;\n  padding: 1em;\n  border: 1px solid rgba(0, 0, 0, 0.15);\n}\n.btn-attachment {\n  border: none;\n  box-shadow: none;\n  margin-right: 0.5em;\n}\n.btn-attachment::before {\n  content: \"attachment\";\n  font-family: \"Material Symbols Outlined\";\n  font-weight: normal;\n  font-style: normal;\n  font-size: 24px;\n  line-height: 1;\n  letter-spacing: normal;\n  text-transform: none;\n  display: inline-block;\n  white-space: nowrap;\n  word-wrap: normal;\n  direction: ltr;\n  -webkit-font-feature-settings: \"liga\";\n  -webkit-font-smoothing: antialiased;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -10314,7 +10297,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.svg-icon[data-v-28665937] {\n  position: absolute;\n  z-index: 20;\n  left: 13px;\n  top: 10px;\n  width: 17px;\n  height: 17px;\n}\n.search-form[data-v-28665937] {\n  position: relative;\n  margin-left: auto;\n}\n.search-form input[data-v-28665937] {\n  font-size: 1em;\n  border-radius: 20px;\n  padding: 7px 20px 7px 35px;\n  border: 1px solid #d4e2e6;\n  box-shadow: none;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.svg-icon[data-v-28665937] {\n  position: absolute;\n  z-index: 20;\n  left: 13px;\n  top: 10px;\n  width: 17px;\n  height: 17px;\n}\n.search-form[data-v-28665937] {\n  position: relative;\n}\n.search-form input[data-v-28665937] {\n  font-size: 1em;\n  border-radius: 5px;\n  padding: 7px 20px 7px 35px;\n  border: 1px solid #1A61A3;\n  margin-left: .75em;\n  box-shadow: none;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -10338,7 +10321,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.extensions-container {\n  height: calc(100vh - 112px);\n  position: relative;\n  padding-bottom: 20px;\n}\n#extensions-table-wrap {\n  height: calc(100% - 50px);\n  margin-bottom: 10px;\n  overflow: auto;\n}\n.filled {\n  color: #06a906;\n}\n.empty {\n  color: #c0392b;\n}\ntable th:last-child,\ntable tr td:last-child {\n  text-align: right;\n}\n.btn-export {\n  font-size: 1em;\n  font-weight: 400;\n  color: darkgray;\n  text-transform: none;\n  border-radius: 5px;\n  border: 1px solid lightgray;\n  background: #fff;\n  box-shadow: none;\n  margin-right: 10px;\n  height: 40px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.table-header div:first-child {\n  flex: 1 0 auto;\n}\n.table-header div:first-child input {\n  width: 100%;\n}\n.extensions-container {\n  height: calc(100vh - 112px);\n  position: relative;\n  padding-bottom: 20px;\n}\n#extensions-table-wrap {\n  height: calc(100% - 50px);\n  margin-bottom: 10px;\n  overflow: auto;\n}\n.filled {\n  color: #06a906;\n}\n.empty {\n  color: #c0392b;\n}\ntable th:last-child,\ntable tr td:last-child {\n  text-align: right;\n}\n.btn-export {\n  font-size: 1em;\n  font-weight: 400;\n  color: darkgray;\n  text-transform: none;\n  border-radius: 5px;\n  border: 1px solid lightgray;\n  background: #fff;\n  box-shadow: none;\n  margin-right: 10px;\n  height: 40px;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

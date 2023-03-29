@@ -2,10 +2,7 @@
   <div id="create-census">
     <form ref="storeCensusForm" id="create-census-form" @submit.prevent="">
       <div class="row d-flex align-items-center mb-4">
-        <h1 class="col-md-6 mb-0" style="color: #000;">
-          Censo apartamento
-        </h1>
-        <div v-if="extension && extension.id" class="col-md-6 text-right d-flex align-items-center justify-content-end">
+        <div v-if="false" class="col-md-6 text-right d-flex align-items-center justify-content-end">
           <b>KEY {{ password }}</b>
           <div class="options-dropdown">
             <div class="dropdown">

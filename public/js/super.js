@@ -8627,7 +8627,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.svg-icon[data-v-28665937] {\n  position: absolute;\n  z-index: 20;\n  left: 13px;\n  top: 10px;\n  width: 17px;\n  height: 17px;\n}\n.search-form[data-v-28665937] {\n  position: relative;\n  margin-left: auto;\n}\n.search-form input[data-v-28665937] {\n  font-size: 1em;\n  border-radius: 20px;\n  padding: 7px 20px 7px 35px;\n  border: 1px solid #d4e2e6;\n  box-shadow: none;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.svg-icon[data-v-28665937] {\n  position: absolute;\n  z-index: 20;\n  left: 13px;\n  top: 10px;\n  width: 17px;\n  height: 17px;\n}\n.search-form[data-v-28665937] {\n  position: relative;\n}\n.search-form input[data-v-28665937] {\n  font-size: 1em;\n  border-radius: 5px;\n  padding: 7px 20px 7px 35px;\n  border: 1px solid #1A61A3;\n  margin-left: .75em;\n  box-shadow: none;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

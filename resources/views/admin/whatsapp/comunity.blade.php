@@ -1,4 +1,4 @@
-@extends('layouts.app', ['title'=>'Mensajería masiva'])
+@extends('layouts.app', ['title'=>'Comunidad QR'])
 
 @section('styles')
 <style>
@@ -111,13 +111,30 @@
 @endsection
 
 @section('content')
-  @if( isset($extensions) )
-  <Whatsapp
-    :extensions="{{ json_encode($extensions) }}"    
-    :history="{{ json_encode($history) }}"
-    logout-route="{{ route('whatsapp.logout') }}"
-    whatsapp-instance-id="{{ $whatsapp_instance_id }}">
-  </Whatsapp>
-  @endif
-  @includeUnless( isset($extensions), 'admin.whatsapp.login')
+<Whatsapp :history="{{ json_encode($history) }}" :mode="'comunity'">
+  <template v-slot:banner>
+    <div class="card text-white bg-primary mb-3">
+      <div class="card-body" style="font-size: 17px; letter-spacing: .007em; line-height: 1.5em; color: #fff;">
+        Comunidad QR
+      </div>
+      <div class="card-body pt-0" style="font-size: 15px; line-height: 1.5em; color: rgba(255,255,255,.87);">
+        Los mensajes que envíe a traves de este panel seran recibidos por los miembros del grupo de WhatsApp de su comunidad QR
+      </div>
+      <div class="card-actions d-flex justify-content-center">
+        <a href="#" class="btn btn-flat text-white">
+          <i class="material-symbols-outlined">link</i>
+          <span>
+            Copiar link
+          </span>
+        </a>
+        <a href="#" class="btn btn-flat text-white">
+          <i class="material-symbols-outlined">qr_code</i>
+          <span>
+            Descargar QR
+          </span>
+        </a>
+      </div>
+    </div>
+  </template>
+</Whatsapp>
 @endsection

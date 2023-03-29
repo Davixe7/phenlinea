@@ -65,6 +65,13 @@ class WhatsappController extends Controller
     return response()->json(['data' => $this->getQrCode($instance_id)]);
   }
 
+  public function comunity(){
+    $response = $this->client->get('http://api.phenlinea.com/api/batches/?user_id=' . auth()->id()); 
+    $history  = json_decode($response->getBody())->data;
+    $mode = 'comunity';
+    return view('admin.whatsapp.comunity', compact('history', 'mode'));
+  }
+
   public function index()
   {
     if (auth()->user()->whatsapp_status == 'online') {

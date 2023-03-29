@@ -43,14 +43,14 @@ watch(results, (newValue, oldValue) => {emits('input', results.value)})
 
 .search-form {
   position: relative;
-  margin-left: auto;
 }
 
 .search-form input {
   font-size: 1em;
-  border-radius: 20px;
+  border-radius: 5px;
   padding: 7px 20px 7px 35px;
-  border: 1px solid #d4e2e6;
+  border: 1px solid #1A61A3;
+  margin-left: .75em;
   box-shadow: none;
 }
 </style>

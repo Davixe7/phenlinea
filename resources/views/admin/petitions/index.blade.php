@@ -1,4 +1,4 @@
-@extends('layouts.quasar')
+@extends('layouts.quasar', ['title'=>'PQRS'])
 @section('content')
 <div class="q-pa-lg">
   <div class="row">

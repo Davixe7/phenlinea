@@ -2,7 +2,7 @@
   border-radius: 5px;
   background: #fff;
   padding-bottom: 2.75rem;
-  box-shadow: 0px 1px 3px 1px rgba(0,0,0,.15);
+  box-shadow: 0px 3px 1px 1px rgba(0,0,0,.25);
 }
 .table-responsive h1 {
   font-size: 1.3rem;
@@ -16,7 +16,10 @@
   font-size: .85rem !important;
 }
 .table th, .table td {
-  padding: .75rem 1.15rem;
+  height: 52px;
+  padding: 0 16px;
+  box-sizing: border-box;
+  vertical-align: middle;
 }
 .table th:first-child {
   border-left: none !important;
@@ -26,6 +29,6 @@
 }
 .table td {
   font-size: .85rem !important;
-  font-weight: 500;
+  font-weight: 400;
   color: rgba(0, 0, 0, .75);
 }

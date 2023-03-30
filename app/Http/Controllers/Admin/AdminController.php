@@ -89,7 +89,7 @@ class AdminController extends Controller
       'contact_email' => ($request->contact_email) ?: $admin->contact_email,
       'status'        => $request->status ?: $admin->status,
       'slug'          => Str::slug($request->name) ?: $admin->slug,
-      'whatsapp_group_id' => $request->whatsapp_group_id ?: $admin->whatsapp_group_id
+      'whatsapp_group_id' => $request->whatsapp_group_id
     ]);
 
     return new AdminResource( $admin );

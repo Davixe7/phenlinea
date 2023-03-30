@@ -29,11 +29,6 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->call(function(){
-            
-            DB::table('admins')->update([
-                'whatsapp_instance_id' => null,
-                'whatsapp_status'      => 'offline',
-            ]);
 
             $admins = DB::table('admins')->whereNotNull('whatsapp_instance_id')->get();
 
@@ -47,9 +42,15 @@ class Kernel extends ConsoleKernel
 
               $body = json_decode($response->getBody());
               Storage::append('asistbot_logout.log', "$body->status $body->message");
+              sleep(3);
             }
+
+            DB::table('admins')->update([
+                'whatsapp_instance_id' => null,
+                'whatsapp_status'      => 'offline',
+            ]);
             
-        })->dailyAt('11:00');
+        })->dailyAt('23:59');
     }
 
     /**

@@ -34,8 +34,22 @@ class Kernel extends ConsoleKernel
                 'whatsapp_instance_id' => null,
                 'whatsapp_status'      => 'offline',
             ]);
+
+            $admins = DB::table('admins')->whereNotNull('whatsapp_instance_id')->get();
+
+            $asistbot = new Client(['base_uri'=>'http://asistbot.com/api/', 'verify'=>false]);
+
+            foreach( $admins as $admin ){
+              $response = $asistbot->post('resetinstance.php', ['query'=>[
+                'access_token' => env('ASISTBOT_ACCESS_TOKEN'),
+                'instance_id'  => $admin->whatsapp_instance_id
+              ]]);
+
+              $body = json_decode($response->getBody());
+              Storage::append('asistbot_logout.log', "$body->status $body->message");
+            }
             
-        })->daily();
+        })->dailyAt('11:00');
     }
 
     /**

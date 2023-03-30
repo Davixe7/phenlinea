@@ -91,7 +91,8 @@ class WhatsappController extends Controller
         'user_id'      => auth()->id(),
         'group_id'     => auth()->user()->whatsapp_group_id,
         'message'      => $request->message,
-        'media_url'    => $media_url
+        'media_url'    => $media_url,
+        'admin_name'   => auth()->user()->name
       ]]);
     }
     catch(ClientException $e){

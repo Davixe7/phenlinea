@@ -17,7 +17,7 @@ class CheckinController extends Controller
      */
     public function index(Request $request)
     {
-        return response()->json(['data'=>auth()->user()->checkins()->with('visitor')->get()]);
+        return response()->json(['data'=>auth()->user()->checkins()->with('visitor', 'extension')->get()]);
     }
     
     public function extensionCheckins(Extension $extension){

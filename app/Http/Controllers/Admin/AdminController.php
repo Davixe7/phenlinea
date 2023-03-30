@@ -89,8 +89,13 @@ class AdminController extends Controller
       'contact_email' => ($request->contact_email) ?: $admin->contact_email,
       'status'        => $request->status ?: $admin->status,
       'slug'          => Str::slug($request->name) ?: $admin->slug,
-      'whatsapp_group_id' => $request->whatsapp_group_id
+      'whatsapp_group_id' => $request->whatsapp_group_id,
+      'whatsapp_group_url' => $request->whatsapp_group_url
     ]);
+
+    if( $file = $request->file('whatsapp_qr') ){
+      $admin->addMedia($file)->toMediaCollection('whatsapp_qr');
+    }
 
     return new AdminResource( $admin );
   }

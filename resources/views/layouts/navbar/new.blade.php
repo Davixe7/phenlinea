@@ -1,11 +1,11 @@
 <div class="phenlinea-navbar">
   <div class="phenlinea-navbar__title">
-    <a class="btn btn-round me-3" href="{{ route('home') }}">
+    <a class="btn btn-round me-3" href="{{ url()->previous() }}">
       <i class="material-symbols-outlined">
         arrow_back
       </i>
     </a>
-    {{ $title }}
+    {{ isset($title) ? $title : ''}}
   </div>
   <div class="phenlinea-navbar__brand">
     <img src="{{ asset('img/logo.png') }}" alt="" style="width: 120px; margin-top: -20px;">

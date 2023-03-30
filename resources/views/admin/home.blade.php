@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.1/css/bootstrap-grid.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.1/css/bootstrap-grid.min.css" rel="stylesheet" />
   <link href="{{ mix('css/app.css') }}" rel="stylesheet">
   <title>Home</title>
   <style>
@@ -57,15 +57,6 @@
       letter-spacing: .015em;
     }
 
-    .btn-round {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
     .btn-round i {
       font-size: 24px;
     }
@@ -85,117 +76,87 @@
 </head>
 
 <body>
-  <div class="phenlinea-navbar">
-    <div class="phenlinea-navbar__title">
-      Menú principal
-    </div>
-    <div class="phenlinea-navbar__brand">
-      <img src="{{ asset('img/logo.png') }}" alt="" style="width: 120px; margin-top: -20px;">
-    </div>
-    <div class="phenlinea-navbar__actions">
-      <div class="d-flex align-items-center">
-        @auth
-        <div class="me-3">
-          {{ auth()->user()->name }}
-        </div>
-        @endauth
-        <form action="{{ route('logout') }}" method="post" id="logoutForm">
-          @csrf
-        </form>
-        <button type="button" class="btn btn-round" onclick="document.querySelector('#logoutForm').submit()">
-          <i class="material-symbols-outlined">logout</i>
-        </button>
-      </div>
-    </div>
-  </div>
+  @include('layouts.navbar.new', ['title'=>'Menú principal'])
 
   <div class="container">
     <div class="menu-options row">
-      <div class="col-sm-6 col-lg-3">
-        <a href="{{ route('extensions.index') }}">
-          <div class="menu-option">
-            <div class="menu-option__icon">
-              <img src="{{ asset('img/iconos/citofonia.png') }}" alt="">
-            </div>
-          </div>
-        </a>
-      </div>
+      @php
+      $routes = [
+      [
+      'name' => 'extensions.index',
+      'icon' => 'citofonia.png'
+      ],
+      [
+      'name' => 'visits.index',
+      'icon' => 'visitas.png'
+      ],
+      [
+      'name' => 'novelties.index',
+      'icon' => 'novedades.png'
+      ],
+      [
+      'name' => 'invoices.index',
+      'icon' => 'facturas.png'
+      ],
+      ]
+      @endphp
 
+      @foreach($routes as $route)
       <div class="col-sm-6 col-lg-3">
-        <a href="{{ route('visits.index') }}">
+        <a href="{{ route($route['name']) }}">
           <div class="menu-option">
             <div class="menu-option__icon">
-              <img src="{{ asset('img/iconos/visitas.png') }}" alt="">
+              <img src="{{ asset('img/iconos/' . $route['icon']) }}" alt="">
             </div>
           </div>
         </a>
       </div>
-
-      <div class="col-sm-6 col-lg-3">
-        <a href="{{ route('novelties.index') }}">
-          <div class="menu-option">
-            <div class="menu-option__icon">
-              <img src="{{ asset('img/iconos/novedades.png') }}" alt="">
-            </div>
-          </div>
-        </a>
-      </div>
-
-      <div class="col-sm-6 col-lg-3">
-        <a href="{{ route('invoices.index') }}">
-          <div class="menu-option">
-            <div class="menu-option__icon">
-              <img src="{{ asset('img/iconos/facturas.png') }}" alt="">
-            </div>
-          </div>
-        </a>
-      </div>
+      @endforeach
     </div>
 
-    <div>
-      <div style="text-align: center; position: relative;">
-        <hr style="position: absolute; top: 50%; left: 0; right: 0; border-color: #6c96d1;" />
-        <img src="{{ asset('img/iconos/logo_comunidad.png') }}" style="display: inline-block; width: 200px; z-index: 100; position: relative;" />
+    <div style="text-align: center; position: relative;">
+      <hr style="position: absolute; top: 50%; left: 0; right: 0; border-color: #6c96d1;" />
+      <img src="{{ asset('img/iconos/logo_comunidad.png') }}" style="display: inline-block; width: 200px; z-index: 100; position: relative;" />
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-sm-6 col-lg-3">
+        <a href="{{ route('petitions.index') }}">
+          <div class="menu-option">
+            <div class="brandnew-tag">
+              Nuevo
+            </div>
+            <div class="menu-option__icon">
+              <img src="{{ asset('img/iconos/pqrs.png') }}" alt="">
+            </div>
+          </div>
+        </a>
       </div>
-      <div class="row justify-content-center">
-        <div class="col-sm-6 col-lg-3">
-          <a href="{{ route('petitions.index') }}">
-            <div class="menu-option">
-              <div class="brandnew-tag">
-                Nuevo
-              </div>
-              <div class="menu-option__icon">
-                <img src="{{ asset('img/iconos/pqrs.png') }}" alt="">
-              </div>
-            </div>
-          </a>
-        </div>
 
-        <div class="col-sm-6 col-lg-3">
-          <a href="{{ route('whatsapp.index') }}">
-            <div class="menu-option">
-              <div class="brandnew-tag">
-                Nuevo
-              </div>
-              <div class="menu-option__icon">
-                <img src="{{ asset('img/iconos/whatsapp.png') }}" alt="">
-              </div>
+      <div class="col-sm-6 col-lg-3">
+        <a href="{{ route('whatsapp.index') }}">
+          <div class="menu-option">
+            <div class="brandnew-tag">
+              Nuevo
             </div>
-          </a>
-        </div>
+            <div class="menu-option__icon">
+              <img src="{{ asset('img/iconos/whatsapp.png') }}" alt="">
+            </div>
+          </div>
+        </a>
+      </div>
 
-        <div class="col-sm-6 col-lg-3">
-          <a href="{{ route('whatsapp.comunity') }}">
-            <div class="menu-option">
-              <div class="brandnew-tag">
-                Nuevo
-              </div>
-              <div class="menu-option__icon">
-                <img src="{{ asset('img/iconos/comunidad.png') }}" alt="">
-              </div>
+      <div class="col-sm-6 col-lg-3">
+        <a href="{{ route('whatsapp.comunity') }}">
+          <div class="menu-option">
+            <div class="brandnew-tag">
+              Nuevo
             </div>
-          </a>
-        </div>
+            <div class="menu-option__icon">
+              <img src="{{ asset('img/iconos/comunidad.png') }}" alt="">
+            </div>
+          </div>
+        </a>
       </div>
     </div>
   </div>

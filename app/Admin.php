@@ -6,10 +6,13 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\CanResetPassword;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
+class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword, HasMedia
 {
   use Notifiable;
+  use InteractsWithMedia;
 
   protected $fillable = [
     'name',
@@ -35,6 +38,11 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
   protected $casts = [
     'solvencia'   => 'string',
   ];
+
+  public function registerMediaCollections(): void
+  {
+    $this->addMediaCollection('whatsapp_qr')->singleFile();
+  }
 
   public function invoices()
   {

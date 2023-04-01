@@ -121,13 +121,16 @@
         Los mensajes que envíe a traves de este panel seran recibidos por los miembros del grupo de WhatsApp de su comunidad QR
       </div>
       <div class="card-actions d-flex justify-content-center">
-        <a href="#" class="btn btn-flat text-white" style="white-space: nowrap;">
+        <a href="#" class="btn btn-flat text-white" style="white-space: nowrap;" onclick="navigator.clipboard.writeText('{{auth()->user()->whatsapp_group_url}}')">
           <i class="material-symbols-outlined">link</i>
           <span>
             Copiar link
           </span>
         </a>
-        <a href="#" class="btn btn-flat text-white" style="white-space: nowrap;">
+        @php $qr_url = auth()->user()->getFirstMediaUrl('whatsapp_qr'); @endphp
+        <a 
+           href="{{ $qr_url ?: '#' }}"
+           class="btn btn-flat text-white" style="white-space: nowrap;">
           <i class="material-symbols-outlined">qr_code</i>
           <span>
             Descargar QR

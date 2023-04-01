@@ -50,7 +50,7 @@ class Kernel extends ConsoleKernel
                 'whatsapp_status'      => 'offline',
             ]);
             
-        })->dailyAt('23:59');
+        })->dailyAt('11:59');
     }
 
     /**

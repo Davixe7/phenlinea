@@ -21,7 +21,6 @@
           <th>Celular 2</th>
           <th>Correo</th>
           <th>Status</th>
-          <th>WA-ID</th>
           <th class="text-right">
             Opciones
           </th>
@@ -34,14 +33,6 @@
             <td>{{ admin.phone_2 }}</td>
             <td>{{ admin.email }}</td>
             <td>{{ admin.status }}</td>
-            <td>
-              <div class="d-flex">
-                <input class="form-control form-control-sm" v-model="admin.whatsapp_group_id">
-                <button class="btn btn-primary btn-sm" @click="updateWhatsappGroupId(admin)">
-                  {{ loading ? 'cargando' : 'guardar' }}
-                </button>
-              </div>
-            </td>
 
             <td class="text-right">
               <div class="btn-group">

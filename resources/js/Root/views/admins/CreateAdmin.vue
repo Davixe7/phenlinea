@@ -5,6 +5,14 @@
       <input type="text" class="form-control" id="whatsapp_group_id" v-model="admin.whatsapp_group_id">
     </div>
     <div class="form-group">
+      <label for="name">URL Grupo Whatsapp</label>
+      <input type="url" class="form-control" id="whatsapp_group_url" v-model="admin.whatsapp_group_url">
+    </div>
+    <div class="form-group">
+      <label for="name">QR Grupo Whatsapp</label>
+      <input type="file" class="form-control" id="input_whatsapp_qr" ref="inputWhatsappQr">
+    </div>
+    <div class="form-group">
       <label for="name">Nombre</label>
       <input type="text" class="form-control" id="name" v-model="admin.name">
     </div>
@@ -112,12 +120,17 @@ function updateAdmin() {
 
 function loadData() {
   let data = new FormData();
+  let file = document.querySelector('#input_whatsapp_qr').files[0]
+  if( file ){
+    data.append('whatsapp_qr', file)
+  }
   Object.keys(props.admin).forEach(key => data.append(key, props.admin[key]))
   return data;
 }
 
 function clearForm() {
   errors.value = []
+  document.querySelector('#input_whatsapp_qr').value = ''
 }
 </script>
 

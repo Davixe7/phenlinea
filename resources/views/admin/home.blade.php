@@ -18,60 +18,6 @@
       background: #F3F6FC;
       font-family: 'Roboto', sans-serif;
     }
-
-    .menu-option {
-      position: relative;
-      text-align: center;
-      font-weight: 400;
-      display: flex;
-      height: 200px;
-      flex-flow: column;
-      justify-content: center;
-      align-items: center;
-      margin-bottom: 20px;
-      border-radius: 5px;
-    }
-
-    .menu-option:hover {
-      /* background-color: #fff;
-      box-shadow: 0 3px 10px #1A61A350; */
-    }
-
-    .menu-option__icon {
-      height: 200px;
-    }
-
-    .menu-option__icon img {
-      margin-bottom: 20px;
-      max-width: 205px;
-    }
-
-    .menu-option__icon i {
-      color: #1A61A3;
-      font-size: 54px;
-    }
-
-    .menu-option__title {
-      color: #000;
-      font-size: 19px;
-      letter-spacing: .015em;
-    }
-
-    .btn-round i {
-      font-size: 24px;
-    }
-
-    .brandnew-tag {
-      color: #fff;
-      font-size: 13px;
-      font-weight: 500;
-      border-radius: 5px;
-      background: red;
-      padding: .25rem;
-      position: absolute;
-      top: 1em;
-      right: 1.5em;
-    }
   </style>
 </head>
 

@@ -9,13 +9,13 @@
   }
 }
 .btn-round {
+  text-decoration: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   height: 40px;
   width: 40px;
   border-radius: 50%;
-  text-decoration: none;
   i {
     font-size: 24px;
   }

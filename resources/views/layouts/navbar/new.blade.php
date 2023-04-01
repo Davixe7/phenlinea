@@ -12,7 +12,9 @@
   </div>
   <div class="phenlinea-navbar__actions">
     @auth
-      {{ auth()->user()->name }}
+      <div class="me-3">
+        {{ auth()->user()->name }}
+      </div>
       <form action="{{ route('logout') }}" method="post" id="logoutForm">
         @csrf
       </form>

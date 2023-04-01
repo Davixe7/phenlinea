@@ -58,7 +58,7 @@
             id="disability"
             />
             <label for="disability" class="form-check-label">
-              Posee discapacidad
+              Movilidad reducida
             </label>
           </div>
           

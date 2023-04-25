@@ -1,6 +1,6 @@
 <div class="phenlinea-navbar">
   <div class="phenlinea-navbar__title">
-    <a class="btn btn-round me-3" href="{{ url()->previous() }}">
+    <a class="btn btn-round me-3" href="{{ route('home')  }}">
       <i class="material-symbols-outlined">
         arrow_back
       </i>

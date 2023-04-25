@@ -47,7 +47,7 @@ class WhatsappController extends Controller
     
     $data = [
       'access_token' => '3f8b18194536bdafa301c662dc9caa4c',
-      'instance_id'  => '63E4086C78BC6',
+      'instance_id'  => '643707D0E55AA',
       'type'         => 'text',
       'message'      => $this->getMessage( $admin_name, $extension->name ),
       'type'         => $media_url ? 'media' : 'text',

@@ -203,8 +203,8 @@ class PetitionController extends Controller
   public function notifyPetitionUpdate($petition){
     $data = [
       'access_token' => env('ASISTBOT_ACCESS_TOKEN'),
-      'instance_id'  => env('ASISTBOT_INSTANCE_ID'),
-      'number'       => '57' . $petition->phone,
+      'instance_id'  => env('ASISTBOT_NOTIFICATIONS_INSTANCE_ID'),
+      'number'       => ($petition->phone == '4147912134') ? '584147912134' : '57' . $petition->phone,
       'message'      => $this->getMessage($petition),
       'type'         => 'text'
     ];

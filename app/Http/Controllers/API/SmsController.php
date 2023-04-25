@@ -84,9 +84,6 @@ class SmsController extends Controller
     ]);
 
     $user = Auth::user();
-    // if( !$user->sms_enabled ){
-    //   return response()->json(['data'=>['message'=>'Envio masivo de SMS no habilitado'] ], 403);
-    // }
 
     $extensions = $user->extensions()
       ->whereIn('id', $request->receiver)

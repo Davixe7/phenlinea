@@ -24,8 +24,6 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
     'phone',
     'phone_2',
     'phone_verification',
-    'picture',
-    'slug',
     'status',
     'whatsapp_instance_id',
     'whatsapp_status',

@@ -32,7 +32,7 @@
       @yield('content')
     </div>
   </main>
-  <script src="{{ asset('js/super.js') }}" defer></script>
+  <script src="{{ mix('js/super.js') }}" defer></script>
   @yield('scripts')
 </body>
 

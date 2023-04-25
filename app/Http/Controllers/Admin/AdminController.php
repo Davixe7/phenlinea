@@ -50,8 +50,7 @@ class AdminController extends Controller
       'address'  => $request->address,
 
       'email'      => $request->email,
-      'password'   => bcrypt( $request->password ),
-      'slug'       => Str::slug($request->name),
+      'password'   => bcrypt( $request->password )
     ]);
     
     if( $admin ){

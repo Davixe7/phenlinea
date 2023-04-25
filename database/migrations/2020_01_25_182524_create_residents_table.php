@@ -14,18 +14,17 @@ class CreateResidentsTable extends Migration
   public function up()
   {
     Schema::create('residents', function (Blueprint $table) {
+      $table->bigIncrements('id');
+      $table->timestamps();
       $table->string('name');
       $table->integer('age');
       $table->string('dni');
-      $table->string('card')->nullable();
       $table->boolean('is_owner');
       $table->boolean('is_resident');
+      $table->unsignedBigInteger('extension_id');
       $table->boolean('is_authorized')->default(false)->nullable();
       $table->boolean('disability')->default(false)->nullable();
-      
-      $table->unsignedBigInteger('extension_id');
-      $table->bigIncrements('id');
-      $table->timestamps();
+      $table->string('card')->nullable();
     });
   }
   

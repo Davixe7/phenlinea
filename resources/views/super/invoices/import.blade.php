@@ -59,7 +59,7 @@
 <div class="container">
 
 <Upload
-    :rows="{{ json_encode( $invoices ) }}"
+    :rows="{{ json_encode( array_values($invoices->toArray()) ) }}"
     :month="{{ $month }}"
     :year="{{ $year }}"
     :months-name="{{ json_encode($monthsName) }}">

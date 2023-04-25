@@ -1764,6 +1764,10 @@ __webpack_require__.r(__webpack_exports__);
     }
     function loadData() {
       var data = new FormData();
+      var file = document.querySelector('#input_whatsapp_qr').files[0];
+      if (file) {
+        data.append('whatsapp_qr', file);
+      }
       Object.keys(props.admin).forEach(function (key) {
         return data.append(key, props.admin[key]);
       });
@@ -1771,6 +1775,7 @@ __webpack_require__.r(__webpack_exports__);
     }
     function clearForm() {
       errors.value = [];
+      document.querySelector('#input_whatsapp_qr').value = '';
     }
     return {
       __sfc: true,
@@ -1918,15 +1923,20 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
   props: ['monthsName', 'rows'],
   setup: function setup(__props) {
     var props = __props;
-    var attachmentInput = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)(null);
+    var search = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)('');
     var invoices = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)([]);
+    var results = (0,vue__WEBPACK_IMPORTED_MODULE_0__.computed)(function () {
+      if (search.value == '') return _toConsumableArray(invoices.value);
+      invoices.value = invoices.value.filter(function (invoice) {
+        return invoice.admin.name.toLowerCase().includes(search.value.toLowerCase());
+      });
+      return invoices.value;
+    });
+    var attachmentInput = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)(null);
     var importing = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)(false);
     var month = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)('');
     var year = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)('');
     var uploading = (0,vue__WEBPACK_IMPORTED_MODULE_0__.ref)(false);
-    (0,vue__WEBPACK_IMPORTED_MODULE_0__.onMounted)(function () {
-      return invoices.value = _toConsumableArray(props.rows);
-    });
     function updateInvoice(invoice) {
       if (!window.confirm('seguro que desea actualizar el estado de la factura?')) return;
       axios.post("/admin/invoices/".concat(invoice.id), {
@@ -1962,6 +1972,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       });
     }
     (0,vue__WEBPACK_IMPORTED_MODULE_0__.onMounted)(function () {
+      invoices.value = _toConsumableArray(props.rows);
       var date = new Date();
       year.value = date.getFullYear();
       month.value = date.getMonth() + 1;
@@ -1969,8 +1980,10 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     return {
       __sfc: true,
       props: props,
-      attachmentInput: attachmentInput,
+      search: search,
       invoices: invoices,
+      results: results,
+      attachmentInput: attachmentInput,
       importing: importing,
       month: month,
       year: year,
@@ -2388,33 +2401,7 @@ var render = function render() {
   }) : _vm._e()], 1)]), _vm._v(" "), _setup.results && _setup.results.length ? _c("table", {
     staticClass: "table"
   }, [_vm._m(0), _vm._v(" "), _c("tbody", _vm._l(_setup.results, function (admin) {
-    return _c("tr", [_c("td", [_vm._v(_vm._s(admin.name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(admin.nit))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(admin.phone))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(admin.phone_2))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(admin.email))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(admin.status))]), _vm._v(" "), _c("td", [_c("div", {
-      staticClass: "d-flex"
-    }, [_c("input", {
-      directives: [{
-        name: "model",
-        rawName: "v-model",
-        value: admin.whatsapp_group_id,
-        expression: "admin.whatsapp_group_id"
-      }],
-      staticClass: "form-control form-control-sm",
-      domProps: {
-        value: admin.whatsapp_group_id
-      },
-      on: {
-        input: function input($event) {
-          if ($event.target.composing) return;
-          _vm.$set(admin, "whatsapp_group_id", $event.target.value);
-        }
-      }
-    }), _vm._v(" "), _c("button", {
-      staticClass: "btn btn-primary btn-sm",
-      on: {
-        click: function click($event) {
-          return _setup.updateWhatsappGroupId(admin);
-        }
-      }
-    }, [_vm._v("\n                " + _vm._s(_setup.loading ? "cargando" : "guardar") + "\n              ")])])]), _vm._v(" "), _c("td", {
+    return _c("tr", [_c("td", [_vm._v(_vm._s(admin.name))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(admin.nit))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(admin.phone))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(admin.phone_2))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(admin.email))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(admin.status))]), _vm._v(" "), _c("td", {
       staticClass: "text-right"
     }, [_c("div", {
       staticClass: "btn-group"
@@ -2531,7 +2518,7 @@ var staticRenderFns = [function () {
   var _vm = this,
     _c = _vm._self._c,
     _setup = _vm._self._setupProxy;
-  return _c("thead", [_c("th", [_vm._v("Nombre")]), _vm._v(" "), _c("th", [_vm._v("NIT")]), _vm._v(" "), _c("th", [_vm._v("Celular")]), _vm._v(" "), _c("th", [_vm._v("Celular 2")]), _vm._v(" "), _c("th", [_vm._v("Correo")]), _vm._v(" "), _c("th", [_vm._v("Status")]), _vm._v(" "), _c("th", [_vm._v("WA-ID")]), _vm._v(" "), _c("th", {
+  return _c("thead", [_c("th", [_vm._v("Nombre")]), _vm._v(" "), _c("th", [_vm._v("NIT")]), _vm._v(" "), _c("th", [_vm._v("Celular")]), _vm._v(" "), _c("th", [_vm._v("Celular 2")]), _vm._v(" "), _c("th", [_vm._v("Correo")]), _vm._v(" "), _c("th", [_vm._v("Status")]), _vm._v(" "), _c("th", {
     staticClass: "text-right"
   }, [_vm._v("\n          Opciones\n        ")])]);
 }, function () {
@@ -2624,6 +2611,46 @@ var render = function render() {
         if ($event.target.composing) return;
         _vm.$set(_vm.admin, "whatsapp_group_id", $event.target.value);
       }
+    }
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "form-group"
+  }, [_c("label", {
+    attrs: {
+      "for": "name"
+    }
+  }, [_vm._v("URL Grupo Whatsapp")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.admin.whatsapp_group_url,
+      expression: "admin.whatsapp_group_url"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "url",
+      id: "whatsapp_group_url"
+    },
+    domProps: {
+      value: _vm.admin.whatsapp_group_url
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.admin, "whatsapp_group_url", $event.target.value);
+      }
+    }
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "form-group"
+  }, [_c("label", {
+    attrs: {
+      "for": "name"
+    }
+  }, [_vm._v("QR Grupo Whatsapp")]), _vm._v(" "), _c("input", {
+    ref: "inputWhatsappQr",
+    staticClass: "form-control",
+    attrs: {
+      type: "file",
+      id: "input_whatsapp_qr"
     }
   })]), _vm._v(" "), _c("div", {
     staticClass: "form-group"
@@ -3097,7 +3124,13 @@ var render = function render() {
     staticClass: "col"
   }, [_c("div", {
     staticClass: "table-responsive"
-  }, [_c("h1", [_vm._v("\n        Facturas del mes\n      ")]), _vm._v(" "), _c("div", {
+  }, [_c("h1", [_vm._v("\n        Facturas del mes\n      ")]), _vm._v(" "), _c("input", {
+    staticClass: "form-control",
+    attrs: {
+      type: "search",
+      placeholder: "Buscar por nombre de unidad"
+    }
+  }), _vm._v(" "), _c("div", {
     staticClass: "container-fluid"
   }, [_c("form", {
     on: {
@@ -3170,9 +3203,9 @@ var render = function render() {
     attrs: {
       value: "2023"
     }
-  }, [_vm._v("2023")])])]), _vm._v(" "), _vm._m(0)])])]), _vm._v(" "), _setup.invoices && _setup.invoices.length ? _c("table", {
+  }, [_vm._v("2023")])])]), _vm._v(" "), _vm._m(0)])])]), _vm._v(" "), _setup.results && _setup.results.length ? _c("table", {
     staticClass: "table"
-  }, [_vm._m(1), _vm._v(" "), _c("tbody", _vm._l(_setup.invoices, function (invoice) {
+  }, [_vm._m(1), _vm._v(" "), _c("tbody", _vm._l(_setup.results, function (invoice) {
     return _c("tr", {
       key: invoice.id
     }, [_c("td", [_vm._v("\n              " + _vm._s(invoice.number) + "\n            ")]), _vm._v(" "), _c("td", [_vm._v("\n              " + _vm._s(invoice.admin.nit) + "\n            ")]), _vm._v(" "), _c("td", [_vm._v("\n              " + _vm._s(invoice.admin.name) + "\n            ")]), _vm._v(" "), _c("td", [_c("div", {

@@ -5400,7 +5400,7 @@ var render = function render() {
     attrs: {
       "for": "disability"
     }
-  }, [_vm._v("\n            Posee discapacidad\n          ")])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("\n            Movilidad reducida\n          ")])]), _vm._v(" "), _c("div", {
     staticClass: "text-right"
   }, [_vm.resident ? _c("button", {
     staticClass: "btn btn-link",

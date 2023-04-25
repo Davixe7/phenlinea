@@ -1,12 +1,6 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Admin;
-use App\Freelancer;
-use App\User;
-use App\Payment;
-use App\Porteria;
-use App\Visit;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -55,6 +49,6 @@ class DatabaseSeeder extends Seeder
       'password' => bcrypt('123456'),
     ]);
 
-    //DB::unprepared(file_get_contents(storage_path('app/ddbb.sql')));
+    DB::unprepared(file_get_contents(storage_path('app/ddbb.sql')));
   }
 }

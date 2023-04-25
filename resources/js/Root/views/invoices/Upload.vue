@@ -8,6 +8,7 @@
         <h1>
           Facturas del mes
         </h1>
+
         <div class="container-fluid">
           <form @submit.prevent="fetchInvoices">
             <div class="row">
@@ -31,8 +32,16 @@
               </div>
             </div>
           </form>
+
+          <input
+            v-model="search"
+            type="search"
+            class="form-control"
+            placeholder="Buscar por nombre de unidad"
+          />
         </div>
-        <table class="table" v-if="invoices && invoices.length">
+
+        <table class="table" v-if="results && results.length">
           <thead>
             <th>Numero</th>
             <th>NIT</th>
@@ -43,7 +52,7 @@
             <th>Accion</th>
           </thead>
           <tbody>
-            <tr v-for="invoice in invoices" :key="invoice.id">
+            <tr v-for="invoice in results" :key="invoice.id">
               <td>
                 {{ invoice.number }}
               </td>
@@ -129,17 +138,22 @@
 </template>
 
 <script setup>
-import {ref, onMounted} from 'vue'
+import {ref, onMounted, computed} from 'vue'
 const props = defineProps(['monthsName', 'rows'])
 
-const attachmentInput = ref(null)
+const search   = ref('')
 const invoices = ref([])
+
+const attachmentInput = ref(null)
 const importing = ref(false)
 const month = ref('')
 const year = ref('')
 const uploading = ref(false)
 
-onMounted(() => invoices.value = [...props.rows])
+const results  = computed(()=>{
+  if( search.value == '' ) return [...invoices.value]
+  return invoices.value.filter(invoice => invoice.admin.name.toLowerCase().includes( search.value.toLowerCase() ))
+})
 
 function updateInvoice(invoice) {
   if (!window.confirm('seguro que desea actualizar el estado de la factura?')) return
@@ -171,8 +185,16 @@ function uploadInvoices(){
 }
 
 onMounted(()=>{
+  invoices.value = [...props.rows]
+
   let date = new Date()
   year.value = date.getFullYear()
   month.value = date.getMonth() + 1
 })
 </script>
+
+<style>
+input[type=search].form-control {
+  padding: 0.375rem 0.75rem !important;
+}
+</style>

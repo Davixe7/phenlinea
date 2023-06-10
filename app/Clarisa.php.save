@@ -43,7 +43,6 @@ class Clarisa
       'GET',
       $url,
       [
-        "http_errors" => false,
         "headers" => [
           'Authorization' => $token,
           'Content-Type'  => 'application/json'
@@ -51,12 +50,9 @@ class Clarisa
       ]
     );
 
-    if ($response->getStatusCode() != '401') {
-	return json_decode( $response->getBody()->getContents() )->data;
-    }
+    if( $response->getStatu
 
-    Cache::forget('clarisa_token');
-    return self::getInvoicePDF($number);
+    return $invoice = json_decode( $requestInvoice->getBody()->getContents() )->data;
   }
 
 }

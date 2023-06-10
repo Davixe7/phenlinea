@@ -41,7 +41,7 @@ class StoreExtension extends FormRequest
       'phone_2' => 'nullable|numeric|digits_between:10,10',
       'phone_3' => 'nullable|numeric|digits_between:10,10',
       'phone_4' => 'nullable|numeric|digits_between:3,15',
-      'deposit' => 'nullable|numeric|digits_between:0,3',
+      'deposit' => 'nullable|numeric|digits_between:0,5',
     ];
   }
 

@@ -41,4 +41,8 @@ class User extends Authenticatable
     public function getEmailForVerification(){
       return $this->email;
     }
+
+    public function whatsapp_clients(){
+      return $this->hasMany('App\WhatsappClient');
+    }
 }

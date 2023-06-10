@@ -83,8 +83,12 @@ Route::get('user', 'Auth\UserController@index')->middleware('auth');
 Route::get('admin/admins/{admin}/payments', 'Admin\AdminController@getPayments');
 Route::get('admins/{admin}/payments', 'AdminController@payments')->name('admins.payments');
 
+Route::get('whatsapp_clients/getclient', 'Admin\WhatsappClientController@getClient')->name('whatsapp_clients.getClient');
+
 //Admin routes
 Route::name('admin.')->prefix('admin')->middleware('auth:web')->group(function () {
+  Route::get('whatsapp_clients', 'Admin\WhatsappClientController@index')->name('whatsapp_clients.index');
+  Route::put('whatsapp_clients/{whatsapp_client}', 'Admin\WhatsappClientController@update')->name('whatsapp_clients.update');
   Route::get('users/list', 'Admin\UserController@list')->name('users.list');
   Route::get('admins/list', 'Admin\AdminController@list')->name('admins.list');
 

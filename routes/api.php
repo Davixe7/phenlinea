@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
+Route::get('getclient', 'Admin\WhatsappClientController@getClient');
+
 Route::middleware('auth:api-porteria')->group(function () {
   Route::post('extensions/delivery', 'API\WhatsappController@sendDelivery');
   Route::post('extensions/{name?}/delivery', 'API\WhatsappController@sendDelivery');

@@ -5,18 +5,19 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 
 class WhatsappController extends Controller
 {
   protected $api = null;
+  protected $client;
   
   
   public function __construct(){
+      $this->client = DB::table('whatsapp_clients')->where('enabled', 1)->first();
       $this->api = new Client([
-        'base_uri' => 'http://asistbot.com/api/',
+        'base_uri' => $this->client->base_url,
         'verify'   => false
       ]);
   }
@@ -34,11 +35,9 @@ class WhatsappController extends Controller
   {
     $request->validate(['name:required']);
     $extension = auth()->user()->extensions()->whereName($request->name)->firstOrFail();
-
     $media_url = null;
-    Storage::append('deliveries.log', auth()->user()->name . json_encode($request->all()));
+    
     if ( $file = $request->file('media') ) {
-      Storage::append('deliveries.log', "Has file: true \n --------------------- \n");
       $extension->addMedia( $file )->toMediaCollection('deliveries');
       $media_url = $extension->getMedia('deliveries')->last()->getUrl(); 
     }
@@ -46,46 +45,26 @@ class WhatsappController extends Controller
     $admin_name = auth()->user()->admin ? auth()->user()->admin->name : '';
     
     $data = [
-      'access_token' => '3f8b18194536bdafa301c662dc9caa4c',
-      'instance_id'  => '643707D0E55AA',
+      'access_token' => $this->client->access_token,
+      'instance_id'  => $this->client->instance_id,
       'type'         => 'text',
       'message'      => $this->getMessage( $admin_name, $extension->name ),
       'type'         => $media_url ? 'media' : 'text',
       'media_url'    => $media_url
     ];
     
-    if( $extension->name == '1000' ){
-      // $data['number'] = '573144379170';
-      $data['number'] = '584147912134';
-      $response = $this->api->post('send.php', ['query' => $data]);
-      $response = $data['media_url']
-                ? 'Message sent successfully'
-                : ['message' => 'Message sent successfully'];
-      return response()->json(['data' => $response]);
-      //return $response->getBody();
-    }
+    // Mobile App Expects
+    // $response = $data['media_url'] ? 'Message sent successfully' : ['message' => 'Message sent successfully'];
+    // return response()->json(['data' => $response]);
 
     foreach( $extension->valid_whatsapp_phone_numbers as $phone ){
       $data['number'] = '57' . $phone;
       $this->api->post('send.php', ['query' => $data]);
     }
 
-    // try {
-    //   foreach( $extension->valid_whatsapp_phone_numbers as $phone ){
-    //     $data['number'] = '57' . $phone;
-    //     $this->api->post('send.php', ['query' => $data]);
-    //   }
-    // }
-    // catch(Exception $e){
-    //   abort(504, 'Asistbot tardó demasiado en responder');
-    // }
-
-    $response = $data['media_url']
-                ? 'Message sent successfully'
-                : ['message' => 'Message sent successfully'];
-
-
-    return response()->json(['data' => $response]);
+    return response()->json(['data' => $data['media_url']
+                                       ? 'Message sent successfully'
+                                       : ['message' => 'Message sent successfully']]);
   }
 }
 

@@ -7,6 +7,7 @@ use App\Extension;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -20,19 +21,21 @@ class WhatsappController extends Controller
 
   private $client;
   private $query;
+  private $api;
 
   public function __construct()
   {
-    $this->query = ['access_token' => '3f8b18194536bdafa301c662dc9caa4c'];
-    $this->client = new Client(['base_uri' => 'http://asistbot.com/api/', 'verify'=>false]);
+    $this->client = DB::table('whatsapp_clients')->where('enabled', 1)->first();
+    $this->api = new Client(['base_uri' => $this->client->base_url, 'verify'=>false]);
+    $this->query = ['access_token' => $this->client->access_token];
   }
 
   //Instance ID Invalidated
   public function createInstance()
   {
-    $query   = ['access_token' => '3f8b18194536bdafa301c662dc9caa4c'];
+    $query   = $this->query;
     $headers = [['accept'=>'application/json']];
-    $response    = $this->client->post('createinstance.php', compact('query', 'headers'));
+    $response    = $this->api->post('createinstance.php', compact('query', 'headers'));
     $instance_id = json_decode($response->getBody(), true)['instance_id'];
     return $instance_id;
   }
@@ -69,7 +72,7 @@ class WhatsappController extends Controller
     if( !auth()->user()->whatsapp_group_id ){
       return view('admin.whatsapp.disabled');
     }
-    $response = $this->client->get('http://api.phenlinea.com/api/batches/', ['query'=>[
+    $response = $this->api->get('http://api.phenlinea.com/api/batches/', ['query'=>[
       'user_id' => auth()->id(),
       'type'    => 'comunity',
     ]]); 
@@ -87,7 +90,7 @@ class WhatsappController extends Controller
     }
 
     try {
-      $response = $this->client->post('http://api.phenlinea.com/api/batches', ['form_params'=>[
+      $response = $this->api->post('http://api.phenlinea.com/api/batches', ['form_params'=>[
         'user_id'      => auth()->id(),
         'group_id'     => auth()->user()->whatsapp_group_id,
         'message'      => $request->message,
@@ -128,12 +131,12 @@ class WhatsappController extends Controller
 
   public function setWebHook($instance_id)
   {
-    $this->client->post('setwebhook.php', ['query' => [
+    $query = array_merge($this->query, [
       'enable'       => 'true',
       'instance_id'  => $instance_id,
-      'access_token' => '3f8b18194536bdafa301c662dc9caa4c',
       'webhook_url'  => route('whatsapp.hook')
-    ]]);
+    ]);
+    $this->client->post('setwebhook.php',compact('query'));
   }
 
   public function hook(Request $request)
@@ -164,10 +167,8 @@ class WhatsappController extends Controller
 
   public function logout()
   {
-    $response = $this->client->post('reboot.php', ['query' => [
-      'access_token' => '3f8b18194536bdafa301c662dc9caa4c',
-      'instance_id'  => auth()->user()->whatsapp_instance_id
-    ]]);
+    $this->query['instance_id'] = auth()->user()->whatsapp_instance_id;
+    $this->client->post('reboot.php', ['query' => $this->query]);
 
     Storage::append('whatsapp_hook.log', auth()->user()->whatsapp_instance_id . " requested logout");
 
@@ -219,18 +220,6 @@ class WhatsappController extends Controller
       Storage::append('batch_messages_media.log', $path);
     }
 
-    // $response = $this->client->post('http://161.35.60.29/api/whatsapp-batches', [
-    //   'form_params' => [
-    //     'admin_id'              => auth()->id(),
-    //     'admin_name'            => auth()->user()->name,
-    //     'admin_phone'           => auth()->user()->phone,
-    //     'whatsapp_instance_id'  => auth()->user()->whatsapp_instance_id,
-    //     'message'               => $request->message,
-    //     'receivers'             => $receivers,
-    //     'media_url'             => $media_url
-    //   ]
-    // ]);
-
    $admin_name = auth()->user()->name;
 
    $message = "*Unidad: {$admin_name}*\n\n";
@@ -238,7 +227,7 @@ class WhatsappController extends Controller
    $message = $message . "Servicio prestado por PHenlinea.com";
 
     try {
-      $response = $this->client->post('http://api.phenlinea.com/api/batches', [
+      $response = $this->api->post('http://api.phenlinea.com/api/batches', [
         'form_params' => [
           'user_id'               => auth()->id(),
           'instance_id'           => auth()->user()->whatsapp_instance_id,

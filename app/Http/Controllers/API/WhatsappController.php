@@ -5,17 +5,17 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
-use Illuminate\Support\Facades\DB;
-
+use App\WhatsappClient;
+use Illuminate\Support\Facades\Storage;
 
 class WhatsappController extends Controller
 {
-  protected $api = null;
-  protected $client;
+  protected Client $api;
+  protected WhatsappClient $client;
   
   
   public function __construct(){
-      $this->client = DB::table('whatsapp_clients')->where('enabled', 1)->first();
+      $this->client = WhatsappClient::where('enabled', 1)->first();
       $this->api = new Client([
         'base_uri' => $this->client->base_url,
         'verify'   => false
@@ -46,7 +46,7 @@ class WhatsappController extends Controller
     
     $data = [
       'access_token' => $this->client->access_token,
-      'instance_id'  => $this->client->instance_id,
+      'instance_id'  => $this->client->delivery_instance_id,
       'type'         => 'text',
       'message'      => $this->getMessage( $admin_name, $extension->name ),
       'type'         => $media_url ? 'media' : 'text',
@@ -59,7 +59,8 @@ class WhatsappController extends Controller
 
     foreach( $extension->valid_whatsapp_phone_numbers as $phone ){
       $data['number'] = '57' . $phone;
-      $this->api->post('send.php', ['query' => $data]);
+      $response = $this->api->get('send', ['query' => $data]);
+      Storage::append( 'deliveries.log', $response->getBody() );
     }
 
     return response()->json(['data' => $data['media_url']

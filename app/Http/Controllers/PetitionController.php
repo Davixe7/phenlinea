@@ -7,19 +7,22 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Petition as PetitionResource;
 use App\Petition;
 use App\Admin;
+use App\WhatsappClient;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Storage;
 
 class PetitionController extends Controller
 {
+  protected $api;
   protected $client;
 
   public function __construct()
   {
+    $this->client = WhatsappClient::where('enabled', 1)->first();
     //$this->middleware('modules:requests');
-    $this->client = new Client([
-      'base_uri' => 'http://asistbot.com/api/',
+    $this->api = new Client([
+      'base_uri' => $this->client->base_url,
       'verify' => false
     ]);
   }
@@ -202,14 +205,14 @@ class PetitionController extends Controller
 
   public function notifyPetitionUpdate($petition){
     $data = [
-      'access_token' => env('ASISTBOT_ACCESS_TOKEN'),
-      'instance_id'  => env('ASISTBOT_NOTIFICATIONS_INSTANCE_ID'),
+      'access_token' => $this->client->access_token,
+      'instance_id'  => $this->client->delivery_instance_id,
       'number'       => ($petition->phone == '4147912134') ? '584147912134' : '57' . $petition->phone,
       'message'      => $this->getMessage($petition),
       'type'         => 'text'
     ];
 
-    $response = $this->client->post('send.php', ['query'=>$data]);
+    $response = $this->api->get('send', ['query'=>$data]);
     Storage::append('pqrs.log', $response->getBody());
   }
 }

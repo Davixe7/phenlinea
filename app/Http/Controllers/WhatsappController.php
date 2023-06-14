@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Admin;
 use App\Extension;
+use App\WhatsappClient;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -19,13 +21,13 @@ class WhatsappController extends Controller
    * @return \Illuminate\Http\Response
    */
 
-  private $client;
-  private $query;
-  private $api;
+  protected $client;
+  protected $query;
+  protected $api;
 
   public function __construct()
   {
-    $this->client = DB::table('whatsapp_clients')->where('enabled', 1)->first();
+    $this->client = WhatsappClient::where('enabled', 1)->first();
     $this->api = new Client(['base_uri' => $this->client->base_url, 'verify'=>false]);
     $this->query = ['access_token' => $this->client->access_token];
   }
@@ -33,18 +35,25 @@ class WhatsappController extends Controller
   //Instance ID Invalidated
   public function createInstance()
   {
-    $query   = $this->query;
-    $headers = [['accept'=>'application/json']];
-    $response    = $this->api->post('createinstance.php', compact('query', 'headers'));
-    $instance_id = json_decode($response->getBody(), true)['instance_id'];
-    return $instance_id;
+    $query    = $this->query;
+    $headers  = [['accept'=>'application/json']];
+    try {
+      $response = $this->api->get('create_instance', compact('query', 'headers'));
+      $body = json_decode($response->getBody(), 1);
+      if( is_array($body) && array_key_exists('instance_id', $body ) ){
+        return $body['instance_id'];
+      }
+    }
+    catch(GuzzleException $e){
+      return abort('200', $e->message);
+    }
   }
 
   public function getQrCode($instance_id)
   {
     $this->query['instance_id'] = $instance_id;
-    $response = $this->client->post('getqrcode.php', ['query' => $this->query]);
-    $data = json_decode($response->getBody(), true);
+    $response = $this->api->get('get_qrcode', ['query' => $this->query]);
+    $data = json_decode($response->getBody(), 1);
 
     if (($response->getStatusCode() >= 400) || ($data && ($data['status'] == 'error'))) {
       Storage::append('whatsapp_error.log', 'InstanceID: ' . $instance_id . ' ' . $response->getBody());
@@ -136,11 +145,13 @@ class WhatsappController extends Controller
       'instance_id'  => $instance_id,
       'webhook_url'  => route('whatsapp.hook')
     ]);
-    $this->client->post('setwebhook.php',compact('query'));
+    $response = $this->api->get('set_webhook', compact('query'));
+    Storage::append('whatsapp_hook.log', $response->getBody());
   }
 
   public function hook(Request $request)
   {
+    Storage::append('whatsapp_hook.log', 'incoming data');
     $data    = json_encode($request->all());
     $arrData = json_decode($data);
 
@@ -168,7 +179,7 @@ class WhatsappController extends Controller
   public function logout()
   {
     $this->query['instance_id'] = auth()->user()->whatsapp_instance_id;
-    $this->client->post('reboot.php', ['query' => $this->query]);
+    $this->api->get('reboot.php', ['query' => $this->query]);
 
     Storage::append('whatsapp_hook.log', auth()->user()->whatsapp_instance_id . " requested logout");
 

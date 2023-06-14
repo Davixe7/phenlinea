@@ -6,8 +6,8 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\Storage;
 use GuzzleHttp\Client;
-use DB;
-use App\WhatsappMessagesBatch;
+use Illuminate\Support\Facades\DB;
+use App\WhatsappClient;
 
 class Kernel extends ConsoleKernel
 {
@@ -29,14 +29,14 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->call(function(){
-
+            $client = WhatsappClient::where('enabled', 1)->first();
             $admins = DB::table('admins')->whereNotNull('whatsapp_instance_id')->get();
 
-            $asistbot = new Client(['base_uri'=>'http://asistbot.com/api/', 'verify'=>false]);
+            $asistbot = new Client(['base_uri' => $client->base_url, 'verify' => false]);
 
             foreach( $admins as $admin ){
-              $response = $asistbot->post('resetinstance.php', ['query'=>[
-                'access_token' => env('ASISTBOT_ACCESS_TOKEN'),
+              $response = $asistbot->post('resetinstance', ['query'=>[
+                'access_token' => $client->base_url,
                 'instance_id'  => $admin->whatsapp_instance_id
               ]]);
 

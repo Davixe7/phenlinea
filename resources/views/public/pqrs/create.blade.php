@@ -45,6 +45,9 @@
 @endsection
 @section('content')
 <div class="container">
+  @if( session('message') )
+  {{ session('message') }}
+  @endif
   <div class="table-responsive mt-5">
     <h1>
       Peticiones, quejas o reclamos

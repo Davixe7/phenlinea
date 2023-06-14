@@ -14,7 +14,7 @@ class WhatsappClientController extends Controller
   }
 
   public function index(){
-    $whatsapp_clients = auth()->user()->whatsapp_clients;
+    $whatsapp_clients = WhatsappClient::all();
     return view('super.whatsapp-clients', compact('whatsapp_clients'));
   }
 

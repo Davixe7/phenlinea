@@ -13,3 +13,6 @@
 <li class="nav-item">
   <a class="nav-link" href="{{ route('admin.documentos.index') }}">Documentos Legales</a>
 </li>
+<li class="nav-item">
+  <a class="nav-link" href="{{ route('admin.whatsapp_clients.index') }}">Whatsapp</a>
+</li>

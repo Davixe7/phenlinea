@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API;
 
 use App\Visit;
-use App\Attachment;
 use Illuminate\Http\Request;
 use App\Http\Resources\VisitPorteria;
 use App\Http\Controllers\Controller;
@@ -34,15 +33,15 @@ class VisitController extends Controller
 
     public function store(Request $request)
     {
-      //$request->validate([
-      //  'apartment' => 'required'
-      //]);
+      $request->validate([
+        'name'      => 'required'
+      ]);
       
-      $extensionId = $request->extension_id;
+      $extension_id = $request->extension_id;
       
       if( $request->apartment ){
           $extension = auth()->user()->extensions()->whereName( $request->apartment )->firstOrFail();
-          $extensionId = $extension->id;
+          $extension_id = $extension->id;
       }
 
       $visit = Visit::create([
@@ -50,23 +49,16 @@ class VisitController extends Controller
         "dni"          => $request->dni,
         "phone"        => $request->phone,
         "plate"        => $request->plate,
-        "checkin"      => \Carbon\Carbon::now(),
+        "checkin"      => now(),
         "type"         => $request->type,
         "company"      => $request->company,
         "arl"          => $request->arl,
         "eps"          => $request->eps,
-        "extension_id" => $extensionId,
+        "extension_id" => $extension_id,
         "admin_id"     => auth()->user()->admin_id
       ]);
       
-      $string = "";
-      $data = $request->all();
-      
-      foreach( $data as $key => $value ){
-        $string = $string . $key . ':' . $value . ',';
-      }
-      
-      Storage::append('visits.log', $string);
+      Storage::append('visits.log', json_encode($request->all()));
 
       if( $file = $request->file('picture') ){
         $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . time() . '.' . $file->extension();
@@ -87,9 +79,7 @@ class VisitController extends Controller
      */
     public function update(Request $request, Visit $visit)
     {
-      $visit->update([
-        "checkout" => \Carbon\Carbon::now()
-      ]);
+      $visit->update(["checkout" => now()]);
       return new VisitPorteria( $visit );
     }
 }

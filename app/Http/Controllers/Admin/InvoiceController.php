@@ -73,12 +73,16 @@ class InvoiceController extends Controller
     $path = storage_path("app/$path");
 
     $facturas = (new FastExcel)->import($path, function ($line) use ($date) {
+      $nit = null;
       if (!$line['Número Factura']) {
         return;
       }
+     if(is_array( $nit = explode('-', $line['ID Cliente']) )){
+       $nit = $nit[1];
+     }
       return Invoice::create([
         'number' => $line['Número Factura'],
-        'nit'    => $line['ID Cliente'],
+        'nit'    => $nit,
         'date'   => $date,
         'total'  => $line['Total'],
       ]);

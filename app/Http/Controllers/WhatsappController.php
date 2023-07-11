@@ -28,7 +28,7 @@ class WhatsappController extends Controller
   public function __construct()
   {
     $this->client = WhatsappClient::where('enabled', 1)->first();
-    $this->api = new Client(['base_uri' => $this->client->base_url, 'verify'=>false]);
+    $this->api = new Client(['base_uri' => 'http://137.184.93.41:3000/', 'verify'=>false]);
     $this->query = ['access_token' => $this->client->access_token];
   }
 
@@ -45,7 +45,7 @@ class WhatsappController extends Controller
       }
     }
     catch(GuzzleException $e){
-      return abort('200', $e->message);
+      return abort('200', $e->getMessage());
     }
   }
 
@@ -179,7 +179,7 @@ class WhatsappController extends Controller
   public function logout()
   {
     $this->query['instance_id'] = auth()->user()->whatsapp_instance_id;
-    $this->api->get('reboot.php', ['query' => $this->query]);
+    $this->api->get('logout', ['query' => $this->query]);
 
     Storage::append('whatsapp_hook.log', auth()->user()->whatsapp_instance_id . " requested logout");
 

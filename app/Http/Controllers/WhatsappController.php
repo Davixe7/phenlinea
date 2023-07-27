@@ -28,11 +28,10 @@ class WhatsappController extends Controller
   public function __construct()
   {
     $this->client = WhatsappClient::where('enabled', 1)->first();
-    $this->api = new Client(['base_uri' => 'http://137.184.93.41:3000/', 'verify'=>false]);
-    $this->query = ['access_token' => $this->client->access_token];
+    $this->api    = new Client(['base_uri' => $this->client['base_url'], 'verify'=>false]);
+    $this->query  = ['access_token' => $this->client->access_token];
   }
 
-  //Instance ID Invalidated
   public function createInstance()
   {
     $query    = $this->query;
@@ -124,8 +123,10 @@ class WhatsappController extends Controller
       $extensions = auth()->user()->extensions()->orderBy('name')->get();
       $query      = ['user_id'=>auth()->id(), 'type'=>'batch'];
 
-      $response = $this->client->get('http://api.phenlinea.com/api/batches/', [$query]); 
-      $history  = json_decode($response->getBody())->data;
+      $client   = new Client(['base_uri'=>'https://api.phenlinea.com/api/']);
+      $response = $client->get("batches/?user_id=" . auth()->id() . "&type=" . 'batch');
+      $history  = json_decode($response->getBody(), true)['data'];
+
       $whatsapp_instance_id = auth()->user()->whatsapp_instance_id;
 
       return view('admin.whatsapp.index', compact('extensions', 'history', 'whatsapp_instance_id'));
@@ -153,23 +154,23 @@ class WhatsappController extends Controller
   {
     Storage::append('whatsapp_hook.log', 'incoming data');
     $data    = json_encode($request->all());
-    $arrData = json_decode($data);
+    $arrData = json_decode($data, true);
 
     Storage::append('whatsapp_hook.log', json_encode($arrData));
 
-    if ($arrData->event == 'ready') {
-      $phone = explode(':', $arrData->data->id)[0];
+    if ($arrData['event'] == 'ready') {
+      $phone = $arrData['phone'] ?: explode(':', $arrData['data']['id'])[0];
 
       Admin::where('phone', $phone)->update([
         'whatsapp_status'      => 'online',
-        'whatsapp_instance_id' => $arrData->instance_id
+        'whatsapp_instance_id' => $arrData['instance_id']
       ]);
       Storage::append('whatsapp_hook.log', json_encode($arrData));
       return 1;
     }
 
     if ($arrData->event == 'logout') {
-      Admin::where('instance_id', $arrData->instance_id)->update([
+      Admin::where('instance_id', $arrData['instance_id'])->update([
         'whatsapp_status'      => 'offline',
         'whatsapp_instance_id' => null
       ]);
@@ -238,7 +239,7 @@ class WhatsappController extends Controller
    $message = $message . "Servicio prestado por PHenlinea.com";
 
     try {
-      $response = $this->api->post('http://api.phenlinea.com/api/batches', [
+      $response = $this->api->post('https://api.phenlinea.com/api/batches', [
         'form_params' => [
           'user_id'               => auth()->id(),
           'instance_id'           => auth()->user()->whatsapp_instance_id,
@@ -259,3 +260,4 @@ class WhatsappController extends Controller
     return response()->json($response);
   }
 }
+

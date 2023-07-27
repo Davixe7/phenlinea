@@ -1,7 +1,7 @@
 <div class="container pt-4">
   <div class="row">
     <div class="col-lg-4">
-      <div class="table-responsive">
+      <div class="table-responsive text-center">
         <h1>
           WhatsApp - Mensajería general
         </h1>
@@ -9,12 +9,12 @@
           {{ $instance_id }}
         </div>
         @if( isset( $qrcode_src ) && $qrcode_src )
-        <img src="{{ $qrcode_src }}" alt="" id="qrImage">
+        <img src="{{ $qrcode_src }}" id="qrImage" class="mx-auto">
         <div id="qrPreloader" style="display: none;">
           <div class="preloader"></div>
         </div>
         @else
-        <img src="#" alt="" id="qrImage" style="display: none;">
+        <img src="#" id="qrImage" style="display: none;" class="mx-auto">
         <div id="qrPreloader">
           <div class="preloader"></div>
         </div>
@@ -49,19 +49,22 @@
 @section('scripts')
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
-  const qrImage = document.querySelector('#qrImage')
-  const qrPreloader = document.querySelector('#qrPreloader')
 
   function setQrDisplay(flag = true, src = null){
+    let qrImage     = document.querySelector('#qrImage')
+    let qrPreloader = document.querySelector('#qrPreloader')
+
     qrImage.style.display     = flag ? 'block' : 'none'
     qrPreloader.style.display = flag ? 'none'  : 'flex'
-    qrImage.src               = src ? src : qrImage.src
+    qrImage.setAttribute('src', src ? src : qrImage.src)
     return
   }
 
   setInterval(function() {
     axios.get('/whatsapp/getQR')
-    .then(response => response.data.data ? setQrDisplay(true, response.data.data) : setQrDisplay(false) )
+    .then(response => {
+      response.data.data ? setQrDisplay(true, response.data.data) : setQrDisplay(false)
+    })
     .catch(error => setQrDisplay(false))
   }, 31000)
 

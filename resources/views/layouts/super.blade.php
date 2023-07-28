@@ -16,6 +16,9 @@
     .table-responsive {
       max-height: calc(100vh - 100px);
     }
+    .btn.btn-primary:hover {
+      background: darkblue;
+    }
   </style>
   @yield('styles')
 </head>

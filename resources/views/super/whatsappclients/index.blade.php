@@ -39,15 +39,33 @@
             </div>
             <div class="mb-3">
               <label for="instance_id">ID instancia encomiendas</label>
-              <input type="text" name="delivery_instance_id" class="form-control" value="{{ $client->delivery_instance_id }}" required>
+              <div class="d-flex">
+                <input type="text" name="delivery_instance_id" class="form-control" value="{{ $client->delivery_instance_id }}" required>
+                @if( $client->delivery_instance_id )
+                  <a onclick="document.querySelector('#delivery_instance_id{{ $client->id }}').submit()" class="btn btn-link btn-link-primary">
+                    <i class="material-symbols-outlined">delete</i>
+                  </a>
+                @else
+                  <a href="{{ route('admin.whatsapp_clients.scan', ['whatsapp_client'=>$client->id, 'instance_type'=>'delivery_instance_id']) }}" class="btn btn-link btn-link-primary">
+                    <i class="material-symbols-outlined">qr_code</i>
+                  </a>
+                @endif
+              </div>
             </div>
             <div class="mb-3">
               <label for="instance_id">ID instancia comunidad</label>
-              <input type="text" name="comunity_instance_id" class="form-control" value="{{ $client->comunity_instance_id }}" required>
-            </div>
-            <div class="mb-3">
-              <label for="instance_id">ID instancia masívos</label>
-              <input type="text" name="batch_instance_id" class="form-control" value="{{ $client->batch_instance_id }}">
+              <div class="d-flex">
+                <input type="text" name="comunity_instance_id" class="form-control" value="{{ $client->comunity_instance_id }}" required>
+                @if( $client->comunity_instance_id )
+                  <a onclick="document.querySelector('#comunity_instance_id{{ $client->id }}').submit()" class="btn btn-link btn-link-primary">
+                    <i class="material-symbols-outlined">delete</i>
+                  </a>
+                @else
+                  <a href="{{ route('admin.whatsapp_clients.scan', ['whatsapp_client'=>$client->id, 'instance_type'=>'comunity_instance_id']) }}" class="btn btn-link btn-link-primary">
+                    <i class="material-symbols-outlined">qr_code</i>
+                  </a>
+                @endif
+              </div>
             </div>
             <div class="form-check mb-3">
               <input class="form-check-input" type="checkbox" value="1" name="enabled" id="checkbox-{{$client->id}}" {{ $client->enabled ? 'checked' : '' }}>
@@ -61,6 +79,15 @@
               </button>
             </div>
           </form>
+
+          @foreach(['delivery_instance_id', 'comunity_instance_id'] as $name)
+          <form id="{{ $name . $client->id }}" method="POST" action="{{ route('admin.whatsapp_clients.update', ['whatsapp_client'=>$client->id]) }}">
+            @csrf
+            @method('PUT')
+            <input type="hidden" name="{{ $name }}" value="0">
+          </form>
+          @endforeach
+
         </div>
       </div>
     </div>

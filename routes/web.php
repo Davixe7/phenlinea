@@ -88,6 +88,7 @@ Route::get('whatsapp_clients/getclient', 'Admin\WhatsappClientController@getClie
 //Admin routes
 Route::name('admin.')->prefix('admin')->middleware('auth:web')->group(function () {
   Route::get('whatsapp_clients', 'Admin\WhatsappClientController@index')->name('whatsapp_clients.index');
+  Route::get('whatsapp_clients/{whatsapp_client}/scan', 'Admin\WhatsappClientController@scan')->name('whatsapp_clients.scan');
   Route::put('whatsapp_clients/{whatsapp_client}', 'Admin\WhatsappClientController@update')->name('whatsapp_clients.update');
   Route::get('users/list', 'Admin\UserController@list')->name('users.list');
   Route::get('admins/list', 'Admin\AdminController@list')->name('admins.list');

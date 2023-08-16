@@ -8,8 +8,8 @@
         <div class="text-secondary d-none" style="padding: 0 1.15rem;">
           {{ $instance_id }}
         </div>
-        @if( isset( $qrcode_src ) && $qrcode_src )
-        <img src="{{ $qrcode_src }}" id="qrImage" class="mx-auto">
+        @if( isset( $base64 ) && $base64 )
+        <img src="{{ $base64 }}" id="qrImage" class="mx-auto">
         <div id="qrPreloader" style="display: none;">
           <div class="preloader"></div>
         </div>

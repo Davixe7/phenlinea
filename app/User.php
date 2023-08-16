@@ -2,6 +2,7 @@
 
 namespace App;
 
+use GuzzleHttp\Client;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -44,5 +45,12 @@ class User extends Authenticatable
 
     public function whatsapp_clients(){
       return $this->hasMany('App\WhatsappClient');
+    }
+
+    public function getBatches(){
+      $http     = new Client();
+      $query    = ['user_id' => auth()->id(), 'type'=>'batch'];
+      $response = $http->get("https://api.phenlinea.com/api/batches/", compact('query'));
+      return json_decode($response->getBody(), true)['data'];
     }
 }

@@ -40,4 +40,30 @@ class Whatsapp
 
     return $base64;
   }
+
+  public function setWebhook($instance_id, $webhook_url){
+    try {
+      $response    = $this->api->get('get_qrcode', ['query'=>compact('instance_id', 'webhook_url')]);
+      $body        = json_decode($response->getBody());
+      $status      = property_exists( $body, 'status' ) ? $body->status : null;
+    }
+    catch(GuzzleException $e){
+      return $e->getMessage();
+    }
+
+    return $status;
+  }
+
+  public function logout($instance_id){
+    try {
+      $response    = $this->api->get('logout', ['query'=>compact('instance_id')]);
+      $body        = json_decode($response->getBody());
+      $status      = property_exists( $body, 'status' ) ? $body->status : null;
+    }
+    catch(GuzzleException $e){
+      return $e->getMessage();
+    }
+
+    return $status;
+  }
 }

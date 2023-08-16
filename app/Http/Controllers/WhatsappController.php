@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Admin;
 use App\Extension;
+use App\Traits\Whatsapp;
 use App\WhatsappClient;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
@@ -117,37 +118,21 @@ class WhatsappController extends Controller
     return response()->json($response);
   }
 
-  public function index()
-  {
-    if (auth()->user()->whatsapp_status == 'online') {
-      $extensions = auth()->user()->extensions()->orderBy('name')->get();
-      $query      = ['user_id'=>auth()->id(), 'type'=>'batch'];
-
-      $client   = new Client(['base_uri'=>'https://api.phenlinea.com/api/']);
-      $response = $client->get("batches/?user_id=" . auth()->id() . "&type=" . 'batch');
-      $history  = json_decode($response->getBody(), true)['data'];
-
-      $whatsapp_instance_id = auth()->user()->whatsapp_instance_id;
-
-      return view('admin.whatsapp.index', compact('extensions', 'history', 'whatsapp_instance_id'));
-    }
-
-    $instance_id = $this->createInstance();
-    $this->setWebHook($instance_id);
-    $qrcode_src  = $this->getQrCode($instance_id);
-
-    return view('admin.whatsapp.index', compact('instance_id', 'qrcode_src'));
+  public function login(){
+    $whatsapp      = new Whatsapp();
+    $instance_id   = $whatsapp->getInstanceId();
+    $webook_status = $whatsapp->setWebHook( $instance_id, route('whatsapp.hook') );
+    $base64        = $whatsapp->getQrCode( $instance_id );
+    return view('admin.whatsapp.login', compact('instance_id', 'base64'));
   }
 
-  public function setWebHook($instance_id)
+  public function index()
   {
-    $query = array_merge($this->query, [
-      'enable'       => 'true',
-      'instance_id'  => $instance_id,
-      'webhook_url'  => route('whatsapp.hook')
-    ]);
-    $response = $this->api->get('set_webhook', compact('query'));
-    Storage::append('whatsapp_hook.log', $response->getBody());
+    if (auth()->user()->whatsapp_status == 'online') { return to_route('whatsapp.login'); }
+    $extensions           = auth()->user()->extensions()->orderBy('name')->get();
+    $history              = auth()->user()->getBatches();
+    $whatsapp_instance_id = auth()->user()->whatsapp_instance_id;
+    return view('admin.whatsapp.index', compact('extensions', 'history', 'whatsapp_instance_id'));
   }
 
   public function hook(Request $request)
@@ -179,16 +164,10 @@ class WhatsappController extends Controller
 
   public function logout()
   {
-    $this->query['instance_id'] = auth()->user()->whatsapp_instance_id;
-    $this->api->get('logout', ['query' => $this->query]);
+    $whatsapp = new Whatsapp();
+    $whatsapp->logout(auth()->user()->whatsapp_instance_id);
 
-    Storage::append('whatsapp_hook.log', auth()->user()->whatsapp_instance_id . " requested logout");
-
-    auth()->user()->update([
-      'whatsapp_status'      => 'offline',
-      'whatsapp_instance_id' => null
-    ]);
-
+    auth()->user()->update(['whatsapp_status' => 'offline', 'whatsapp_instance_id' => null]);
     return redirect()->route('home');
   }
 

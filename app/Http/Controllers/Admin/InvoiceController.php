@@ -77,9 +77,13 @@ class InvoiceController extends Controller
       if (!$line['Número Factura']) {
         return;
       }
-     if(is_array( $nit = explode('-', $line['ID Cliente']) )){
-       $nit = $nit[1];
-     }
+
+    //  if(is_array( $nit = explode('-', $line['ID Cliente']) )){
+    //    $nit = $nit[1];
+    //  }
+
+     $nit = $line['ID Cliente'];
+     
       return Invoice::create([
         'number' => $line['Número Factura'],
         'nit'    => $nit,

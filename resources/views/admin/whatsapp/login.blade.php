@@ -1,3 +1,5 @@
+@extends('layouts.app')
+@section('content')
 <div class="container pt-4">
   <div class="row">
     <div class="col-lg-4">
@@ -45,6 +47,7 @@
     </div>
   </div>
 </div>
+@endsection
 
 @section('scripts')
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -70,7 +73,7 @@
 
   setInterval(function() {
     axios.get('/whatsapp/status')
-    .then(response => response.data.data ? location.reload() : '')
+    .then(response => response.data.data ? location.href = '/whatsapp' : '')
   }, 5000)
 </script>
 @endsection

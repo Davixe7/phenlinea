@@ -8,6 +8,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use GuzzleHttp\Client;
 
 class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword, HasMedia
 {
@@ -151,5 +152,12 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
   public function facturas()
   {
     return $this->hasMany('App\Factura');
+  }
+
+  public function getBatches(){
+     $http     = new Client();
+     $query    = ['user_id' => auth()->id(), 'type'=>'batch'];
+     $response = $http->get("https://api.phenlinea.com/api/batches/", compact('query'));
+     return json_decode($response->getBody(), true)['data'];
   }
 }

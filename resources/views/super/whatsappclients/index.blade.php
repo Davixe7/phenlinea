@@ -33,7 +33,7 @@
               <label for="base_url">URL base</label>
               <input type="url" name="base_url" class="form-control" value="{{ $client->base_url }}" required>
             </div>
-            <div class="mb-3 d-none">
+            <div class="mb-3">
               <label for="access_token">Token de acceso</label>
               <input type="text" name="access_token" class="form-control" value="{{ $client->access_token }}" required>
             </div>

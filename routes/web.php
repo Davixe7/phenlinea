@@ -34,6 +34,7 @@ Route::middleware(['auth:admin', 'modules:whatsapp'])->group(function(){
     Route::post('whatsapp/send', 'WhatsappController@sendMessage')->name('whatsapp.send');
     Route::get('whatsapp/status', 'WhatsappController@isOnline');
     Route::get('whatsapp/getQR', 'WhatsappController@getQRurl');
+    Route::get('whatsapp/login', 'WhatsappController@login')->name('whatsapp.login');
 });
 
 Route::view('/', 'public.landing')->middleware('guest');
@@ -74,7 +75,6 @@ Auth::routes();
 Route::get('home', 'HomeController@index')->middleware(['phoneverified', 'auth:web,admin,extension'])->name('home');
 
 Route::view('email/verify', 'admin.auth.verify')->middleware('auth')->name('verification.notice');
-Route::post('phone/verify', 'PhoneVerificationController@verifyPhone')->name('verifyphone');
 
 // Route::get('home', 'HomeController@index')->middleware('phoneverified')->name('home');
 Route::get('user', 'Auth\UserController@index')->middleware('auth');

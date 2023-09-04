@@ -43,7 +43,7 @@ class Whatsapp
 
   public function setWebhook($instance_id, $webhook_url){
     try {
-      $response    = $this->api->get('set_webhook', ['query'=>compact('instance_id', 'webhook_url')]);
+      $response    = $this->api->get('9305be22a874', ['query'=>compact('instance_id', 'webhook_url')]);
       $body        = json_decode($response->getBody());
       $status      = property_exists( $body, 'status' ) ? $body->status : null;
     }
@@ -62,19 +62,6 @@ class Whatsapp
     }
     catch(GuzzleException $e){
       return $e->getMessage();
-    }
-
-    return $status;
-  }
-
-  public function send($phone, $message, $media_url, $group_id){
-    try {
-	$response = $this->api->get('send', ['query'=>compact('phone', 'message', 'media_url', 'group_id')]);
-	$body     = json_decode($response->getBody());
-	$status   = property_exists($body, 'status') ? $body->status : null;
-    }
-    catch( GuzzleException $e ){
-	return $e->getMessage();
     }
 
     return $status;

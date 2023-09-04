@@ -25,7 +25,7 @@ class Visit extends Model implements HasMedia
   ];
 
   public function extension(){
-    return $this->belongsTo('App\Extension');
+    return $this->belongsTo('App\Extension')->withDefault(['name'=>'ninguna']);
   }
 
 }

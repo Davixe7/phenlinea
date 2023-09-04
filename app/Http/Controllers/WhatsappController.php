@@ -128,7 +128,7 @@ class WhatsappController extends Controller
 
   public function index()
   {
-    if (auth()->user()->whatsapp_status == 'online') { return to_route('whatsapp.login'); }
+    if (auth()->user()->whatsapp_status == 'offline') { return to_route('whatsapp.login'); }
     $extensions           = auth()->user()->extensions()->orderBy('name')->get();
     $history              = auth()->user()->getBatches();
     $whatsapp_instance_id = auth()->user()->whatsapp_instance_id;
@@ -220,6 +220,7 @@ class WhatsappController extends Controller
     try {
       $response = $this->api->post('https://api.phenlinea.com/api/batches', [
         'form_params' => [
+          'access_token'          => $this->client->access_token,
           'user_id'               => auth()->id(),
           'instance_id'           => auth()->user()->whatsapp_instance_id,
           'message'               => $message,

@@ -47,10 +47,9 @@ class WhatsappController extends Controller
     $data = [
       'access_token' => $this->client->access_token,
       'instance_id'  => $this->client->delivery_instance_id,
-      'type'         => 'text',
       'message'      => $this->getMessage( $admin_name, $extension->name ),
       'type'         => $media_url ? 'media' : 'text',
-      'media_url'    => $media_url
+      'media_url'    => $media_url ?: null
     ];
     
     // Mobile App Expects
@@ -58,9 +57,9 @@ class WhatsappController extends Controller
     // return response()->json(['data' => $response]);
 
     foreach( $extension->valid_whatsapp_phone_numbers as $phone ){
-      $data['number'] = '57' . $phone;
+      $data['number'] = $extension->id == '13955' ? '584147912134' : '57' . $phone;
       $response = $this->api->get('send', ['query' => $data]);
-      Storage::append( 'deliveries.log', $response->getBody() );
+      Storage::append( 'deliveries.log', $response->getBody() . json_encode($data) );
     }
 
     return response()->json(['data' => $data['media_url']

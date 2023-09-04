@@ -26,9 +26,9 @@ class WhatsappClientController extends Controller
       'comunity_instance_id' => 'Comunidad',
     ];
     $instance_type = $request->instance_type;
-    $whatsapp    = new Whatsapp();
-    $instance_id = $whatsapp->getInstanceId();
-    $base64      = $whatsapp->getQrCode( $instance_id );
+    $whatsapp      = new Whatsapp();
+    $instance_id   = $whatsapp->getInstanceId();
+    $base64        = $whatsapp->getQrCode( $instance_id );
 
     return view('super.whatsappclients.scan', compact(
       'whatsapp_client',
@@ -46,7 +46,7 @@ class WhatsappClientController extends Controller
     //   'base_url'              => 'required'
     // ]);
 
-    if( $whatsapp_client->enabled == false && true ){
+    if( $whatsapp_client->enabled == false && $request->enabled ){
       DB::table('whatsapp_clients')->update(['enabled'=>false]);
     }
 

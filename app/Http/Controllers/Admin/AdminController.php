@@ -78,6 +78,8 @@ class AdminController extends Controller
     ]);
 
     $admin->update([
+      'device_serial_number' => ($request->device_serial_number) ?: $admin->device_serial_number,
+      'visits_lifespan' => ($request->visits_lifespan) ?: $admin->visits_lifespan,
       'name'     => ($request->name) ?: $admin->name,
       'phone'    => ($request->phone) ?: $admin->phone,
       'phone_2'  => ($request->phone_2) ?: $admin->phone_2,

@@ -17,6 +17,10 @@ class Visit extends Model implements HasMedia
     'company',
     'dni',
     'name',
+    'password',
+    'qrcode',
+    'start_date',
+    'end_date',
     'eps',
     'extension_id',
     'phone',
@@ -24,8 +28,17 @@ class Visit extends Model implements HasMedia
     'type',
   ];
 
+  protected $casts = [
+    'start_date' => 'datetime:Y-m-d H:i:s',
+    'end_date'   => 'datetime:Y-m-d H:i:s',
+  ];
+
   public function extension(){
     return $this->belongsTo('App\Extension')->withDefault(['name'=>'ninguna']);
+  }
+  
+  public function admin(){
+    return $this->belongsTo(Admin::class);
   }
 
 }

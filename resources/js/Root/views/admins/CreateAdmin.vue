@@ -1,6 +1,17 @@
 <template>
   <div id="create-admin" v-if="admin">
     <div class="form-group">
+      <label for="name">Serial del Dispositivo</label>
+      <input type="tel" class="form-control" id="device_serial_number" v-model="admin.device_serial_number">
+    </div>
+    <div class="form-group">
+      <label for="name">Plazo validez visitas</label>
+      <select name="visits_lifespan" id="visits_lifespan" class="form-control" v-model="admin.visits_lifespan">
+        <option value="24">24</option>
+        <option value="48">48</option>
+      </select>
+    </div>
+    <div class="form-group">
       <label for="name">ID Grupo Whatsapp</label>
       <input type="text" class="form-control" id="whatsapp_group_id" v-model="admin.whatsapp_group_id">
     </div>

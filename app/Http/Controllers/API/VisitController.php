@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Events\VisitCreatedEvent;
 use App\Visit;
 use Illuminate\Http\Request;
 use App\Http\Resources\VisitPorteria;
@@ -34,7 +35,7 @@ class VisitController extends Controller
     public function store(Request $request)
     {
       $request->validate([
-        'name'      => 'required'
+        'name' => 'required'
       ]);
       
       $extension_id = $request->extension_id;
@@ -55,7 +56,9 @@ class VisitController extends Controller
         "arl"          => $request->arl,
         "eps"          => $request->eps,
         "extension_id" => $extension_id,
-        "admin_id"     => auth()->user()->admin_id
+        "admin_id"     => auth()->user()->admin_id,
+        "start_date"   => now(),
+        "end_date"     => now()->addHours( auth()->user()->admin->visits_lifespan ?: 24 ),
       ]);
       
       Storage::append('visits.log', json_encode($request->all()));
@@ -66,6 +69,8 @@ class VisitController extends Controller
         $path     = storage_path( "app/{$path}" );
         $visit->addMedia( $path )->toMediaCollection('picture');
       }
+
+      VisitCreatedEvent::dispatch( $visit );
 
       return new VisitPorteria( $visit );
     }

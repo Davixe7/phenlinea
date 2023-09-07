@@ -73,16 +73,18 @@ class Whatsapp
   public function send($number, $message, $media_url, $group_id)
   {
     $instance_id = $this->provider->delivery_instance_id;
+    $query = compact('instance_id', 'number', 'message', 'media_url', 'group_id');
+    Storage::append('devices.log', json_encode($query));
+
     try {
-      $response = $this->api->get('send', ['query' => compact('instance_id', 'number', 'message', 'media_url', 'group_id')]);
+      $response = $this->api->get('send', compact('query'));
       $body     = json_decode($response->getBody());
-      Storage::append('devices.log', $body);
+      Storage::append('devices.log', json_encode($body));
       $status   = property_exists($body, 'status') ? $body->status : null;
+      return $status;
     } catch (GuzzleException $e) {
       Storage::append('devices.log', 'ERROR: ' . $e->getMessage());
       return 'FAILED';
     }
-
-    return $status;
   }
 }

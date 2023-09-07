@@ -26,6 +26,7 @@ class CreateDeviceVisit implements ShouldQueue
      */
     public function handle($event)
     {
+      if( !$event->visit->admin->device_serial_number ){ return; }
       $devices = new Devices();
 
       if( $event->visit->getFirstMedia('picture') ){

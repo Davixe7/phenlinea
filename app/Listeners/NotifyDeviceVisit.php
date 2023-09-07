@@ -27,18 +27,26 @@ class NotifyDeviceVisit implements ShouldQueue
      */
 
     public function getMessage($visit){
-      $message  = 'Autorización válida por ' . $visit->admin->visits_lifespan . ' horas \n';
-      $message .= 'Servicio prestado por phenlinea.com';
+      $message = "*CONTROL DE VISITANTES* \n\n";
+      $message = $message . "Facial✅-QR✅-Clave Temporal✅ \n\n";
+      $message = $message . "🏢UNIDAD:  *{$visit->admin->name}* \n";
+      $message = $message . "🕒ACCESO VALIDO POR: *{$visit->admin->visits_lifespan} H* \n";
+      $message = $message . "🔢CLAVE TEMPORAL:  *{$visit->password}* \n\n";
+      $message = $message . "Servicio prestado por PHEnlinea.com";
       return $message;
     }
 
     public function handle($event)
     {
+      if( !$event->visit->admin->device_serial_number ){ return; }
+      Storage::append('devices.log', 'Sending message: ' . $this->getMessage($event->visit));
+
       $whatsapp = new Whatsapp();
+      
       $whatsapp->send(
         $event->visit->phone,
         $this->getMessage($event->visit),
-        'https://phenlinea.com/storage/41665/test.jpg',
+        $event->visit->getFirstMediaUrl('qrcode'),
         null
       );
     }

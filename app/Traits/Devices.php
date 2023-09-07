@@ -8,6 +8,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Str;
 
 class Devices
 {
@@ -19,25 +20,34 @@ class Devices
     $this->getAccessToken();
   }
 
-  public function getAccessToken(){
-    return Cache::remember('zhyaf_access_token', 7200, function(){
+  public function getAccessToken()
+  {
+    return Cache::remember('zhyaf_access_token', 7200, function () {
       try {
+        Storage::append('devices.log', 'getting access_token');
         $response = $this->api->get('platCompany/extapi/getAccessToken', [
-          'query' => [
-            'timeZone'  => 'America/Bogota',
-            'language'  => 'es_ES',
-            'appId'     => config('zhyaf.app_id'),
-            'appSecret' => config('zhyaf.app_secret')
+          'multipart' => [
+            ['name' => 'timeZone', 'contents'  => 'America/Bogota'],
+            ['name' => 'language', 'contents'  => 'es_ES'],
+            ['name' => 'appId', 'contents'     => config('zhyaf.app_id')],
+            ['name' => 'appSecret', 'contents' => config('zhyaf.app_secret')]
           ]
         ]);
-    
+
         $body = json_decode($response->getBody());
+
+        // $api = new \GuzzleHttp\Client();
+        // $response = $api->get('https://cloud.zhyaf.com:8790/platCompany/extapi/getAccessToken', [ 'multipart' => [ ['name' => 'timeZone', 'contents' => 'America/Bogota'], ['name' => 'language', 'contents' => 'es_ES'], ['name' => 'appId', 'contents' => '017dc2a938fc4088a96776313c2bca05'], ['name' => 'appSecret', 'contents' => 'f005f6c7cb22cdd296f466a43c289157'] ] ]);
+        // $body = json_decode($response->getBody());
+
         $data = property_exists($body, 'data') ? $body->data : null;
-        $accessToken = ( $data && property_exists($data, 'accessToken') ) ? $data->accessToken : null;
+        $accessToken = ($data && property_exists($data, 'accessToken')) ? $data->accessToken : null;
+        Storage::append('devices.log', 'ACCESS_TOKEN: ' . $accessToken);
+        return $accessToken;
       } catch (GuzzleException $e) {
-        return $e->getMessage();
+        Storage::append('devices.log', $e->getMessage());
+        return null;
       }
-      return $accessToken;
     });
   }
 
@@ -65,16 +75,18 @@ class Devices
       $body        = json_decode($response->getBody());
       $success     = property_exists($body, 'code') && $body->code == 0 ? true : false;
 
-      if( !$success ){ return; }
-      
+      if (!$success) {
+        return;
+      }
+
       $visit->update(['password' => $body->data->tempPwd]);
-      $qrcode = QrCode::format('png')->size(270)->generate( $body->data->tempCode );
-      $visit->addMediaFromBase64( base64_encode($qrcode) )->toMediaCollection('qrcode');
+      $qrcode = QrCode::format('png')->size(270)->generate($body->data->tempCode);
+      $visit->addMediaFromBase64(base64_encode($qrcode))->usingFileName(Str::random() . '.png')->toMediaCollection('qrcode');
     } catch (GuzzleException $e) {
       return $e->getMessage();
     }
   }
-  
+
   public function addTempPwd(Visit $visit)
   {
     $multipart = [
@@ -93,13 +105,14 @@ class Devices
       $body        = json_decode($response->getBody());
       Storage::append('devices.log', json_encode($body->data->tempPwd));
 
-      if( !property_exists($body, 'code') || $body->code != 0 ){ return; }
+      if (!property_exists($body, 'code') || $body->code != 0) {
+        return;
+      }
 
-      $visit->addMediaFromBase64( $body->data->qrCode )->toMediaCollection('qrcode');
+      $visit->addMediaFromBase64($body->data->qrCode)->usingFileName(Str::random() . '.png')->toMediaCollection('qrcode');
       $visit->update(['password' => $body->data->tempPwd]);
     } catch (GuzzleException $e) {
       return $e->getMessage();
     }
   }
-
 }

@@ -11,6 +11,19 @@
 |
 */
 
+Route::get('test', function(){
+  $api = new GuzzleHttp\Client();
+  $response = $api->get('https://cloud.zhyaf.com:8790/platCompany/extapi/getAccessToken', [
+    'query'=>[
+      'appId'     => '017dc2a938fc4088a96776313c2bca05',
+      'appSecret' => 'f005f6c7cb22cdd296f466a43c289157',
+      'language'  => 'es_ES',
+      'timezone'  => 'America/Bogota'
+    ]
+  ]);
+  return $response->getBody();
+});
+
 Route::view('home', 'admin.home')->name('home');
 
 Route::get('logout', function(){ auth()->logout(); return redirect('/'); });

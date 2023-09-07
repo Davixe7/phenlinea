@@ -60,8 +60,6 @@ class VisitController extends Controller
         "start_date"   => now(),
         "end_date"     => now()->addHours( auth()->user()->admin->visits_lifespan ?: 24 ),
       ]);
-      
-      Storage::append('visits.log', json_encode($request->all()));
 
       if( $file = $request->file('picture') ){
         $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . time() . '.' . $file->extension();

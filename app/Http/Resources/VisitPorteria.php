@@ -30,8 +30,8 @@ class VisitPorteria extends JsonResource
         "extension"  => $this->extension ? ['id' => intval($this->extension->name), 'name'=>$this->extension->name] : null,
         "admin_id"   => $this->admin_id,
         "picture"    => $this->getFirstMediaUrl('picture'),
-        "start_date" => $this->start_date->format('Y-m-d H:i:s'),
-        "end_date"   => $this->end_date->format('Y-m-d H:i:s'),
+        "start_date" => $this->start_date ? $this->start_date->format('Y-m-d H:i:s') : null,
+        "end_date"   => $this->end_date ? $this->end_date->format('Y-m-d H:i:s') : null,
         "password"   => $this->password,
         "qrcode"     => $this->getFirstMediaUrl('qrcode')
       ];

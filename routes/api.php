@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
+Route::get('visitors', 'API\VisitorController@index');
+Route::post('visitors', 'API\VisitorController@store');
+
 Route::get('getclient', 'Admin\WhatsappClientController@getClient');
 
 Route::middleware('auth:api-porteria')->group(function () {
@@ -44,7 +47,7 @@ Route::group(['middleware' => 'auth:api-admin,api-porteria'], function () {
 
 Route::group(['middleware' => 'auth:api-extension,api-porteria,api-admin'], function () {
   Route::apiResource('checkins', 'API\CheckinController');
-  Route::apiResource('visitors', 'API\VisitorController');
+  Route::apiResource('visitors', 'API\VisitorController')->except(['index', 'store']);
   Route::get('extensions/{extension}/visitors', 'API\VisitorController@extensionVisitors');
 });
 

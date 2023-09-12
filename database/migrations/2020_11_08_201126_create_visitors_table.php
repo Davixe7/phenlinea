@@ -16,11 +16,14 @@ class CreateVisitorsTable extends Migration
         Schema::create('visitors', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->timestamps();
-            $table->string('name');
             $table->string('dni');
+            $table->string('name');
+            $table->string('phone')->nullable();
+            $table->enum('type', ['singular', 'company']);
+            $table->string('company')->nullable();
+            $table->string('arl')->nullable();
+            $table->string('eps')->nullable();
             $table->string('plate')->nullable();
-            $table->date('authorized_at')->nullable();
-            $table->unsignedBigInteger('extension_id');
             //$table->foreign('extension_id')->references('id')->on('extensions')->onDelete('cascade');
         });
     }

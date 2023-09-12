@@ -50,7 +50,7 @@ class Devices
 
     $multipart  = [
       ['name' => 'accessToken', 'contents'      => self::getAccessToken()],
-      ['name' => 'extCommunityId', 'contents'   => 56714],
+      ['name' => 'extCommunityId', 'contents'   => 57626],
       ['name' => 'devSns', 'contents'           => 'V4280618453'],
       ['name' => 'accStartdatetime', 'contents' => $visit->start_date],
       ['name' => 'accEnddatetime', 'contents'   => $visit->end_date],
@@ -79,7 +79,7 @@ class Devices
   {
     $multipart = [
       ['name' => 'accessToken', 'contents'    => $this->getAccessToken()],
-      ['name' => 'extCommunityId', 'contents' => 56714],
+      ['name' => 'extCommunityId', 'contents' => 57626],
       ['name' => 'startDate', 'contents'      => $visit->start_date],
       ['name' => 'endDate', 'contents'        => $visit->end_date],
       ['name' => 'usableCount', 'contents'    => 0],

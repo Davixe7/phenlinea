@@ -16,20 +16,19 @@ class CreateVisitsTable extends Migration
     Schema::create('visits', function (Blueprint $table) {
       $table->bigIncrements('id');
       $table->timestamps();
-      $table->string('dni');
-      $table->string('name');
-      $table->string('phone')->nullable();
-      $table->enum('type', ['singular', 'company']);
-      $table->string('company')->nullable();
-      $table->string('arl')->nullable();
-      $table->string('eps')->nullable();
-      $table->string('plate')->nullable();
+      
+      $table->datetime('start_date');
+      $table->datetime('end_date');
       $table->datetime('checkin');
       $table->datetime('checkout')->nullable();
-      $table->unsignedBigInteger('extension_id');
-      $table->foreign('extension_id')->references('id')->on('extensions')->onDelete('cascade');
+      $table->string('password')->nullable();
+
+      $table->string('extension_name');
+      
       $table->unsignedBigInteger('admin_id');
       $table->foreign('admin_id')->references('id')->on('admins')->onDelete('cascade');
+      $table->unsignedBigInteger('visitor_id');
+      $table->foreign('visitor_id')->references('id')->on('visitors')->onDelete('cascade');
     });
   }
 

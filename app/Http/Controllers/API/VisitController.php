@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Events\VisitCreatedEvent;
 use App\Visit;
+use App\Visitor;
 use Illuminate\Http\Request;
 use App\Http\Resources\VisitPorteria;
 use App\Http\Controllers\Controller;
@@ -35,39 +36,45 @@ class VisitController extends Controller
     public function store(Request $request)
     {
       $request->validate([
-        'name' => 'required'
+        'name' => 'required',
+        'extension_name' => 'required'
       ]);
       
-      $extension_id = $request->extension_id;
+      $extension_id = $request->extension_id ?: null;
       
       if( $request->apartment ){
           $extension = auth()->user()->extensions()->whereName( $request->apartment )->firstOrFail();
-          $extension_id = $extension->id;
+          // $extension_id = $extension->id;
+      }
+
+      if( $request->filled('visitor_id') ){
+        $visitor = Visitor::find($request->visitor_id);
+      }
+
+      else if( !Visitor::exists($request->visitor_id) ){
+        $visitor = Visitor::create([
+          "type"         => $request->type,
+          "company"      => $request->company,
+          "arl"          => $request->arl,
+          "eps"          => $request->eps,
+          "dni"          => $request->dni,
+          "name"         => $request->name,
+          "phone"        => $request->phone,
+          "plate"        => $request->plate,
+        ]);
       }
 
       $visit = Visit::create([
-        "name"         => $request->name,
-        "dni"          => $request->dni,
-        "phone"        => $request->phone,
-        "plate"        => $request->plate,
-        "checkin"      => now(),
-        "type"         => $request->type,
-        "company"      => $request->company,
-        "arl"          => $request->arl,
-        "eps"          => $request->eps,
-        "extension_id" => $extension_id,
         "admin_id"     => auth()->user()->admin_id,
+        "extension_name" => $request->extension_name,
+        "visitor_id"   => $visitor ? $visitor->id : $request->visitor_id,
+        "checkin"      => now(),
         "start_date"   => now(),
         "end_date"     => now()->addHours( auth()->user()->admin->visits_lifespan ?: 24 ),
       ]);
-      
-      Storage::append('visits.log', json_encode($request->all()));
 
-      if( $file = $request->file('picture') ){
-        $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME) . time() . '.' . $file->extension();
-        $path     = $file->storeAs('/visits/picture/', $fileName);
-        $path     = storage_path( "app/{$path}" );
-        $visit->addMedia( $path )->toMediaCollection('picture');
+      if( $request->file('picture') ){
+        $visitor->addMediaFromRequest('picture')->toMediaCollection('picture');
       }
 
       VisitCreatedEvent::dispatch( $visit );

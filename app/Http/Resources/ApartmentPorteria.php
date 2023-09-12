@@ -22,7 +22,6 @@ class ApartmentPorteria extends JsonResource
         "plates" => $this->plates,
         "admin_id" => $this->admin_id,
         "residents" => $this->residents,
-        'visitors' => $this->visitors()->where('authorized_at', '>=' ,now()->format('Y-m-d'))->get()
       ];
     }
 }

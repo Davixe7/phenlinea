@@ -16,15 +16,18 @@ class VisitPorteria extends JsonResource
     {
       return [
         "id"         => $this->id,
-        "name"       => $this->name,
-        "dni"        => $this->dni,
-        "phone"      => $this->phone,
-        "type"       => $this->type,
-        "company"    => $this->company,
-        "arl"        => $this->arl,
-        "eps"        => $this->eps,
+        "name"       => $this->visitor->name,
+        "dni"        => $this->visitor->dni,
+        "phone"      => $this->visitor->phone,
+        "type"       => $this->visitor->type,
+        "company"    => $this->visitor->company,
+        "arl"        => $this->visitor->arl,
+        "eps"        => $this->visitor->eps,
         "arl_eps"    => trim("$this->arl $this->eps"),
-        "plate"      => $this->plate,
+        "plate"      => $this->visitor->plate,
+        "picture"    => $this->visitor->getFirstMediaUrl('picture'),
+        
+        "admin_id"   => $this->admin_id,
         "checkin"    => $this->checkin,
         "checkout"   => $this->checkout,
         "extension"  => $this->extension ? ['id' => intval($this->extension->name), 'name'=>$this->extension->name] : null,
@@ -33,7 +36,8 @@ class VisitPorteria extends JsonResource
         "start_date" => $this->start_date ? $this->start_date->format('Y-m-d H:i:s') : null,
         "end_date"   => $this->end_date ? $this->end_date->format('Y-m-d H:i:s') : null,
         "password"   => $this->password,
-        "qrcode"     => $this->getFirstMediaUrl('qrcode')
+        "qrcode"     => $this->getFirstMediaUrl('qrcode'),
+        "extension_name"     => $this->extension_name
       ];
     }
 }

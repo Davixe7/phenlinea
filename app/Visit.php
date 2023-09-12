@@ -11,26 +11,21 @@ class Visit extends Model implements HasMedia
   use InteractsWithMedia;
   protected $fillable = [
     'admin_id',
-    'arl',
     'checkin',
     'checkout',
-    'company',
-    'dni',
-    'name',
     'password',
-    'qrcode',
     'start_date',
     'end_date',
-    'eps',
     'extension_id',
-    'phone',
-    'plate',
-    'type',
+    'extension_name',
+    'visitor_id'
   ];
 
   protected $casts = [
     'start_date' => 'datetime:Y-m-d H:i:s',
     'end_date'   => 'datetime:Y-m-d H:i:s',
+    'checkin'    => 'datetime:Y-m-d H:i:s',
+    'checkout'   => 'datetime:Y-m-d H:i:s',
   ];
 
   public function extension(){
@@ -39,6 +34,10 @@ class Visit extends Model implements HasMedia
   
   public function admin(){
     return $this->belongsTo(Admin::class);
+  }
+
+  public function visitor(){
+    return $this->belongsTo(Visitor::class);
   }
 
 }

@@ -60,11 +60,11 @@ class Devices
 
     $multipart  = [
       ['name' => 'accessToken', 'contents'      => self::getAccessToken()],
-      ['name' => 'extCommunityId', 'contents'   => 56714],
-      ['name' => 'devSns', 'contents'           => 'V4280618453'],
+      ['name' => 'extCommunityId', 'contents'   => 57626],
+      ['name' => 'devSns', 'contents'           => 'V'.$visit->admin->device_serial_number],
       ['name' => 'accStartdatetime', 'contents' => $visit->start_date],
       ['name' => 'accEnddatetime', 'contents'   => $visit->end_date],
-      ['name' => 'accUsableCount', 'contents'   => 0],
+      ['name' => 'accUsableCount', 'contents'   => 1],
       ['name' => 'name', 'contents'             => $visit->name],
       ['name' => 'phone', 'contents'            => $visit->phone],
       ['name' => 'faceFileBase64', 'contents'   => $base64],
@@ -91,10 +91,10 @@ class Devices
   {
     $multipart = [
       ['name' => 'accessToken', 'contents'    => $this->getAccessToken()],
-      ['name' => 'extCommunityId', 'contents' => 56714],
+      ['name' => 'extCommunityId', 'contents' => 57626],
       ['name' => 'startDate', 'contents'      => $visit->start_date],
       ['name' => 'endDate', 'contents'        => $visit->end_date],
-      ['name' => 'usableCount', 'contents'    => 0],
+      ['name' => 'usableCount', 'contents'    => 1],
       ['name' => 'devSns', 'contents'         => 'V' . $visit->admin->device_serial_number]
     ];
 

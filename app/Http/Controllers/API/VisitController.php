@@ -47,12 +47,9 @@ class VisitController extends Controller
           // $extension_id = $extension->id;
       }
 
-      if( $request->filled('visitor_id') ){
-        $visitor = Visitor::find($request->visitor_id);
-      }
-
-      else if( !Visitor::exists($request->visitor_id) ){
-        $visitor = Visitor::create([
+        $visitor = Visitor::updateOrcreate(
+	["id" => $request->visitor_id],
+        [
           "type"         => $request->type,
           "company"      => $request->company,
           "arl"          => $request->arl,
@@ -62,7 +59,6 @@ class VisitController extends Controller
           "phone"        => $request->phone,
           "plate"        => $request->plate,
         ]);
-      }
 
       $visit = Visit::create([
         "admin_id"     => auth()->user()->admin_id,

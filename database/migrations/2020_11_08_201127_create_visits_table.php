@@ -26,7 +26,7 @@ class CreateVisitsTable extends Migration
       $table->string('extension_name');
       
       $table->unsignedBigInteger('admin_id');
-      $table->foreign('admin_id')->references('id')->on('admins')->onDelete('cascade');
+      
       $table->unsignedBigInteger('visitor_id');
       $table->foreign('visitor_id')->references('id')->on('visitors')->onDelete('cascade');
     });

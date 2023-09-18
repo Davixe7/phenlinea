@@ -1,6 +1,10 @@
 <template>
   <div id="create-admin" v-if="admin">
     <div class="form-group">
+      <label for="name">ID de la comunidad</label>
+      <input type="tel" class="form-control" id="device_community_id" v-model="admin.device_community_id">
+    </div>
+    <div class="form-group">
       <label for="name">Serial del Dispositivo</label>
       <input type="tel" class="form-control" id="device_serial_number" v-model="admin.device_serial_number">
     </div>

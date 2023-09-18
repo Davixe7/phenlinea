@@ -78,6 +78,7 @@ class AdminController extends Controller
     ]);
 
     $admin->update([
+      'device_community_id' => ($request->device_community_id) ?: $admin->device_community_id,
       'device_serial_number' => ($request->device_serial_number) ?: $admin->device_serial_number,
       'visits_lifespan' => ($request->visits_lifespan) ?: $admin->visits_lifespan,
       'name'     => ($request->name) ?: $admin->name,

@@ -60,7 +60,7 @@ class Devices
 
     $multipart  = [
       ['name' => 'accessToken', 'contents'      => self::getAccessToken()],
-      ['name' => 'extCommunityId', 'contents'   => 57626],
+      ['name' => 'extCommunityId', 'contents'   => $visit->admin->device_community_id],
       ['name' => 'devSns', 'contents'           => 'V'.$visit->admin->device_serial_number],
       ['name' => 'accStartdatetime', 'contents' => $visit->start_date],
       ['name' => 'accEnddatetime', 'contents'   => $visit->end_date],
@@ -91,7 +91,7 @@ class Devices
   {
     $multipart = [
       ['name' => 'accessToken', 'contents'    => $this->getAccessToken()],
-      ['name' => 'extCommunityId', 'contents' => 57626],
+      ['name' => 'extCommunityId', 'contents' => $visit->admin->device_community_id],
       ['name' => 'startDate', 'contents'      => $visit->start_date],
       ['name' => 'endDate', 'contents'        => $visit->end_date],
       ['name' => 'usableCount', 'contents'    => 1],
@@ -103,7 +103,7 @@ class Devices
     try {
       $response    = $this->api->post('accVisitorTempPwd/extapi/add', compact('multipart'));
       $body        = json_decode($response->getBody());
-      Storage::append('devices.log', json_encode($body->data->tempPwd));
+      Storage::append('devices.log', json_encode($body));
 
       if (!property_exists($body, 'code') || $body->code != 0) {
         return;

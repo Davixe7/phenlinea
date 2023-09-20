@@ -28,7 +28,7 @@
         @foreach($visits as $visit)
         <tr>
           <td>
-            @if( $url = $visit->getFirstMediaUrl('picture') )
+            @if( $url = $visit->visitor->getFirstMediaUrl('picture') )
             <a href="{{ $url }}" target="_blank">
               <img src="{{ $url }}" class="avatar"/>
             </a>
@@ -36,10 +36,10 @@
             <div class="picture-placeholder"></div>
             @endif
           </td>
-          <td>{{ $visit->extension?->name }}</td>
-          <td>{{ $visit->dni }}</td>
-          <td>{{ $visit->name }}</td>
-          <td>{{ $visit->company }}</td>
+          <td>{{ $visit->extension_name }}</td>
+          <td>{{ $visit->visitor->dni }}</td>
+          <td>{{ $visit->visitor->name }}</td>
+          <td>{{ $visit->visitor->company }}</td>
           <td>{{ $visit->arl_eps }}</td>
           <td>{{ $visit->checkin }}</td>
           <td>{{ $visit->checkout }}</td>

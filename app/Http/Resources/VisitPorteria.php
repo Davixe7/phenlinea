@@ -23,7 +23,7 @@ class VisitPorteria extends JsonResource
         "company"    => $this->visitor->company,
         "arl"        => $this->visitor->arl,
         "eps"        => $this->visitor->eps,
-        "arl_eps"    => trim("$this->arl $this->eps"),
+        "arl_eps"    => $this->visitor->arl . ' ' . $this->visitor->eps,
         "plate"      => $this->visitor->plate,
         "picture"    => $this->visitor->getFirstMediaUrl('picture'),
         

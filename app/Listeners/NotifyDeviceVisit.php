@@ -44,7 +44,7 @@ class NotifyDeviceVisit implements ShouldQueue
       $whatsapp = new Whatsapp();
       
       $whatsapp->send(
-        '57' . $event->visit->phone,
+        '57' . $event->visit->visitor->phone,
         $this->getMessage($event->visit),
         $event->visit->getFirstMediaUrl('qrcode'),
         null

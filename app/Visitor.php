@@ -16,7 +16,10 @@ class Visitor extends Model implements HasMedia
     'dni',
     'authorized_at',
     'plate',
-    'phone'
+    'phone',
+    'company',
+    'arl',
+    'eps'
   ];
 
   public function extension()

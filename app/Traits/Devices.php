@@ -53,10 +53,10 @@ class Devices
 
   public function addFacialTempPwd(Visit $visit)
   {
-    $path   = $visit->getFirstMediaPath('picture');
+    $path   = $visit->visitor->getFirstMediaPath('picture');
     $type   = pathinfo($path, PATHINFO_EXTENSION);
     $data   = file_get_contents($path);
-    $base64 = 'data:application/' . $type . ';base64,' . base64_encode($data);
+    $base64 = 'data:application/' . 'png' . ';base64,' . base64_encode($data);
 
     $multipart  = [
       ['name' => 'accessToken', 'contents'      => self::getAccessToken()],
@@ -65,10 +65,16 @@ class Devices
       ['name' => 'accStartdatetime', 'contents' => $visit->start_date],
       ['name' => 'accEnddatetime', 'contents'   => $visit->end_date],
       ['name' => 'accUsableCount', 'contents'   => 1],
-      ['name' => 'name', 'contents'             => $visit->name],
-      ['name' => 'phone', 'contents'            => $visit->phone],
-      ['name' => 'faceFileBase64', 'contents'   => $base64],
+      ['name' => 'name', 'contents'             => $visit->visitor->name],
+      ['name' => 'phone', 'contents'            => $visit->visitor->phone],
+      ['name' => 'faceFileBase64', 'contents'   => $base64]
     ];
+
+    Storage::append('devices.log', json_encode($multipart));
+
+    if( $visit->admin->device_2_serial_number ){
+      $multipart[4]['contents'] = now()->addMinutes(5);
+    }
 
     try {
       $response    = $this->api->post('visEmpVisitor/extapi/add', compact('multipart'));
@@ -83,7 +89,26 @@ class Devices
       $qrcode = QrCode::format('png')->size(270)->generate($body->data->tempCode);
       $visit->addMediaFromBase64(base64_encode($qrcode))->usingFileName(Str::random() . '.png')->toMediaCollection('qrcode');
     } catch (GuzzleException $e) {
-      return $e->getMessage();
+      Storage::append('devices.log', $e->getMessage());
+    }
+
+    if( $visit->admin->device_2_serial_number ){
+      $multipart[4]['contents'] = $visit->end_date;
+      try {
+        $response    = $this->api->post('visEmpVisitor/extapi/add', compact('multipart'));
+        $body        = json_decode($response->getBody());
+        $success     = property_exists($body, 'code') && $body->code == 0 ? true : false;
+  
+        if (!$success) {
+          return;
+        }
+  
+        $visit->update(['password' => $body->data->tempPwd]);
+        $qrcode = QrCode::format('png')->size(270)->generate($body->data->tempCode);
+        $visit->addMediaFromBase64(base64_encode($qrcode))->usingFileName(Str::random() . '.png')->toMediaCollection('qrcode');
+      } catch (GuzzleException $e) {
+        Storage::append('devices.log', $e->getMessage());
+      }
     }
   }
 

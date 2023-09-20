@@ -29,7 +29,7 @@ class CreateDeviceVisit implements ShouldQueue
       if( !$event->visit->admin->device_serial_number ){ return; }
       $devices = new Devices();
 
-      if( $event->visit->getFirstMedia('picture') ){
+      if( $event->visit->visitor->getFirstMedia('picture') ){
         $devices->addFacialTempPwd( $event->visit );
         return;
       }

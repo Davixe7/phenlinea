@@ -13,7 +13,7 @@ class VisitController extends Controller
      */
     public function index()
     {
-      $visits = auth()->user()->visits()->orderBy('created_at', 'DESC')->get();
-      return view('admin.visits', ['visits' => VisitPorteria::collection( $visits )]);
+      $visits = auth()->user()->visits()->orderBy('created_at', 'DESC')->with('visitor')->get();
+      return view('admin.visits', ['visits' => $visits]);
     }
 }

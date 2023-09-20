@@ -48,7 +48,7 @@ class VisitController extends Controller
       }
 
         $visitor = Visitor::updateOrcreate(
-	["id" => $request->visitor_id],
+	      ["id" => $request->visitor_id],
         [
           "type"         => $request->type,
           "company"      => $request->company,

@@ -4,9 +4,15 @@
       <label for="name">ID de la comunidad</label>
       <input type="tel" class="form-control" id="device_community_id" v-model="admin.device_community_id">
     </div>
-    <div class="form-group">
-      <label for="name">Serial del Dispositivo</label>
-      <input type="tel" class="form-control" id="device_serial_number" v-model="admin.device_serial_number">
+    <div class="row">
+      <div class="col-6 form-group">
+        <label for="device_serial_number">Serial Dispositivo Entrada</label>
+        <input type="tel" class="form-control" id="device_serial_number" v-model="admin.device_serial_number">
+      </div>
+      <div class="col-6 form-group">
+        <label for="device_2_serial_number">Serial Dispositivo Salida</label>
+        <input type="tel" class="form-control" id="device_2_serial_number" v-model="admin.device_2_serial_number">
+      </div>
     </div>
     <div class="form-group">
       <label for="name">Plazo validez visitas</label>

@@ -3,11 +3,15 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Resident extends Model
+class Resident extends Model implements HasMedia
 {
+  use InteractsWithMedia;
   protected $fillable = [
     'name',
+    'email',
     'age',
     'dni',
     'card',
@@ -15,9 +19,12 @@ class Resident extends Model
     'is_resident',
     'extension_id',
     'is_authorized',
-    'disability'
+    'disability',
+    'device_resident_id'
   ];
   protected $hidden   = ['created_at', 'updated_at'];
+  protected $appends  = ['picture'];
+  
   protected $casts = [
     'is_owner'    => 'integer',
     'is_resident' => 'integer',
@@ -33,5 +40,13 @@ class Resident extends Model
     return $query->whereHas('admin', function($query) use($unit_name){
       return $query->where('name', 'LIKE', "%" . $unit_name . "%");
     });
+  }
+
+  public function vehicles(){
+    return $this->hasMany(Vehicle::class);
+  }
+
+  public function getPictureAttribute(){
+    return $this->getFirstMediaUrl('picture');
   }
 }

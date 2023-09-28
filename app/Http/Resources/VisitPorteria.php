@@ -24,7 +24,6 @@ class VisitPorteria extends JsonResource
         "arl"        => $this->visitor->arl,
         "eps"        => $this->visitor->eps,
         "arl_eps"    => $this->visitor->arl . ' ' . $this->visitor->eps,
-        "plate"      => $this->visitor->plate,
         "picture"    => $this->visitor->getFirstMediaUrl('picture'),
         
         "admin_id"   => $this->admin_id,
@@ -32,6 +31,7 @@ class VisitPorteria extends JsonResource
         "checkout"   => $this->checkout ? $this->checkout->format('Y-m-d H:i:s') : null,
         "extension"  => $this->extension ? ['id' => intval($this->extension->name), 'name'=>$this->extension->name] : null,
         "admin_id"   => $this->admin_id,
+        "plate"      => $this->plate,
         "picture"    => $this->visitor->getFirstMediaUrl('picture'),
         "start_date" => $this->start_date ? $this->start_date->format('Y-m-d H:i:s') : null,
         "end_date"   => $this->end_date ? $this->end_date->format('Y-m-d H:i:s') : null,

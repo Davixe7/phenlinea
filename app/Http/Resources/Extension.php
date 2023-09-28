@@ -22,9 +22,11 @@ class Extension extends JsonResource
         "phone_3" => $this->phone_3,
         "phone_4" => $this->phone_4,
         "owner_phone" => $this->owner_phone,
-        "_email"      => $this->_email,
-        "_password"   => $this->_password,
         "phones"   => $this->phones,
+        "phone_1_name" => $this->phoneOwner  ? $this->phoneOwner->name : 'Desconocido',
+        "phone_2_name" => $this->phoneOwner2 ? $this->phoneOwner2->name : 'Desconocido',
+        "phone_3_name" => $this->phoneOwner3 ? $this->phoneOwner3->name : 'Desconocido',
+        "phone_4_name" => $this->phoneOwner4 ? $this->phoneOwner4->name : 'Desconocido',
       ];
     }
 }

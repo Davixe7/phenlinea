@@ -40,6 +40,10 @@ class Porteria extends Authenticatable implements JWTSubject
     return $this->hasMany('App\Extension', 'admin_id', 'admin_id');
   }
 
+  public function visits(){
+    return $this->hasMany(Visit::class, 'admin_id', 'admin_id');
+  }
+
   public function novelties(){
     return $this->hasMany('App\Novelty');
   }
@@ -50,5 +54,9 @@ class Porteria extends Authenticatable implements JWTSubject
   
   public function checkins(){
     return $this->hasManyThrough('App\Checkin', 'App\Extension', 'admin_id', 'extension_id', 'admin_id');
+  }
+
+  public function vehicles(){
+    return $this->hasManyThrough(Vehicle::class, Extension::class, 'admin_id', 'extension_id', 'admin_id', 'id');
   }
 }

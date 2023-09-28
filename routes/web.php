@@ -1,5 +1,9 @@
 <?php
 
+use App\Imports\DevicesImport;
+use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Http\Request;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,17 +15,21 @@
 |
 */
 
+Route::get('devices', function(){
+  return view('devices');
+});
+
+Route::post('devices', function(Request $request){  
+  Excel::import(new DevicesImport, '/var/www/phenlinea/storage/app/sevilla.xlsx');
+  return 'Imported successfully';
+});
+
 Route::get('test', function(){
-  $api = new GuzzleHttp\Client();
-  $response = $api->get('https://cloud.zhyaf.com:8790/platCompany/extapi/getAccessToken', [
-    'query'=>[
-      'appId'     => '017dc2a938fc4088a96776313c2bca05',
-      'appSecret' => 'f005f6c7cb22cdd296f466a43c289157',
-      'language'  => 'es_ES',
-      'timezone'  => 'America/Bogota'
-    ]
-  ]);
-  return $response->getBody();
+  $visits = App\Visit::select(['plate', 'extension_name'])->groupBy('plate')->get();
+  $visits = $visits->map(fn($v) => $v->plate . " " . $v->extension_name . " visitante")->toArray();
+  $plates = App\Vehicle::with('extension')->get();
+  $plates = $plates->map(fn($v) => $v->plate . " " . $v->extension->name . " residente")->toArray();
+  return array_merge($visits, $plates);
 });
 
 Route::view('home', 'admin.home')->name('home');
@@ -150,6 +158,14 @@ Route::middleware(['auth:admin', 'phoneverified', 'suspended'])->group(function 
   Route::post('visitors', 'VisitorController@store')->name('visitors.store');
   Route::get('extensions/{extension}/visitors', 'VisitorController@index')->name('visitors.index');
   Route::delete('visitors/{visitor}', 'VisitorController@destroy')->name('visitors.delete');
+
+  Route::get('extensions/{extension}/vehicles', 'VehicleController@index')->name('extension.vehicles');
+  Route::get('extensions/{extension}/vehicles/create', 'VehicleController@create')->name('extension.vehicles.create');
+  Route::post('extensions/{extension}/vehicles', 'VehicleController@store')->name('extension.vehicles.store');
+  Route::put('extensions/{extension}/vehicles/{vehicle}', 'VehicleController@update')->name('extension.vehicles.update');
+  Route::delete('vehicles/{vehicle}', 'VehicleController@destroy')->name('extension.vehicles.delete');
+
+  Route::get('extensions/{extension}/residents', 'ResidentController@index')->name('extension.residents');
 
   Route::get('extensions/import', 'ExtensionController@getImport')->name('extensions.getImport')->middleware('can:import,App\Extension');
   Route::post('extensions/import', 'ExtensionController@import')->name('extensions.import');

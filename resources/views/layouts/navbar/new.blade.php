@@ -7,12 +7,12 @@
     </a>
     {{ isset($title) ? $title : ''}}
   </div>
-  <div class="phenlinea-navbar__brand">
+  <div class="phenlinea-navbar__brand d-none d-sm-inline-block">
     <img src="{{ asset('img/logo.png') }}" alt="" style="width: 120px; margin-top: -20px;">
   </div>
   <div class="phenlinea-navbar__actions">
     @auth
-      <div class="me-3">
+      <div class="me-3 d-none d-sm-inline-block">
         {{ auth()->user()->name }}
       </div>
       <form action="{{ route('logout') }}" method="post" id="logoutForm">

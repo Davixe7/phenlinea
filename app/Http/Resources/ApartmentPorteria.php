@@ -22,6 +22,10 @@ class ApartmentPorteria extends JsonResource
         "plates" => $this->plates,
         "admin_id" => $this->admin_id,
         "residents" => $this->residents,
+        "phone_owner" => $this->phoneOwner,
+        "phone_owner_2" => $this->phoneOwner2,
+        "phone_owner_3" => $this->phoneOwner3,
+        "phone_owner_4" => $this->phoneOwner4,
       ];
     }
 }

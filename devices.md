@@ -1,8 +1,8 @@
 **Admin Attributes**
 - Community ID
+- Building ID
 - Visits lifespan
-- Device Serial Number 01
-- Device Serial Number 02
+- Device Serial Number
 
 **Service**
 - App/Traits/Devices

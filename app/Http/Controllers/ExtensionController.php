@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Extension;
 use App\Http\Requests\StoreExtension as StoreExtensionRequest;
 use App\Http\Resources\Census as CensusResource;
+use App\Traits\Devices;
 
 class ExtensionController extends Controller
 {
@@ -31,7 +32,7 @@ class ExtensionController extends Controller
     }
 
     public function edit(Extension $extension){
-      return view('admin.extensions.edit', ['extension_id'=>$extension->id]);
+      return view('admin.extensions.edit', ['extension'=>$extension->load('residents'), 'extension_id'=>$extension->id]);
     }
     
     public function show(Extension $extension){
@@ -49,17 +50,15 @@ class ExtensionController extends Controller
       $password = mt_rand(100000000000, 999999999999) . '';
 
       $extension = Extension::create([
+        'admin_id'         => auth()->user()->id,
         'name'             => $request->name,
-
-        '_email'           => auth()->user()->id . $request->name . '@phenlinea.com',
-        '_password'        => $password,
-        'password'         => bcrypt( $password ),
 
         'phone_1'          => $request->phone_1,
         'phone_2'          => $request->phone_2,
         'phone_3'          => $request->phone_3,
         'phone_4'          => $request->phone_4,
 
+        'password'         => bcrypt( $password ),
         'email'            => $request->email,
         'owner_phone'      => $request->owner_phone,
         'owner_name'       => $request->owner_name,
@@ -74,10 +73,14 @@ class ExtensionController extends Controller
         'parking_number2'  => $request->parking_number2,
         
         'observation'      => $request->observation,
-        'vehicles'         => $request->vehicles,
-
-        'admin_id'         => auth()->user()->id
+        'resident_id'      => $request->resident_id,
+        'resident_id_2'    => $request->resident_id_2,
+        'resident_id_3'    => $request->resident_id_3,
+        'resident_id_4'    => $request->resident_id_4,
       ]);
+
+      $devices = new Devices();
+      $devices->addRoom($extension);
 
       return new CensusResource( $extension );
     }
@@ -108,7 +111,11 @@ class ExtensionController extends Controller
         'parking_number1'  => $request->parking_number1,
         'parking_number2'  => $request->parking_number2,
         'vehicles'         => $request->vehicles,
-        'observation'      => $request->observation
+        'observation'      => $request->observation,
+        'resident_id'      => $request->resident_id,
+        'resident_id_2'    => $request->resident_id_2,
+        'resident_id_3'    => $request->resident_id_3,
+        'resident_id_4'    => $request->resident_id_4,
       ]);
 
       return new CensusResource( $extension );

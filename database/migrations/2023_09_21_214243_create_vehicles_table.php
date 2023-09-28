@@ -13,8 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('admins', function (Blueprint $table) {
-            $table->unsignedBigInteger('device_community_id')->nullable();
+        Schema::create('vehicles', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
+            $table->unsignedBigInteger('extension_id');
+            $table->unsignedBigInteger('resident_id');
+            $table->string('type')->default('car');
+            $table->string('plate');
+            $table->string('tag');
         });
     }
 
@@ -25,8 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('admins', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('vehicles');
     }
 };

@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Extension;
 use App\Resident;
 use App\Http\Requests\StoreResident as StoreResidentRequest;
 use App\Http\Resources\Resident as ResidentResource;
-use App\Http\Resources\ExtensionCensus as ExtensionCensusResource;
+use App\Traits\Devices;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class ResidentController extends Controller
 {
@@ -20,10 +20,11 @@ class ResidentController extends Controller
     
   }
 
-  public function index()
+  public function index(Extension $extension)
   {
-    // $this->authorize('index', Resident::class);
-    return view('residents.index');
+    $extension_id = $extension->id;
+    $residents    = $extension->residents;
+    return view('admin.residents.index', compact('residents', 'extension'));
   }
 
   public function list(Request $request)
@@ -56,6 +57,7 @@ class ResidentController extends Controller
     $resident = Resident::create([
       'extension_id'    => $request->extension_id,
       'name'            => $request->name,
+      'email'           => $request->email,
       'age'             => $request->age,
       'dni'             => $request->dni,
       'is_owner'        => $request->is_owner,
@@ -64,6 +66,13 @@ class ResidentController extends Controller
       'disability'      => $request->disability,
       'card'            => $request->card,
     ]);
+
+    if( $picture = $request->file('picture') ){
+      $resident->addMedia( $picture )->toMediaCollection('picture');
+    }
+
+    $devices = new Devices();
+    $devices->addResident( $resident );
 
     return new ResidentResource( $resident );
   }
@@ -99,8 +108,14 @@ class ResidentController extends Controller
   */
   public function update(StoreResidentRequest $request, Resident $resident)
   {
+    $request->validate([
+      'name' => 'required',
+      'dni'  => 'required',
+    ]);
+
     $resident->update([
       'name'            => $request->name,
+      'email'           => $request->email,
       'age'             => $request->age,
       'dni'             => $request->dni,
       'is_owner'        => $request->is_owner,
@@ -109,6 +124,13 @@ class ResidentController extends Controller
       'disability'      => $request->disability,
       'card'            => $request->card,
     ]);
+
+    if( $picture = $request->file('picture') ){
+      $resident->addMedia( $picture )->toMediaCollection('picture');
+    }
+
+    $devices = new Devices();
+    $devices->updateResident($resident);
 
     return new ResidentResource( $resident );
   }
@@ -122,6 +144,8 @@ class ResidentController extends Controller
   public function destroy(Resident $resident)
   {
     $resident->delete();
+    $devices = new Devices();
+    $devices->deleteResident($resident);
     return response()->json(['message'=>'Resident deleted successfuly']);
   }
 }

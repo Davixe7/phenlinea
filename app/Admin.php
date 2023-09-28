@@ -22,6 +22,7 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
     'device_serial_number',
     'device_2_serial_number',
     'device_community_id',
+    'device_building_id',
     'email',
     'nit',
     'password',
@@ -36,7 +37,7 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
     'whatsapp_group_url'
   ];
 
-  protected $hidden   = ['password', 'created_at', 'updated_at'];
+  protected $hidden  = ['password', 'created_at', 'updated_at'];
   protected $without = ['extensions'];
   protected $appends = ['solvencia'];
   protected $casts = [

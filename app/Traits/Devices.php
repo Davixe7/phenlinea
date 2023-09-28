@@ -72,10 +72,6 @@ class Devices
 
     Storage::append('devices.log', json_encode($multipart));
 
-    if( $visit->admin->device_2_serial_number ){
-      $multipart[4]['contents'] = now()->addMinutes(5);
-    }
-
     try {
       $response    = $this->api->post('visEmpVisitor/extapi/add', compact('multipart'));
       $body        = json_decode($response->getBody());
@@ -138,6 +134,105 @@ class Devices
       $visit->update(['password' => $body->data->tempPwd]);
     } catch (GuzzleException $e) {
       return $e->getMessage();
+    }
+  }
+
+  function addRoom($extension){
+    $multipart = [
+      ['name' => 'accessToken',    'contents' => $this->getAccessToken()],
+      ['name' => 'extCommunityId', 'contents' => $extension->admin->device_community_id],
+      ['name' => 'buildingId',     'contents' => $extension->admin->device_building_id],
+      ['name' => 'name',           'contents' => $extension->name],
+      ['name' => 'code',           'contents' => $extension->name],
+    ];
+
+    try {
+      $response    = $this->api->post('sqRoom/extapi/add', compact('multipart'));
+      $body        = json_decode($response->getBody());
+      Storage::append('rooms.log', json_encode($body));
+      if (!property_exists($body, 'code') || $body->code != 0) { return;}
+      $extension->update(['device_room_id' => $body->data->id]);
+    } catch (GuzzleException $e) {
+      return Storage::append('rooms.log', $e->getMessage());
+    }
+  }
+
+  function addResident($resident){
+    $base64 = $resident->getFirstMediaPath('picture')
+      ? base64_encode(file_get_contents($resident->getFirstMediaPath('picture')))
+      : null;
+
+    $multipart = [
+      ['name' => 'accessToken',        'contents' => $this->getAccessToken()],
+      ['name' => 'extCommunityId',     'contents' => $resident->extension->admin->device_community_id],
+      ['name' => 'name',               'contents' => $resident->name],
+      ['name' => 'phone',              'contents' => $resident->email],
+      ['name' => 'cardNos',            'contents' => $resident->card],
+      ['name' => 'roomIds',            'contents' => $resident->extension->device_room_id],
+    ];
+
+    if( $base64 ){
+     $multipart[] = ['name' => 'faceFileBase64Array', 'contents' => $base64];
+    }
+
+    try {
+      $response    = $this->api->post('persEmpHousehold/extapi/add', compact('multipart'));
+      $body        = json_decode($response->getBody());
+      Storage::append('residents.log', json_encode($body));
+      if (!property_exists($body, 'code') || $body->code != 0) { return;}
+      $resident->update(['device_resident_id' => $body->data->id]);
+    } catch (GuzzleException $e) {
+      return Storage::append('rooms.log', $e->getMessage());
+    }
+  }
+
+  function updateResident($resident){
+    $base64 = $resident->getFirstMediaPath('picture')
+      ? base64_encode(file_get_contents($resident->getFirstMediaPath('picture')))
+      : null;
+
+    $multipart = [
+      ['name' => 'accessToken',        'contents' => $this->getAccessToken()],
+      ['name' => 'extCommunityId',     'contents' => $resident->extension->admin->device_community_id],
+      ['name' => 'id',                 'contents' => $resident->device_resident_id],
+      ['name' => 'name',               'contents' => $resident->name],
+      ['name' => 'phone',              'contents' => $resident->email],
+      ['name' => 'cardNos',            'contents' => $resident->card]
+    ];
+
+    $tags = implode(',', $resident->vehicles()->pluck('tag')->toArray());
+    $multipart[5]['contents'] = $multipart[5]['contents'] . ',' . $tags;
+
+    Storage::append('vehicles.log', $multipart[5]['contents']);
+
+    if( $base64 ){
+      $multipart[] = ['name' => 'faceFileBase64Array', 'contents' => $base64];
+     }
+
+    try {
+      $response    = $this->api->post('persEmpHousehold/extapi/update', compact('multipart'));
+      $body        = json_decode($response->getBody());
+      Storage::append('residents.log', json_encode($body));
+      if (!property_exists($body, 'code') || $body->code != 0) { return;}
+    } catch (GuzzleException $e) {
+      return Storage::append('residents.log', $e->getMessage());
+    }
+  }
+
+  function deleteResident($resident){
+    $multipart = [
+      ['name' => 'accessToken',        'contents' => $this->getAccessToken()],
+      ['name' => 'extCommunityId',     'contents' => $resident->extension->admin->device_community_id],
+      ['name' => 'ids',                'contents' => $resident->device_resident_id]
+    ];
+
+    try {
+      $response    = $this->api->post('persEmpHousehold/extapi/delete', compact('multipart'));
+      $body        = json_decode($response->getBody());
+      Storage::append('residents.log', json_encode($body));
+      if (!property_exists($body, 'code') || $body->code != 0) { return;}
+    } catch (GuzzleException $e) {
+      return Storage::append('residents.log', $e->getMessage());
     }
   }
 }

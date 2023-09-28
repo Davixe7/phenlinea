@@ -22,6 +22,7 @@ class CreateVisitsTable extends Migration
       $table->datetime('checkin');
       $table->datetime('checkout')->nullable();
       $table->string('password')->nullable();
+      $table->string('plate')->nullable();
 
       $table->string('extension_name');
       

@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Auth;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
 Route::get('visitors', 'API\VisitorController@index');
 Route::post('visitors', 'API\VisitorController@store');
 
@@ -23,6 +22,14 @@ Route::middleware('auth:api-porteria')->group(function () {
   Route::post('extensions/delivery', 'API\WhatsappController@sendDelivery');
   Route::post('extensions/{name?}/delivery', 'API\WhatsappController@sendDelivery');
   Route::post('notifyDelivery', 'API\WhatsappController@sendDelivery');
+
+  Route::get('plates', function(){
+    $visits = auth()->user()->visits()->distinct()->get();
+    $visits = $visits->map(fn($v) => $v->plate . " " . $v->extension_name . " visitante")->toArray();
+    $plates = auth()->user()->vehicles()->with('extension')->get();
+    $plates = $plates->map(fn($v) => $v->plate . " " . $v->extension->name . " residente")->toArray();
+    return array_merge($visits, $plates);
+  });
 
   Route::post('whatsapp', 'WhatsappController@logHook')->name('whatsapp.hook');
 });

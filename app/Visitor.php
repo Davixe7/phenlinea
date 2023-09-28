@@ -15,12 +15,18 @@ class Visitor extends Model implements HasMedia
     'name',
     'dni',
     'authorized_at',
-    'plate',
     'phone',
     'company',
     'arl',
     'eps'
   ];
+
+  public function registerMediaCollections(): void
+  {
+    $this
+    ->addMediaCollection('picture')
+    ->singleFile();
+  }
 
   public function extension()
   {
@@ -30,5 +36,9 @@ class Visitor extends Model implements HasMedia
   public function checkins()
   {
     return $this->hasMany('App\Checkin');
+  }
+
+  public function visits(){
+    return $this->hasMany(Visit::class);
   }
 }

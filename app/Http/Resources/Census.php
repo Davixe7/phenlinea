@@ -40,7 +40,16 @@ class Census extends JsonResource
         
         'vehicles'  => $this->vehicles,
         '_password' => $this->_password,
-        '_email'    => $this->_email
+        '_email'    => $this->_email,
+        'resident_id'      => $this->resident_id,
+        'resident_id_2'    => $this->resident_id_2,
+        'resident_id_3'    => $this->resident_id_3,
+        'resident_id_4'    => $this->resident_id_4,
+
+        'phone_owner'      => $this->phone_owner,
+        'phone_owner_2'    => $this->phone_owner_2,
+        'phone_owner_3'    => $this->phone_owner_3,
+        'phone_owner_4'    => $this->phone_owner_4,
       ];
     }
 }

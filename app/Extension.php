@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -12,13 +11,12 @@ class Extension extends Authenticatable implements HasMedia
   use InteractsWithMedia;
   
   protected $fillable = [
+    'admin_id',
     'name',
-    'password',
     'phone_1',
     'phone_2',
     'phone_3',
     'phone_4',
-    'admin_id',
     'owner_phone',
     'owner_name',
     'emergency_contact',
@@ -28,12 +26,14 @@ class Extension extends Authenticatable implements HasMedia
     'parking_number1',
     'parking_number2',
     'deposit',
-    'vehicles',
     'observation',
     'email',
-    '_email',
-    '_password',
-    'password'
+    'password',
+    'device_room_id',
+    'resident_id',
+    'resident_id_2',
+    'resident_id_3',
+    'resident_id_4'
   ];
 
   protected $hidden   = [
@@ -44,26 +44,12 @@ class Extension extends Authenticatable implements HasMedia
   protected $casts    = [
     'has_deposit'     => 'integer',
     'has_own_parking' => 'integer',
-    'vehicles'        => 'array',
     'phones'          => 'array'
   ];
   
   protected $appends = [
     'parking_numbers_str'
   ];
-
-  public function resetPassword(){
-    $password = mt_rand(100000000000, 999999999999) . '';
-    $this->update([
-      '_email'    => ($this->_email) ?: $this->admin_id . $this->name . "@phenlinea.com",
-      '_password' => $password,
-      'password'  => bcrypt($password)
-    ]);
-  }
-
-  public function username(){
-    return '_email';
-  }
 
   public function admin(){
     return $this->belongsTo('App\Admin');
@@ -106,10 +92,7 @@ class Extension extends Authenticatable implements HasMedia
   }
 
   public function scopeName($query, $name){
-    if(!$name){
-      return $query;
-    }
-    return $query->where('name', $name);
+    return !$name ? $query : $query->where('name', $name);
   }
 
   public function scopeNameLike($query, $name){
@@ -123,10 +106,9 @@ class Extension extends Authenticatable implements HasMedia
   }
 
   public function scopePhone($query, $number){
-    if(!$number){
-      return $query;
-    }
-    return $query->where('phone_1', $number)->orWhere('phone_2', $number);
+    return !$number
+      ? $query
+      : $query->where('phone_1', $number)->orWhere('phone_2', $number);
   }
 
   public function getAdultsAttribute(){
@@ -140,14 +122,8 @@ class Extension extends Authenticatable implements HasMedia
   }
 
   public function getPhonesAttribute(){
-    $fields = ['phone_1', 'phone_2', 'phone_3', 'phone_4', 'owner_phone'];
-    return
-    collect($fields)->map(function($field){
-      return $this->{ $field };
-    })
-    ->reject(function($phone){
-      return !$phone;
-    })
+    collect($this->phone_1, $this->phone_2, $this->phone_3, $this->phone_4, $this->owner_phone)
+    ->reject(fn($phone) => !$phone)
     ->toArray();
   }
 
@@ -157,19 +133,30 @@ class Extension extends Authenticatable implements HasMedia
   }
   
   public function getPlatesAttribute(){
-    if( !$this->vehicles || !count($this->vehicles) ){ return "Ninguno"; }
-    $plates = '';
-    collect($this->vehicles)->each(function($v)use(&$plates){
-      $plates .= $v['plate'] . " ";
-    });
-    return str_replace(" "," - ",trim($plates));
+    return $this->vehicles()->pluck('plate')->toArray();
   }
   
   public function getValidWhatsappPhoneNumbersAttribute(){
-    $numbers = collect([$this->phone_1, $this->phone_2, $this->phone_3, $this->phone_4]);
-    $numbers = $numbers->filter(function($number){
-        return $number && $number[0] == '3';
-    });
-    return $numbers->take(2)->toArray();
+    return collect($this->phone_1, $this->phone_2, $this->phone_3, $this->phone_4)
+    ->reject(fn($phone) => !$phone || $phone[0] != '3')
+    ->take(2)
+    ->toArray();
+  }
+
+  public function vehicles(){
+    return $this->hasMany(Vehicle::class);
+  }
+
+  public function phoneOwner(){
+    return $this->belongsTo(Resident::class, 'resident_id', 'id')->withDefault(['name'=>'Desconocido']);
+  }
+  public function phoneOwner2(){
+    return $this->belongsTo(Resident::class, 'resident_id_2', 'id')->withDefault(['name'=>'Desconocido']);;
+  }
+  public function phoneOwner3(){
+    return $this->belongsTo(Resident::class, 'resident_id_3', 'id')->withDefault(['name'=>'Desconocido']);;
+  }
+  public function phoneOwner4(){
+    return $this->belongsTo(Resident::class, 'resident_id_4', 'id')->withDefault(['name'=>'Desconocido']);;
   }
 }

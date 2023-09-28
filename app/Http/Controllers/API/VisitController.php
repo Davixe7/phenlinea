@@ -57,7 +57,6 @@ class VisitController extends Controller
           "dni"          => $request->dni,
           "name"         => $request->name,
           "phone"        => $request->phone,
-          "plate"        => $request->plate,
         ]);
 
       $visit = Visit::create([
@@ -67,6 +66,7 @@ class VisitController extends Controller
         "checkin"      => now(),
         "start_date"   => now(),
         "end_date"     => now()->addHours( auth()->user()->admin->visits_lifespan ?: 24 ),
+        "plate"        => $request->plate,
       ]);
 
       if( $request->file('picture') ){

@@ -18,7 +18,8 @@ class Visit extends Model implements HasMedia
     'end_date',
     'extension_id',
     'extension_name',
-    'visitor_id'
+    'visitor_id',
+    'plate'
   ];
 
   protected $casts = [

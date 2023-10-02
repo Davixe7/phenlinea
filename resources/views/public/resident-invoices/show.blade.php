@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.public')
 @section('styles')
 <style>
   body {
@@ -73,10 +73,10 @@
       <div id="factura">
         <div class="header">
           <div class="logo-wrap">
-            @if( $resident_invoice->admin->picture )
-              <img src="/{{ $resident_invoice->admin->picture }}" style="width: 100%;">
+            @if( false )
+              <img src="/{{ $resident_invoice->resident_invoice_batch->admin->picture }}" style="width: 100%;">
             @else
-              <img src="{{ public_path('img/logo.png') }}" style="width: 100%;">
+              <img src="{{ asset('img/logo.png') }}" style="width: 100%;">
             @endif
           </div>
           <div class="header-info">
@@ -87,16 +87,16 @@
               </div>
             </div>
             <div class="unit-name">
-              <b>{{ $resident_invoice->admin->name }}</b>
+              <b>{{ $resident_invoice->resident_invoice_batch->admin->name }}</b>
             </div>
             <div class="phone">
-              {{ $resident_invoice->admin->phone }}
+              {{ $resident_invoice->resident_invoice_batch->admin->phone }}
             </div>
             <div class="address">
-              {{ $resident_invoice->admin->address }}
+              {{ $resident_invoice->resident_invoice_batch->admin->address }}
             </div>
             <div class="email">
-              {{ $resident_invoice->admin->email }}
+              {{ $resident_invoice->resident_invoice_batch->admin->email }}
             </div>
           </div>
         </div>
@@ -106,7 +106,7 @@
         <div class="billing-info">
           <div class="extension-info">
             <div class="extension-number">
-              Referente de pago: {{ $resident_invoice->admin_id }}-{{ $resident_invoice->apto }}
+              Referente de pago: {{ $resident_invoice->resident_invoice_batch->admin_id }}-{{ $resident_invoice->apto }}
             </div>
             <div class="extension-owner">
               {{ $resident_invoice->apartment->residents->count() ? $resident_invoice->apartment->residents->first()->name : '' }}
@@ -172,14 +172,14 @@
           @endif
 
           <div class="py-3 d-flex">
-            <v-btn href="{{ route('resident-invoices.download', ['resident_invoice' => $resident_invoice->id]) }}">
-              Descargar
-            </v-btn>
-            @if( $resident_invoice->link )
-              <v-btn href="{{ $resident_invoice->link }}" dark class="ml-auto">
+            @if( $resident_invoice->resident_invoice_batch->link )
+              <button class="btn btn-link ms-auto me-3" href="{{ $resident_invoice->link }}">
                 Pagar online
-              </v-btn>
+              </button>
             @endif
+            <a class="btn btn-primary" href="{{ route('resident-invoices.download', ['resident_invoice' => $resident_invoice->id]) }}">
+              Descargar
+            </a>
             <!-- Recuerde reportar sus pagos al correo facturacion@gerenciamospropiedad.com -->
           </div>
 

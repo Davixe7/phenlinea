@@ -2,11 +2,7 @@
   cursor: pointer;
   box-shadow: none;
   outline: none;
-  border: none;
   text-decoration: none;
-  &:hover {
-    background: rgba(0,0,0,.05);
-  }
 }
 .btn-round {
   text-decoration: none;
@@ -27,4 +23,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+.form-control {
+  font-family: 'Roboto', sans-serif !important;
 }

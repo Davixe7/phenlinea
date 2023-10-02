@@ -4,11 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Factura extends Model
+class ResidentInvoice extends Model
 {
   protected $fillable = [
     'apto',
-    'admin_id',
+    'resident_invoice_batch_id',
     'link',
     'note',
     'periodo',
@@ -36,12 +36,12 @@ class Factura extends Model
     'updated_at'
   ];
 
-  public function admin(){
-    return $this->belongsTo('App\Admin');
+  function resident_invoice_batch(){
+    return $this->belongsTo(ResidentInvoiceBatch::class);
   }
 
-  public function getApartmentAttribute(){
-    return Extension::where('admin_id', $this->admin_id)->where('name', $this->apto)->first();
+  function apartment(){
+    return $this->belongsTo(Extension::class, 'apto', 'name');
   }
 
   public function getPeriodoEsAttribute(){

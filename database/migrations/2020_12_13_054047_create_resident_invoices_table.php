@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateFacturasTable extends Migration
+class CreateResidentInvoicesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateFacturasTable extends Migration
      */
     public function up()
     {
-        Schema::create('facturas', function (Blueprint $table) {
+        Schema::create('resident_invoices', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('apto');
 
@@ -29,15 +29,7 @@ class CreateFacturasTable extends Migration
             $table->unsignedBigInteger('vencido3')->nullable();
             $table->unsignedBigInteger('actual3')->nullable();
 
-            $table->date('periodo');
-            $table->date('emision');
-            $table->date('limite');
-
-            $table->string('link')->nullable();
-            $table->text('note')->nullable();
-
-            $table->unsignedBigInteger('admin_id');
-            $table->foreign('admin_id')->references('id')->on('admins')->onDelete('cascade');
+            $table->foreignId('resident_invoice_batch_id');
             $table->timestamps();
         });
     }
@@ -49,6 +41,6 @@ class CreateFacturasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('facturas');
+        Schema::dropIfExists('resident_invoices');
     }
 }

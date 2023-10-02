@@ -23,7 +23,9 @@
 }
 
 .phenlinea-navbar__brand {
-  position: 50%;
+  position: absolute;
+  top: 10px;
+  left: 50%;
   transform: translateX(-50%);
   max-height: 50px;
 }

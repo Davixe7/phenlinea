@@ -51,6 +51,10 @@ class Extension extends Authenticatable implements HasMedia
     'parking_numbers_str'
   ];
 
+  public function resident_invoices(){
+    return $this->hasMany(ResidentInvoice::class, 'apto', 'name');
+  }
+
   public function admin(){
     return $this->belongsTo('App\Admin');
   }

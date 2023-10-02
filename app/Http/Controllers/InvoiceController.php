@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Invoice;
 use App\Clarisa;
-use Illuminate\Http\Request;
-use GuzzleHttp\Client;
 
 class InvoiceController extends Controller
 {

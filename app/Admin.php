@@ -119,6 +119,10 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
     return $this->hasMany('App\WhatsappMessagesBatch');
   }
 
+  public function resident_invoices(){
+    return $this->hasMany(ResidentInvoice::class);
+  }
+
   public function getSolvenciaAttribute()
   {
     $month = "m" . date('n');
@@ -156,7 +160,11 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
 
   public function facturas()
   {
-    return $this->hasMany('App\Factura');
+    return $this->hasMany(ResidentInvoice::class);
+  }
+
+  public function resident_invoice_batches(){
+    return $this->hasMany(ResidentInvoiceBatch::class);
   }
 
   public function getBatches(){

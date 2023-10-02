@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Resources\Factura as FacturaResource;
+use App\Http\Resources\ResidentInvoice as FacturaResource;
 use Illuminate\Support\Facades\Storage;
 use Rap2hpoutre\FastExcel\FastExcel;
-use App\Factura;
+use App\ResidentInvoice;
 use App\Admin;
 
 class FacturaController extends Controller
@@ -25,10 +25,10 @@ class FacturaController extends Controller
   {
     $user = auth()->user();
     if ($user && $user->admin_id) {
-      $facturas = Factura::where('apto', $user->name)->where('admin_id', $user->admin_id)->orderBy('created_at', 'DESC')->get();
+      $facturas = ResidentInvoice::where('apto', $user->name)->where('admin_id', $user->admin_id)->orderBy('created_at', 'DESC')->get();
       return view('resident.facturas', ['facturas' => $facturas]);
     } else {
-      $facturas = Factura::all();
+      $facturas = ResidentInvoice::all();
       return response()->json(['data' => $facturas]);
       return view('admin.facturas', ['facturas' => $facturas]);
     }
@@ -50,11 +50,11 @@ class FacturaController extends Controller
       $admin = $array_code[0];
       $apto  = $array_code[1];
 
-      $factura = Factura::where('admin_id', $admin)
+      $resident_invoice = ResidentInvoice::where('admin_id', $admin)
         ->where('apto', $apto)
         ->orderBy('created_at', 'DESC')
         ->firstOrFail();
-      return response()->json(['data' => $factura]);
+      return response()->json(['data' => $resident_invoice]);
     }
     return response()->json(['data' => 'Falta el código']);
   }
@@ -122,7 +122,7 @@ class FacturaController extends Controller
 
       $content = array_merge($importes, $base);
 
-      return Factura::create($content);
+      return ResidentInvoice::create($content);
     });
 
     if ($count = $facturas->count()) {
@@ -138,16 +138,16 @@ class FacturaController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function show(Factura $factura)
+  public function show(ResidentInvoice $resident_invoice)
   {
     return view('admin.facturas.show', [
-      'factura' => $factura
+      'resident_invoice' => $resident_invoice
     ]);
   }
 
-  public function download(Factura $factura)
+  public function download(ResidentInvoice $resident_invoice)
   {
-    $pdf = \PDF::loadView('pdf.factura', ['factura' => $factura]);
+    $pdf = \PDF::loadView('pdf.factura', ['resident_invoice' => $resident_invoice]);
     return $pdf->download('invoice.pdf');
   }
 }

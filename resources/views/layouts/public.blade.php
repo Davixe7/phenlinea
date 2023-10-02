@@ -25,7 +25,9 @@
 
 <body>
   <div class="container-fluid" id="app">
-    @include('layouts.navbar.new')
+    <div class="public-navbar d-flex justify-content-center p-3">
+      <img src="{{ asset('img/logo.png') }}" alt="" style="width: 125px;">
+    </div>
     <div class="main-content">
       @yield('content')
     </div>
@@ -44,7 +46,6 @@
     </a>
   </div>
 
-  <script src="{{ mix('js/app.js') }}" defer></script>
   @yield('scripts')
   @stack('scripts')
 </body>

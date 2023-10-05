@@ -45,7 +45,9 @@ class ResidentInvoiceBatchController extends Controller
     $file = $request->file('file');
     $path = $file->store('resident-invoices');
     Excel::import(new ResidentInvoiceImport($batch), $path);
-    return response()->json(['data' => 'Success']);
+    return response()->json([
+      'count' => $batch->resident_invoices()->count()
+    ]);
   }
 
   /**
@@ -56,7 +58,7 @@ class ResidentInvoiceBatchController extends Controller
    */
   public function show(ResidentInvoiceBatch $residentInvoiceBatch)
   {
-    return view('admin.resident-invoice-batches.show', ['resident_invoice_batch' => $residentInvoiceBatch]);
+    return view('admin.resident-invoice-batches.show', ['resident_invoice_batch' => $residentInvoiceBatch->load('resident_invoices')]);
   }
 
   /**

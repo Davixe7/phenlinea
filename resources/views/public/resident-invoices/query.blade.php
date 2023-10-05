@@ -13,6 +13,9 @@
     .card-header {
       font-size: 20px;
     }
+    #app {
+      background: #95a7be !important;
+    }
   </style>
 @endsection
 @section('content')
@@ -23,7 +26,7 @@
         @csrf
         <div class="card text-center">
           <div class="card-header">
-            Consulte su facturas
+            Consulte sus facturas
           </div>
           <div class="card-body">
             <div class="mb-3">

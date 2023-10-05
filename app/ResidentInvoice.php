@@ -26,7 +26,7 @@ class ResidentInvoice extends Model
   ];
   
   protected $casts = [
-    'total' => 'Integer'
+    'total' => 'integer'
   ];
   
   protected $appends = ['total'];

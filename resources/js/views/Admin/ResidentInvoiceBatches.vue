@@ -77,8 +77,8 @@
           <template v-else>
             <li class="list-group-item d-flex flex-column justify-content-center align-items-center" style="padding-bottom: 1rem; height: 360px;">
               <i class="material-symbols-outlined mb-3 text-success" style="font-size: 9rem;">task_alt</i>
-              <div class="mb-3">6 Facturas importadas con éxito</div>
-              <a href="/resident-invoices" class="btn btn-primary btn-download">Ver facturas</a>
+              <div class="mb-3">{{importedInvoicesCount}} Facturas importadas con éxito</div>
+              <a href="/resident-invoice-batches" class="btn btn-primary btn-download">Ver facturas</a>
             </li>
           </template>
       </ul>
@@ -96,6 +96,7 @@ const invoice     = ref({})
 const uploading   = ref(false)
 const success     = ref(false)
 const progress    = ref(0)
+const importedInvoicesCount = ref(0)
 
 function importInvoices(){
   if( !invoiceForm.value.reportValidity() ) return
@@ -111,8 +112,8 @@ function importInvoices(){
     }
   })
   .then(response => {
-    console.log(response.data)
     success.value = true
+    importedInvoicesCount.value = response.data.count
   })
   .catch(error=> data.log(error.response))
   .finally(() => uploading.value = false)

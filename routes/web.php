@@ -122,9 +122,9 @@ Route::middleware(['auth:admin', 'phoneverified', 'suspended'])->group(function 
   Route::get('residents/list', 'ResidentController@list')->name('residents.list');
 
   Route::get('resident-invoice-batches',                          [App\Http\Controllers\ResidentInvoiceBatchController::class, 'index'] )->name('resident_invoice_batches.index');
-  Route::get('resident-invoice-batches/{resident_invoice_batch}', [App\Http\Controllers\ResidentInvoiceBatchController::class, 'show'] )->name('resident_invoice_batches.show');
-  Route::post('resident-invoice-batches/import',                  [App\Http\Controllers\ResidentInvoiceBatchController::class, 'import'])->name('resident_invoice_batches.import');
   Route::get('resident-invoice-batches/upload',                   [App\Http\Controllers\ResidentInvoiceBatchController::class, 'upload'])->name('resident_invoice_batches.upload');
+  Route::post('resident-invoice-batches/import',                  [App\Http\Controllers\ResidentInvoiceBatchController::class, 'import'])->name('resident_invoice_batches.import');
+  Route::get('resident-invoice-batches/{resident_invoice_batch}', [App\Http\Controllers\ResidentInvoiceBatchController::class, 'show'] )->name('resident_invoice_batches.show');
 
   Route::get('extensions/export', 'ExportController@exportCensus');
   Route::get('extensions/import', 'ExtensionController@getImport')->name('extensions.getImport')->middleware('can:import,App\Extension');

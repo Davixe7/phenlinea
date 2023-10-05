@@ -24,7 +24,6 @@ class Devices
   {
     return Cache::remember('zhyaf_access_token', 7200, function () {
       try {
-        Storage::append('devices.log', 'getting access_token');
         $response = $this->api->get('platCompany/extapi/getAccessToken', [
           'multipart' => [
             ['name' => 'timeZone', 'contents'  => 'America/Bogota'],
@@ -36,13 +35,8 @@ class Devices
 
         $body = json_decode($response->getBody());
 
-        // $api = new \GuzzleHttp\Client();
-        // $response = $api->get('https://cloud.zhyaf.com:8790/platCompany/extapi/getAccessToken', [ 'multipart' => [ ['name' => 'timeZone', 'contents' => 'America/Bogota'], ['name' => 'language', 'contents' => 'es_ES'], ['name' => 'appId', 'contents' => '017dc2a938fc4088a96776313c2bca05'], ['name' => 'appSecret', 'contents' => 'f005f6c7cb22cdd296f466a43c289157'] ] ]);
-        // $body = json_decode($response->getBody());
-
         $data = property_exists($body, 'data') ? $body->data : null;
         $accessToken = ($data && property_exists($data, 'accessToken')) ? $data->accessToken : null;
-        Storage::append('devices.log', 'ACCESS_TOKEN: ' . $accessToken);
         return $accessToken;
       } catch (GuzzleException $e) {
         Storage::append('devices.log', $e->getMessage());
@@ -69,8 +63,6 @@ class Devices
       ['name' => 'phone', 'contents'            => $visit->visitor->phone],
       ['name' => 'faceFileBase64', 'contents'   => $base64]
     ];
-
-    Storage::append('devices.log', json_encode($multipart));
 
     try {
       $response    = $this->api->post('visEmpVisitor/extapi/add', compact('multipart'));
@@ -119,12 +111,9 @@ class Devices
       ['name' => 'devSns', 'contents'         => 'V' . $visit->admin->device_serial_number]
     ];
 
-    Storage::append('devices.log', json_encode($multipart));
-
     try {
       $response    = $this->api->post('accVisitorTempPwd/extapi/add', compact('multipart'));
       $body        = json_decode($response->getBody());
-      Storage::append('devices.log', json_encode($body));
 
       if (!property_exists($body, 'code') || $body->code != 0) {
         return;
@@ -149,7 +138,6 @@ class Devices
     try {
       $response    = $this->api->post('sqRoom/extapi/add', compact('multipart'));
       $body        = json_decode($response->getBody());
-      Storage::append('rooms.log', json_encode($body));
       if (!property_exists($body, 'code') || $body->code != 0) { return;}
       $extension->update(['device_room_id' => $body->data->id]);
     } catch (GuzzleException $e) {
@@ -178,7 +166,6 @@ class Devices
     try {
       $response    = $this->api->post('persEmpHousehold/extapi/add', compact('multipart'));
       $body        = json_decode($response->getBody());
-      Storage::append('residents.log', json_encode($body));
       if (!property_exists($body, 'code') || $body->code != 0) { return;}
       $resident->update(['device_resident_id' => $body->data->id]);
     } catch (GuzzleException $e) {
@@ -203,8 +190,6 @@ class Devices
     $tags = implode(',', $resident->vehicles()->pluck('tag')->toArray());
     $multipart[5]['contents'] = $multipart[5]['contents'] . ',' . $tags;
 
-    Storage::append('vehicles.log', $multipart[5]['contents']);
-
     if( $base64 ){
       $multipart[] = ['name' => 'faceFileBase64Array', 'contents' => $base64];
      }
@@ -212,7 +197,6 @@ class Devices
     try {
       $response    = $this->api->post('persEmpHousehold/extapi/update', compact('multipart'));
       $body        = json_decode($response->getBody());
-      Storage::append('residents.log', json_encode($body));
       if (!property_exists($body, 'code') || $body->code != 0) { return;}
     } catch (GuzzleException $e) {
       return Storage::append('residents.log', $e->getMessage());
@@ -229,7 +213,6 @@ class Devices
     try {
       $response    = $this->api->post('persEmpHousehold/extapi/delete', compact('multipart'));
       $body        = json_decode($response->getBody());
-      Storage::append('residents.log', json_encode($body));
       if (!property_exists($body, 'code') || $body->code != 0) { return;}
     } catch (GuzzleException $e) {
       return Storage::append('residents.log', $e->getMessage());

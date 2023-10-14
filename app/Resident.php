@@ -20,7 +20,8 @@ class Resident extends Model implements HasMedia
     'extension_id',
     'is_authorized',
     'disability',
-    'device_resident_id'
+    'device_resident_id',
+    'device_synced'
   ];
   protected $hidden   = ['created_at', 'updated_at'];
   protected $appends  = ['picture'];

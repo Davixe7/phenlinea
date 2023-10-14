@@ -92,6 +92,11 @@
       </select>
     </div>
 
+    <div class="form-group">
+      <label for="#">Logo</label>
+      <input type="file" ref="pictureInput" class="form-control">
+    </div>
+
     <div class="form-group text-right">
       <button v-if="!editing" class="btn btn-primary" @click="storeAdmin">Enviar</button>
       <button v-else class="btn btn-primary" @click="updateAdmin">Actualizar</button>
@@ -102,8 +107,9 @@
 <script setup>
 import { ref, watch } from 'vue'
 
-const props = defineProps(['admin', 'editing'])
-const errors = ref({})
+const props        = defineProps(['admin', 'editing'])
+const errors       = ref({})
+const pictureInput = ref(null)
 
 const emits = defineEmits(['adminStored', 'adminUpdated'])
 
@@ -139,10 +145,13 @@ function updateAdmin() {
 
 function loadData() {
   let data = new FormData();
+
   let file = document.querySelector('#input_whatsapp_qr').files[0]
-  if( file ){
-    data.append('whatsapp_qr', file)
-  }
+  if( file ){ data.append('whatsapp_qr', file)}
+
+  let picture = pictureInput.value.files[0]
+  if( picture ){ data.append('picture', picture)}
+
   Object.keys(props.admin).forEach(key => data.append(key, props.admin[key]))
   return data;
 }

@@ -22,8 +22,7 @@ return new class extends Migration
             $table->date('limite');
             $table->string('link')->nullable();
             $table->text('note')->nullable();
-            $table->unsignedBigInteger('admin_id');
-            $table->foreign('admin_id')->references('id')->on('admins')->onDelete('cascade');
+            $table->foreignId('admin_id');
         });
     }
 

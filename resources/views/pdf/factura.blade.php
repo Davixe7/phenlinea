@@ -75,8 +75,8 @@
       <div id="factura">
         <div class="header">
           <div class="logo-wrap">
-            @if( false && $resident_invoice->resident_invoice_batch->admin->picture )
-              <img src="{{ public_path( $resident_invoice->resident_invoice_batch->admin->picture ) }}" style="width: 100%;">
+            @if( $resident_invoice->resident_invoice_batch->admin->getFirstMediaPath('picture') )
+              <img src="{{ $resident_invoice->resident_invoice_batch->admin->getFirstMediaPath('picture') }}" style="width: 100%;">
             @else
               <img src="{{ public_path('img/logo.png') }}" style="width: 100%;">
             @endif

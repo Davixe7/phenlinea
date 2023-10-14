@@ -171,7 +171,7 @@
                   v-if="extension.residents && extension.residents.length"
                   class="form-control"
                   v-model="extension.resident_id">
-                  <option>Seleccione títular</option>
+                  <option value="">Seleccione títular</option>
                   <option
                     v-for="resident in extension.residents"
                     :key="resident.id"
@@ -182,75 +182,94 @@
                 <span v-else class="help-text">Registre residentes para asociar al número telefónico</span>
               </div>
             </div>
+
             <div class="form-group">
               <label for="line1">
-                <span>
-                  Línea 2
-                </span>
+                <span>Línea 2</span>
                 <img :src="`${appUrl}/img/icons8-whatsapp.svg`" style="width: 20px; height: 20px; margin-left: auto;">
               </label>
 
               <div>
-                <input type="tel" class="form-control" :class="{ 'is-invalid': errors.phone_2 }" maxlength="10"
-                minlength="10" v-model="extension.phone_2" style="width: 248px;">
-              <div v-if="errors.phone_2" class="invalid-feedback">{{ errors.phone_2[0] }}</div>
-              <select
-                  style="width: 248px;"
-                  v-if="extension.residents && extension.residents.length"
+                <input
+                  type="tel"
                   class="form-control"
-                  v-model="extension.resident_id_2">
-                  <option>Seleccione títular</option>
-                  <option
-                    v-for="resident in extension.residents"
-                    :key="resident.id"
-                    :value="resident.id">
-                    {{  resident.name  }}
-                  </option>
+                  :class="{ 'is-invalid': errors.phone_2 }" maxlength="10"
+                  minlength="10"
+                  v-model="extension.phone_2"
+                  style="width: 248px;">
+                <div v-if="errors.phone_2" class="invalid-feedback">{{ errors.phone_2[0] }}</div>
+                <select
+                    style="width: 248px;"
+                    v-if="extension.residents && extension.residents.length"
+                    class="form-control"
+                    v-model="extension.resident_id_2">
+                    <option value="">Seleccione títular</option>
+                    <option
+                      v-for="resident in extension.residents"
+                      :key="resident.id"
+                      :value="resident.id">
+                      {{  resident.name  }}
+                    </option>
                 </select>
                 <span v-else class="help-text">Registre residentes para asociar al número telefónico</span>
               </div>
             </div>
-            <div class="form-group">
-              <label for="line1">Línea 3</label>
-              <div>
-                <input type="tel" class="form-control" :class="{ 'is-invalid': errors.phone_3 }" maxlength="10"
-                minlength="10" v-model="extension.phone_3" style="width: 248px;">
-              <div v-if="errors.phone_3" class="invalid-feedback">{{ errors.phone_3[0] }}</div>
-              <select
-                style="width: 248px;"
-                  v-if="extension.residents && extension.residents.length"
-                  class="form-control"
-                  v-model="extension.resident_id_3">
-                  <option>Seleccione títular</option>
-                  <option
-                    v-for="resident in extension.residents"
-                    :key="resident.id"
-                    :value="resident.id">
-                    {{  resident.name  }}
-                  </option>
-                </select>
-                <span v-else class="help-text">Registre residentes para asociar al número telefónico</span>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="line1">Línea 4</label>
-              <div>
-                <input type="tel" class="form-control" :class="{ 'is-invalid': errors.phone_4 }" maxlength="15"
-                minlength="3" v-model="extension.phone_4" style="width: 248px;">
-              <div v-if="errors.phone_4" class="invalid-feedback">{{ errors.phone_4[0] }}</div>
 
-              <select
-                  style="width: 248px;"
-                  v-if="extension.residents && extension.residents.length"
+            <div class="form-group">
+              <label for="line3">
+                <span>Línea 3</span>
+              </label>
+
+              <div>
+                <input
+                  type="tel"
                   class="form-control"
-                  v-model="extension.resident_id_4">
-                  <option value="null" selected hidden>Seleccione títular</option>
-                  <option
-                    v-for="resident in extension.residents"
-                    :key="resident.id"
-                    :value="resident.id">
-                    {{  resident.name  }}
-                  </option>
+                  :class="{ 'is-invalid': errors.phone_3 }" maxlength="10"
+                  minlength="10"
+                  v-model="extension.phone_3"
+                  style="width: 248px;">
+                <div v-if="errors.phone_3" class="invalid-feedback">{{ errors.phone_3[0] }}</div>
+                <select
+                    style="width: 248px;"
+                    v-if="extension.residents && extension.residents.length"
+                    class="form-control"
+                    v-model="extension.resident_id_3">
+                    <option value="">Seleccione títular</option>
+                    <option
+                      v-for="resident in extension.residents"
+                      :key="resident.id"
+                      :value="resident.id">
+                      {{  resident.name  }}
+                    </option>
+                </select>
+                <span v-else class="help-text">Registre residentes para asociar al número telefónico</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="line4">Línea 4</label>
+
+              <div>
+                <input
+                  type="tel"
+                  class="form-control"
+                  :class="{ 'is-invalid': errors.phone_4 }" maxlength="10"
+                  minlength="10"
+                  v-model="extension.phone_4"
+                  style="width: 248px;">
+                <div v-if="errors.phone_4" class="invalid-feedback">{{ errors.phone_4[0] }}</div>
+                <select
+                    style="width: 248px;"
+                    v-if="extension.residents && extension.residents.length"
+                    class="form-control"
+                    v-model="extension.resident_id_4">
+                    <option value="">Seleccione títular</option>
+                    <option
+                      v-for="resident in extension.residents"
+                      :key="resident.id"
+                      :value="resident.id">
+                      {{  resident.name  }}
+                    </option>
                 </select>
                 <span v-else class="help-text">Registre residentes para asociar al número telefónico</span>
               </div>

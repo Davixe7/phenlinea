@@ -32,13 +32,13 @@
       </div>
 
       <div class="row">
-        <div class="form-group col-md-9">
+        <div class="form-group col-8">
           <label for="name">Nombres <span class="text-danger">*</span></label>
           <input type="text" class="form-control" v-model="resident.name" maxlength="120"
             :class="{ 'is-invalid': errors.name }" required>
           <div v-if="errors.name" class="invalid-feedback">{{ errors.name[0] }}</div>
         </div>
-        <div class="form-group col-md-3">
+        <div class="form-group col-4">
           <label for="age">Edad <span class="text-danger">*</span></label>
           <input type="number" class="form-control" v-model="resident.age" min="1" max="120" required>
         </div>
@@ -63,6 +63,13 @@
         <input type="email" class="form-control" v-model="resident.email">
       </div>
 
+      <div class="form-check form-check-inline">
+        <input type="checkbox" v-model="resident.disability" class="form-check-input" id="disability" />
+        <label for="disability" class="form-check-label">
+          Movilidad reducida
+        </label>
+      </div>
+
       <div class="form-group">
         <label for="card">Foto</label>
         <div class="d-flex">
@@ -74,19 +81,12 @@
         </div>
       </div>
 
-      <div class="form-check form-check-inline">
-        <input type="checkbox" v-model="resident.disability" class="form-check-input" id="disability" />
-        <label for="disability" class="form-check-label">
-          Movilidad reducida
-        </label>
-      </div>
-
       <div class="d-flex justify-content-end">
         <template v-if="!loading">
             <button
             v-if="resident"
             type="button"
-            class="btn btn-link"
+            class="btn btn-link me-3"
             @click="$emit('reset')">
             Cancelar
           </button>
@@ -106,17 +106,22 @@
 import { ref, computed, defineEmits, watch } from 'vue'
 import Camera from '../../../components/Camera.vue';
 
-const props = defineProps(['resident', 'errors', 'extension', 'loading'])
-const emit = defineEmits('reset', 'updateResident', 'storeResident')
+const props = defineProps(['resident', 'extension'])
+const emit  = defineEmits('reset', 'residentUpdated', 'residentStored')
 
-const picture = ref(null)
-const fileInput = ref(null)
 const storeResidentForm = ref(null)
+const picture           = ref(null)
+const fileInput         = ref(null)
 
-watch(() => props.resident, (newValue, oldValue) => resident.value = { ...newValue })
+watch(() => props.resident, (newValue, oldValue) => {
+  if( !newValue.id ) picture.value = null
+  resident.value = { ...newValue }
+})
 
-const camera = ref(false)
-const resident = ref({})
+const loading     = ref(false)
+const errors      = ref({})
+const camera      = ref(false)
+const resident    = ref({})
 const typeChecked = computed(() => resident.value.is_resident || resident.value.is_owner || resident.value.is_authorized)
 
 function updatePicture(blob) {
@@ -125,30 +130,39 @@ function updatePicture(blob) {
 }
 
 function loadData() {
+  loading.value = true
   let data = new FormData();
   data.append('extension_id', props.extension.id)
   Object.keys(resident.value).map(key => {
-    if(resident.value[key] == null){
-      data.append(key, '')
-      return
-    }
-    data.append(key, resident.value[key])
+    data.append(key, resident.value[key] != null ? resident.value[key] : '')
   })
-  if (picture.value) { data.append('picture', picture.value) }
-  if (resident.value.id) { data.append('_method', 'PUT') }
+  if ( resident.value.id) { data.append('_method', 'PUT') }
+  if ( picture.value)     { data.append('picture', picture.value) }
   return data;
 }
 
 function updateResident() {
-  if (!window.confirm('¿Seguro que desea actualizar la información?')) return
-  if (!storeResidentForm.value.reportValidity() || !typeChecked.value) return
-  emit('updateResident', loadData())
+  let data = loadData()
+  axios.post(`/residents/${resident.value.id}`, data)
+  .then(response => emit('residentUpdated', response.data.data))
+  .catch(error => {
+    if (error.response.status == '422') {
+      errors.value = error.response.data.errors ? error.response.data.errors : {}
+    }
+  })
+  .finally(() => loading.value = false)
 }
 
 function storeResident() {
-  if (!window.confirm('¿Seguro que desea registrar la información?')) return
-  if (!storeResidentForm.value.reportValidity() || !typeChecked.value) return
-  emit('storeResident', loadData())
+  let data = loadData()
+  axios.post('residents', data)
+  .then(response => emit('residentStored', response.data.data))
+  .catch(error   => {
+    if (error.response.status == '422') {
+      errors.value = error.response.data.errors ? error.response.data.errors : {}
+    }
+  })
+  .finally(() => loading.value = false)
 }
 </script>
   

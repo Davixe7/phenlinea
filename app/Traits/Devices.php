@@ -160,16 +160,23 @@ class Devices
     ];
 
     if( $base64 ){
-     $multipart[] = ['name' => 'faceFileBase64Array', 'contents' => $base64];
+      $multipart[] = ['name' => 'faceFileBase64Array', 'contents' => $base64];
     }
 
     try {
       $response    = $this->api->post('persEmpHousehold/extapi/add', compact('multipart'));
       $body        = json_decode($response->getBody());
-      if (!property_exists($body, 'code') || $body->code != 0) { return;}
+
+      if (!property_exists($body, 'code') || $body->code == 10000) {
+        if( str_contains($body->msg, "卡号已存在") ){Storage::append('residents.error.log', 'Número de tarjeta duplicado');}
+        return;
+      }
+
+      if ($body->code != 0) { return;}
+
       $resident->update(['device_resident_id' => $body->data->id]);
     } catch (GuzzleException $e) {
-      return Storage::append('rooms.log', $e->getMessage());
+      return Storage::append('residents.log', $e->getMessage());
     }
   }
 
@@ -187,17 +194,20 @@ class Devices
       ['name' => 'cardNos',            'contents' => $resident->card]
     ];
 
-    $tags = implode(',', $resident->vehicles()->pluck('tag')->toArray());
-    $multipart[5]['contents'] = $multipart[5]['contents'] . ',' . $tags;
+    if( $resident->vehicles()->count() ){
+      $tags = implode(',', $resident->vehicles()->pluck('tag')->toArray());
+      $multipart[5]['contents'] = $multipart[5]['contents'] . ',' . $tags;
+    }
 
     if( $base64 ){
       $multipart[] = ['name' => 'faceFileBase64Array', 'contents' => $base64];
-     }
+    }
 
     try {
       $response    = $this->api->post('persEmpHousehold/extapi/update', compact('multipart'));
       $body        = json_decode($response->getBody());
       if (!property_exists($body, 'code') || $body->code != 0) { return;}
+      $resident->update(['device_synced'=>true]);
     } catch (GuzzleException $e) {
       return Storage::append('residents.log', $e->getMessage());
     }
@@ -213,9 +223,15 @@ class Devices
     try {
       $response    = $this->api->post('persEmpHousehold/extapi/delete', compact('multipart'));
       $body        = json_decode($response->getBody());
-      if (!property_exists($body, 'code') || $body->code != 0) { return;}
+      if (!property_exists($body, 'code')){ return; }
+
+      if ($body->code != 0) {
+        Storage::append('residents.error.log', $body->msg);
+        return;
+      }
+
     } catch (GuzzleException $e) {
-      return Storage::append('residents.log', $e->getMessage());
+      return Storage::append('residents.error.log', $e->getMessage());
     }
   }
 }

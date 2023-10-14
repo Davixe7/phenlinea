@@ -47,6 +47,8 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
   public function registerMediaCollections(): void
   {
     $this->addMediaCollection('whatsapp_qr')->singleFile();
+
+    $this->addMediaCollection('picture')->singleFile();
   }
 
   public function invoices()

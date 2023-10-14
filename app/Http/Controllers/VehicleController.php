@@ -41,6 +41,10 @@ class VehicleController extends Controller
     public function store(Extension $extension, Request $request)
     {
         $vehicle = Vehicle::create($request->all());
+        $devices = new Devices();
+        if( $resident = $vehicle->resident ){
+          $devices->updateResident( $resident );
+        }
         return $vehicle;
     }
 

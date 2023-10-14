@@ -37,14 +37,14 @@
               </div>
 
               <div class="d-flex align-items-center justify-content-between mb-3">
-              <label for="">URL de Pago Online</label>
+                <label for="">URL de Pago Online</label>
                 <input type="url" class="form-control" v-model="invoice.link" placeholder="https://enlacebancario.com">
               </div>
               
-              <!-- <div class="form-group">
+              <div class="form-group">
                 <label for="" class="form-label">Notas</label>
                 <textarea rows="3" class="form-control" v-model="invoice.note" placeholder="Escribe alguna nota para las facturas"></textarea>
-              </div> -->
+              </div>
               
               <div class="d-flex align-items-center pt-3" style="border-top: 1px solid rgba(0,0,0,.087);">
                 <input
@@ -120,7 +120,7 @@ function importInvoices(){
 }
 </script>
 
-<style>
+<style scoped>
 label {
   font-size: .9em;
   font-weight: 500;

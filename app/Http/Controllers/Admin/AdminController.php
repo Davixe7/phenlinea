@@ -101,6 +101,10 @@ class AdminController extends Controller
       $admin->addMedia($file)->toMediaCollection('whatsapp_qr');
     }
 
+    if( $file = $request->file('picture') ){
+      $admin->addMedia($file)->toMediaCollection('picture');
+    }
+
     return new AdminResource( $admin );
   }
 

@@ -15,18 +15,18 @@
       </div>
       <table class="table" v-if="results && results.length">
         <thead>
+          <th>ID</th>
           <th>Nombre</th>
           <th>NIT</th>
           <th>Celular</th>
           <th>Celular 2</th>
           <th>Correo</th>
           <th>Status</th>
-          <th class="text-right">
-            Opciones
-          </th>
+          <th class="text-right">Opciones</th>
         </thead>
         <tbody>
           <tr v-for="admin in results">
+            <td>{{ admin.id }}</td>
             <td>{{ admin.name }}</td>
             <td>{{ admin.nit }}</td>
             <td>{{ admin.phone }}</td>
@@ -36,16 +36,30 @@
 
             <td class="text-right">
               <div class="btn-group">
-                <a :href="`/admin/admins/${admin.id}/export`" class="btn btn-xs btn-link">
-                  e
+                <a
+                  :href="`/admin/admins/${admin.id}/export`"
+                  class="btn btn-xs btn-link">
                 </a>
-                <a :href="`/admin/admins/${admin.id}/edit-permissions`" class="btn btn-xs btn-link">
+
+                <a
+                  :href="`/admin/admins/${admin.id}/edit-permissions`"
+                  class="btn btn-xs btn-link">
                   <i class="material-symbols-outlined">lock</i>
                 </a>
-                <button class="btn btn-xs btn-link" @click="editAdmin(admin)"><i
-                    class="material-symbols-outlined">edit</i></button>
-                <button class="btn btn-xs btn-link" @click="deleteAdmin(admin.id)"><i
-                    class="material-symbols-outlined">delete</i></button>
+
+                <button
+                  class="btn btn-xs btn-link"
+                  @click="editAdmin(admin)">
+                  <i
+                    class="material-symbols-outlined">
+                    edit
+                  </i>
+                </button>
+                <button
+                  class="btn btn-xs btn-link"
+                  @click="deleteAdmin(admin.id)">
+                  <i class="material-symbols-outlined">delete</i>
+                </button>
               </div>
             </td>
           </tr>
@@ -105,8 +119,7 @@
             </button>
           </div>
           <div class="modal-body">
-            <Payments v-if="paymentToEdit" :admin="paymentToEdit">
-            </Payments>
+            <Payments v-if="paymentToEdit" :admin="paymentToEdit"/>
           </div>
         </div>
       </div>
@@ -160,20 +173,14 @@ function updateAdmin(admin) {
 function deleteAdmin(id) {
   if (!window.confirm('¿Seguro que quieres eliminar al administrador?')) return
   axios.delete(`/admin/admins/${id}`)
-  .then(()     => {
-    props.admins = props.admins.filter(admin => admin.id != id)
-  })
+  .then(()     => props.admins = props.admins.filter(admin => admin.id != id))
   .catch(error => errors.value = error.response.data.errors)
 }
 
 function updateWhatsappGroupId(admin){
   axios.post(`/admin/admins/${admin.id}`, {...admin, _method: 'PUT'})
-  .then(response => {
-    console.log( 'Admin whatsapp group id updated' );
-  })
-  .catch(error=>{
-    console.log(error.response)
-  })
+  .then(response => console.log( 'Admin whatsapp group id updated' ))
+  .catch(error   => console.log(error.response))
 }
 
 onMounted(() => {

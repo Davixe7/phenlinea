@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use App\WhatsappClient;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Storage;
 
 class WhatsappController extends Controller
@@ -58,8 +59,12 @@ class WhatsappController extends Controller
 
     foreach( $extension->valid_whatsapp_phone_numbers as $phone ){
       $data['number'] = $extension->id == '13955' ? '584147912134' : '57' . $phone;
-      $response = $this->api->get('send', ['query' => $data]);
-      Storage::append( 'deliveries.log', $response->getBody() . json_encode($data) );
+      try {
+        $response = $this->api->get('send', ['query' => $data]);
+      }
+      catch(GuzzleException $e){
+        Storage::append( 'deliveries.log', $response->getBody() . json_encode($data) );
+      }
     }
 
     return response()->json(['data' => $data['media_url']

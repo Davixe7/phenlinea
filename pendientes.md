@@ -1,2 +1,0 @@
-- Extensiones: Linea 1 NO REQUERIDO
-- Residentes: Eliminar / Dejar en blanco Nro. de TARJETA

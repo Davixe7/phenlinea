@@ -121,9 +121,6 @@
                 @endif
               </div>
               
-              <a href="{{ route('password.request') }}" class="forgot-password">
-                ¿Olvidaste la contraseña?
-              </a>
               <button type="submit" class="btn btn-secondary btn-login">
                 Acceder al sistema
               </button>

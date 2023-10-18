@@ -11,6 +11,8 @@
 |
 */
 
+use Illuminate\Support\Facades\Auth;
+
 Route::get('test', function () {
   $visits = App\Visit::select(['plate', 'extension_name'])->groupBy('plate')->get();
   $visits = $visits->map(fn ($v) => $v->plate . " " . $v->extension_name . " visitante")->toArray();
@@ -60,7 +62,6 @@ Route::get('apk', fn () => response()->download(public_path('app-release.apk'), 
  *  Auth Routes
  */
 // Get login forms
-Route::get('residents/login', 'Auth\Extension\LoginController@showLoginForm')->name('residents.getLogin');
 Route::get('root/login', 'Admin\Auth\LoginController@showLoginForm');
 
 // Login routes
@@ -71,12 +72,15 @@ Route::post('root/login', 'Admin\Auth\LoginController@login')->name('root.login'
 Route::get('adminslist', 'Auth\Extension\LoginController@adminslist')->name('residents.adminslist');
 Route::get('extensionslist/{admin}', 'Auth\Extension\LoginController@extensionslist')->name('residents.extensionslist');
 
-// Logout routes
+// AUTH ROUTES
+Route::get('login', 'Auth\LoginController@showLoginForm');
+Route::post('logout', 'Auth\LoginController@logout')->name('logout');
+Route::post('login', 'Auth\LoginController@login')->name('login');
+
 Route::post('admins/logout', 'Auth\Admin\LoginController@logout')->name('admins.logout');
 Route::post('extensions/logout', 'Auth\Extension\LoginController@logout')->name('extensions.logout');
 Route::post('porterias/logout', 'Auth\Porteria\LoginController@logout')->name('porterias.logout');
 
-Auth::routes();
 Route::get('home', 'HomeController@index')->middleware(['phoneverified', 'auth:web,admin,extension'])->name('home');
 Route::get('whatsapp_clients/getclient', 'Admin\WhatsappClientController@getClient')->name('whatsapp_clients.getClient');
 

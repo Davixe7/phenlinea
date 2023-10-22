@@ -63,7 +63,7 @@ class WhatsappController extends Controller
         $response = $this->api->get('send', ['query' => $data]);
       }
       catch(GuzzleException $e){
-        Storage::append( 'deliveries.log', $response->getBody() . json_encode($data) );
+        Storage::append( 'deliveries.log', $e->getMessage());
       }
     }
 

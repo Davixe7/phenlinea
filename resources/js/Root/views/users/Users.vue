@@ -69,7 +69,7 @@
 
 <script setup>
 import CreateUser from './CreateUser.vue'
-import SearchForm from './../../../components/SearchForm.vue'
+import SearchForm from './../../../Admin/components/SearchForm.vue'
 import { ref, onMounted } from 'vue'
 
 const props = defineProps(['users'])

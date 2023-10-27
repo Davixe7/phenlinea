@@ -90,7 +90,7 @@
 
 <script setup>
 import CreatePorteria from './CreatePorteria.vue'
-import SearchForm from './../../../components/SearchForm.vue'
+import SearchForm from './../../../Admin/components/SearchForm.vue'
 
 import { ref, onMounted } from 'vue'
 

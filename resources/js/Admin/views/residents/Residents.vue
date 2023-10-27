@@ -35,7 +35,7 @@ import "vue-toastification/dist/index.css";
 import Vue from 'vue'
 import ResidentsForm from './ResidentsForm.vue'
 import ResidentsTable from './ResidentsTable.vue'
-import ExtensionsNav from './../ExtensionsNav.vue'
+import ExtensionsNav from './../extensions/ExtensionsNav.vue'
 import { onMounted, ref, watch, computed } from 'vue'
 import { createToastInterface } from "vue-toastification";
 

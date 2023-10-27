@@ -8,10 +8,10 @@ require('./bootstrap')
 
 import Vue from 'vue'
 
-const files = require.context('./components', true, /\.vue$/i);
+const files = require.context('./Admin/components', true, /\.vue$/i);
 files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
-const files2 = require.context('./views/Admin', true, /\.vue$/i);
+const files2 = require.context('./Admin/views', true, /\.vue$/i);
 files2.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files2(key).default));
 
 /**

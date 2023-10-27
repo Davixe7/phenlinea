@@ -9,11 +9,6 @@ class ResidentInvoice extends Model
   protected $fillable = [
     'apto',
     'resident_invoice_batch_id',
-    'link',
-    'note',
-    'periodo',
-    'emision',
-    'limite',
     'concepto1',
     'vencido1',
     'actual1',
@@ -22,11 +17,13 @@ class ResidentInvoice extends Model
     'actual2',
     'concepto3',
     'vencido3',
-    'actual3'
+    'actual3',
+    'ultimo_pago',
+    'fecha_ultimo_pago'
   ];
   
   protected $casts = [
-    'total' => 'integer'
+    'total' => 'double'
   ];
   
   protected $appends = ['total'];
@@ -44,6 +41,14 @@ class ResidentInvoice extends Model
     return $this->belongsTo(Extension::class, 'apto', 'name');
   }
 
+  function getTotalAttribute(){
+    $total = 0;
+    for ($i=1; $i < 7; $i++) { 
+      $total += $this->{"vencido{$i}"} + $this->{"actual{$i}"};
+    }
+    return $total;
+  }
+
   public function getPeriodoEsAttribute(){
     return ucfirst( \Carbon\Carbon::parse( $this->periodo )->translatedFormat('F d') );
   }
@@ -53,12 +58,5 @@ class ResidentInvoice extends Model
   public function getLimiteEsAttribute(){
     return ucfirst( \Carbon\Carbon::parse( $this->limite )->translatedFormat('F d') );
   }
-  
-  public function getTotalAttribute(){
-    $total = 0;
-    for($i = 1; $i < 7; $i++){
-        $total += $this->{"vencido$i"} + $this->{"actual$i"};
-    }
-    return $total;
-  }
+
 }

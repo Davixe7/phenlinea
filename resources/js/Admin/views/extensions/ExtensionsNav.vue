@@ -1,7 +1,12 @@
 <template>
   <ul class="nav nav-pills nav-fill mb-3">
     <li class="nav-item">
-      <a class="nav-link" :href="`/extensions/${extension.id}/edit`">Apartamento</a>
+      <a
+        class="nav-link"
+        :href="`/extensions/${extension.id}/edit`"
+        :class="{ disabled: !extension.id, active: page == 'extension' }">
+        Apartamento
+      </a>
     </li>
     <li class="nav-item">
       <a class="nav-link" :class="{ disabled: !extension.id, active: page == 'residents' }"

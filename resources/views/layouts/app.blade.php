@@ -14,13 +14,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
   <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-  <title>Home</title>
-  <style>
-    body {
-      background: #F3F6FC;
-      font-family: 'Roboto', sans-serif;
-    }
-  </style>
+  <title>PHenlínea</title>
   @yield('styles')
 </head>
 

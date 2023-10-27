@@ -29,6 +29,20 @@ class CreateResidentInvoicesTable extends Migration
             $table->unsignedBigInteger('vencido3')->nullable();
             $table->unsignedBigInteger('actual3')->nullable();
 
+            $table->string('concepto4')->nullable();
+            $table->unsignedBigInteger('vencido4')->nullable();
+            $table->unsignedBigInteger('actual4')->nullable();
+
+            $table->string('concepto5')->nullable();
+            $table->unsignedBigInteger('vencido5')->nullable();
+            $table->unsignedBigInteger('actual5')->nullable();
+
+            $table->string('concepto6')->nullable();
+            $table->unsignedBigInteger('vencido6')->nullable();
+            $table->unsignedBigInteger('actual6')->nullable();
+
+            $table->unsignedDouble('ultimo_pago')->nullable();
+            $table->date('fecha_ultimo_pago')->nullable();
             $table->foreignId('resident_invoice_batch_id');
             $table->timestamps();
         });

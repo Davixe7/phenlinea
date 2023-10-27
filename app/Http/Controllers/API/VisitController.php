@@ -37,7 +37,8 @@ class VisitController extends Controller
     {
       $request->validate([
         'name' => 'required',
-        'extension_name' => 'required'
+        'extension_name' => 'required',
+        'dni' => 'required'
       ]);
       
       $extension_id = $request->extension_id ?: null;

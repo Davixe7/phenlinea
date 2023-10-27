@@ -59,11 +59,17 @@
               <td>
                 <div class="btn-group">
                   @if( $invoice->status != 'pagado' )
-                  <a id="facturasDropdown" class="nav-link" target="blank" href="https://winred.co/payment/invoice-wallet.jsp?step=1&pId=108">
+                  <a
+                    id="facturasDropdown"
+                    class="nav-link"
+                    target="blank"
+                    href="https://winred.co/payment/invoice-wallet.jsp?step=1&pId=108">
                     Pagar | <img src="https://corbanca.com.co/wp-content/uploads/2022/06/pse.png" style="width: 100px;">
                   </a>
                   @endif
-                  <a href="{{ route('invoices.show', ['invoice'=>$invoice->id]) }}" class="btn btn-link btn-sm">
+                  <a
+                    href="{{ route('invoices.show', ['invoice'=>$invoice->id]) }}"
+                    class="btn btn-link btn-sm">
                     VER FACTURA
                   </a>
                 </div>

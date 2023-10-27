@@ -11,6 +11,7 @@
 |
 */
 
+use App\Http\Controllers\InvoiceController;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('test', function () {
@@ -102,8 +103,9 @@ Route::name('admin.')->prefix('admin')->middleware('auth:web')->group(function (
   Route::get('admins/{admin}/export/', 'ExportController@exportCensus');
   Route::get('export/admins', 'ExportController@exportAdmins')->name('admins.export');
 
-  Route::put('invoices/{invoice}', 'Admin\InvoiceController@update')->name('invoices.update');
   Route::get('invoices/upload', 'Admin\InvoiceController@upload')->name('invoices.upload');
+  Route::put('invoices/{invoice}', 'Admin\InvoiceController@update')->name('invoices.update');
+  Route::get('invoices/{invoice}', 'Admin\InvoiceController@show')->name('invoices.show');
   Route::post('invoices/import', 'Admin\InvoiceController@import')->name('invoices.import');
 
   Route::get('documentos', 'Admin\DocumentosController@index')->name('documentos.index');
@@ -126,7 +128,9 @@ Route::middleware(['auth:admin', 'phoneverified', 'suspended'])->group(function 
   Route::resource('residents', 'ResidentController');
 
   Route::resource('visits', 'VisitController')->only(['index'])->middleware('modules:visits');
-  Route::resource('invoices', App\Http\Controllers\InvoiceController::class)->only(['index', 'show', 'update']);
+
+  Route::resource('invoices', InvoiceController::class)->only(['index', 'show', 'update']);
+
   Route::prefix('extensions/{extension}')->name('extensions.')
   ->group(fn () => Route::resource('vehicles', App\Http\Controllers\VehicleController::class));
   Route::resource('vehicles', App\Http\Controllers\VehicleController::class);

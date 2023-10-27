@@ -22,6 +22,11 @@
 </head>
 
 <body>
+  @if(!auth()->check() || !auth()->user()->device_community_id)
+    <div class="alert alert-danger text-center">
+      Esta unidad no pertenece a un comunidad zhyaf
+    </div>
+  @endif
   @include('layouts.navbar.new', ['title'=>'Menú principal'])
 
   <div class="container">

@@ -275,7 +275,7 @@
             </a>
             <button dark v-if="extension.id" class="btn btn-primary justify-content-center text-center"
               @click="updateCensus()" :loading="loading">
-              Actualizar
+              Actualizars
             </button>
           </div>
         </div>

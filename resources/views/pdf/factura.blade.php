@@ -111,7 +111,7 @@
               Referente de pago: {{ $resident_invoice->resident_invoice_batch->admin_id }}-{{ $resident_invoice->apto }}
             </div>
             <div class="extension-owner">
-              {{ $resident_invoice->apartment->residents->count() ? $resident_invoice->apartment->residents->first()->name : '' }}
+              {{ $resident_invoice->extension->residents->count() ? $resident_invoice->extension->residents->first()->name : '' }}
               {{-- Juan Ignacio Restrepo Restrepo | Sonia Contanza Restrepo Zapata --}}
             </div>
           </div>
@@ -153,14 +153,13 @@
               </tr>
             </thead>
             <tbody>
-              @for ($i = 1; $i < 7; $i++)
-              @if( !$resident_invoice->{"concepto$i"} ) @continue @endif
+              @foreach ($resident_invoice->resident_invoice_items as $item)
               <tr>
-                <td style="text-align: left; padding: 8px 5px;">{{ $resident_invoice->{"concepto$i"} ?: 0 }}</td>
-                <td style="text-align: right; padding: 8px 5px;">{{ $resident_invoice->{"vencido$i"}  ?: 0 }}</td>
-                <td style="text-align: right; padding: 8px 5px;">{{ $resident_invoice->{"actual$i"}   ?: 0 }}</td>
+                <td style="text-align: left; padding: 8px 5px;"> {{ $item->title }}</td>
+                <td style="text-align: right; padding: 8px 5px;">{{ $item->pending }}</td>
+                <td style="text-align: right; padding: 8px 5px;">{{ $item->current }}</td>
               </tr>
-              @endfor
+              @endforeach
               <tr>
                 <td colspan="2" style="text-align: left; padding: 8px 5px;">
                   <b>Total Valor a Pagar</b>

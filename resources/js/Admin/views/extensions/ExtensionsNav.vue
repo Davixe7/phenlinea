@@ -16,6 +16,14 @@
       <a class="nav-link" :class="{ disabled: !extension.id, active: page == 'vehicles' }"
         :href="`/extensions/${extension.id}/vehicles`">Vehículos</a>
     </li>
+    <li class="nav-item">
+      <a
+        class="nav-link"
+        :class="{ disabled: !extension.id, active: page == 'invoices' }"
+        :href="`/extensions/${extension.id}/invoices`">
+        Facturación
+      </a>
+    </li>
   </ul>
 </template>
 

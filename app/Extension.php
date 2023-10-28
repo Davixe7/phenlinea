@@ -48,11 +48,11 @@ class Extension extends Authenticatable implements HasMedia
   ];
   
   protected $appends = [
-    'parking_numbers_str'
+    // 'parking_numbers_str'
   ];
 
   public function resident_invoices(){
-    return $this->hasMany(ResidentInvoice::class, 'apto', 'name');
+    return $this->hasMany(ResidentInvoice::class);
   }
 
   public function admin(){

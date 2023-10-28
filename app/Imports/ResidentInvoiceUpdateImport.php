@@ -2,10 +2,13 @@
 
 namespace App\Imports;
 
+use App\Extension;
 use App\ResidentInvoice;
 use App\ResidentInvoiceBatch;
+use App\ResidentInvoicePayment;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
@@ -25,26 +28,32 @@ class ResidentInvoiceUpdateImport implements ToCollection, WithHeadingRow
   public function collection(Collection $rows)
   {
     foreach ($rows as $row) {
-      ResidentInvoice::whereApto($row['apto'])
-      ->whereResidentInvoiceBatchId($this->batch->id)->update([
-        'ultimo_pago1'       => $row['ultimo_pago1'],
-        'fecha_ultimo_pago1' => Carbon::parse($row['fecha_ultimo_pago1']),
+      $resident_invoice = ResidentInvoice::where('resident_invoice_batch_id', $this->batch->id)->where('apto', $row['apto'])->first();
 
-        'ultimo_pago2'       => $row['ultimo_pago2'],
-        'fecha_ultimo_pago2' => Carbon::parse($row['fecha_ultimo_pago2']),
-
-        'ultimo_pago3'       => $row['ultimo_pago3'],
-        'fecha_ultimo_pago3' => Carbon::parse($row['fecha_ultimo_pago3']),
-
-        'ultimo_pago4'       => $row['ultimo_pago4'],
-        'fecha_ultimo_pago4' => Carbon::parse($row['fecha_ultimo_pago4']),
-
-        'ultimo_pago5'       => $row['ultimo_pago5'],
-        'fecha_ultimo_pago5' => Carbon::parse($row['fecha_ultimo_pago5']),
-
-        'ultimo_pago6'       => $row['ultimo_pago6'],
-        'fecha_ultimo_pago6' => Carbon::parse($row['fecha_ultimo_pago6']),
+      $resident_invoice_payment = ResidentInvoicePayment::firstOrCreate([
+        'resident_invoice_id' => $resident_invoice->id,
+        'amount'              => $row['ultimo_pago'],
+        'date'                => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['fecha_ultimo_pago'])
       ]);
+
+      $items   = $resident_invoice->resident_invoice_items()->with('resident_invoice_payments');
+      $balance = $resident_invoice_payment->amount;
+
+      $items->each(function($item) use (&$balance, $resident_invoice_payment){
+        Storage::append('balances.log', $balance);
+        if( $balance <= 0 ){ return false; }
+        $debt  = ($item->current + $item->pending);
+
+        if( $item->resident_invoice_payments->count() ) {
+          $paid = $item->resident_invoice_payments->reduce(fn(?float $carry, $payment)=>($carry + $payment->amount));
+          if( $paid >= $debt ){ return; }
+          $debt  = $debt - $paid;
+        }
+
+        $abono   = $balance >= $debt ? $debt : $balance;
+        $balance = $balance - $abono;
+        $item->resident_invoice_payments()->attach($resident_invoice_payment->id, ['amount'=>$abono]);
+      });
     }
   }
 }

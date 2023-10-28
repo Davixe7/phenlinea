@@ -49,11 +49,15 @@
       'name' => 'invoices.index',
       'icon' => 'facturas.png'
       ],
+      [
+      'name' => 'resident_invoice_batches.index',
+      'icon' => 'facturas.png'
+      ],
       ]
       @endphp
 
       @foreach($routes as $route)
-      <div class="col-sm-6 col-lg-3">
+      <div class="col-sm-6 col-lg">
         <a href="{{ route($route['name']) }}">
           <div class="menu-option">
             <div class="menu-option__icon">

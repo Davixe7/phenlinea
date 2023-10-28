@@ -3245,7 +3245,7 @@ var render = function render() {
     attrs: {
       href: "/resident-invoice-batches"
     }
-  }, [_c("h1", [_vm._v("Lote.. " + _vm._s(_vm.resident_invoice_batch.id))])])]), _vm._v(" "), _c("div", {
+  }, [_c("h1", [_vm._v("Lote " + _vm._s(_vm.resident_invoice_batch.id))])])]), _vm._v(" "), _c("div", {
     staticClass: "col-lg-6 px-3 d-flex justify-content-end align-items-center"
   }, [_c("input", {
     directives: [{
@@ -3276,7 +3276,7 @@ var render = function render() {
   })])]), _vm._v(" "), _c("table", {
     staticClass: "table"
   }, [_vm._m(0), _vm._v(" "), _c("tbody", _vm._l(_setup.results, function (invoice) {
-    return _c("tr", [_c("td", [_vm._v(_vm._s(invoice.apto))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(invoice.total))]), _vm._v(" "), _c("td", [_c("div", {
+    return _c("tr", [_c("td", [_vm._v(_vm._s(String(invoice.id).padStart(4, "0")))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(invoice.apto))]), _vm._v(" "), _c("td", [_vm._v(_vm._s(invoice.total))]), _vm._v(" "), _c("td", [_c("div", {
       staticClass: "btn-group"
     }, [_c("a", {
       staticClass: "btn btn-sm btn-link",
@@ -3299,15 +3299,13 @@ var render = function render() {
     attrs: {
       href: "/resident-invoice-batches/".concat(_vm.resident_invoice_batch.id, "/edit")
     }
-  }, [_c("i", {
-    staticClass: "material-symbols-outlined"
-  }, [_vm._v("add")])])]);
+  }, [_vm._v("\n    Cargar pagos \n  ")])]);
 };
 var staticRenderFns = [function () {
   var _vm = this,
     _c = _vm._self._c,
     _setup = _vm._self._setupProxy;
-  return _c("thead", [_c("tr", [_c("th", [_vm._v("Apto.")]), _vm._v(" "), _c("th", [_vm._v("Total")]), _vm._v(" "), _c("th", [_vm._v("Acciones")])])]);
+  return _c("thead", [_c("tr", [_c("th", [_vm._v("ID")]), _vm._v(" "), _c("th", [_vm._v("Apto.")]), _vm._v(" "), _c("th", [_vm._v("Total")]), _vm._v(" "), _c("th", [_vm._v("Acciones")])])]);
 }];
 render._withStripped = true;
 

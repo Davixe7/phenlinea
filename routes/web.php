@@ -11,8 +11,23 @@
 |
 */
 
+use App\Extension;
 use App\Http\Controllers\InvoiceController;
+use App\ResidentInvoice;
+use App\ResidentInvoicePayment;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
+Route::get('numbers', function(){
+  $e = Extension::select('phone_1', 'phone_2', 'phone_3', 'phone_4')->get();
+  $e = array_filter(collect($e->toArray())->flatten()->toArray());
+  return count($e);
+});
+
+Route::get('/pago/{id}', function(Request $request){
+  $payment = ResidentInvoicePayment::find($request->id);
+  return view('pdf.recibo', compact('payment'));
+});
 
 Route::get('test', function () {
   $visits = App\Visit::select(['plate', 'extension_name'])->groupBy('plate')->get();
@@ -123,6 +138,7 @@ Route::middleware(['auth:admin', 'phoneverified', 'suspended'])->group(function 
   Route::resource('extensions', 'ExtensionController');
   Route::prefix('extensions/{extension}')->name('extensions.')->group(function(){
     Route::resource('residents', 'ResidentController');
+    Route::get('invoices', 'ResidentInvoiceController@index');
   });
 
   Route::resource('residents', 'ResidentController');

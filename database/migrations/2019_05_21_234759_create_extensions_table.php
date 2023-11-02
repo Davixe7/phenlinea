@@ -22,6 +22,12 @@ class CreateExtensionsTable extends Migration
       $table->string('phone_2')->nullable();
       $table->string('phone_3')->nullable();
       $table->string('phone_4')->nullable();
+
+      $table->foreignId('resident_id')->nullable();
+      $table->foreignId('resident_id_2')->nullable();
+      $table->foreignId('resident_id_3')->nullable();
+      $table->foreignId('resident_id_4')->nullable();
+
       $table->string('owner_name')->nullable();
       $table->string('owner_phone')->nullable();
       $table->integer('pets_count')->nullable()->default(0);

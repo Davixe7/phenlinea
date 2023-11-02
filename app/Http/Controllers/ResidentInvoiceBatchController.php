@@ -59,7 +59,8 @@ class ResidentInvoiceBatchController extends Controller
    */
   public function show(ResidentInvoiceBatch $residentInvoiceBatch)
   {
-    return view('admin.resident-invoice-batches.show', ['resident_invoice_batch' => $residentInvoiceBatch->load('resident_invoices')]);
+    $residentInvoiceBatch->load('resident_invoices.resident_invoice_payments');
+    return view('admin.resident-invoice-batches.show', ['resident_invoice_batch' => $residentInvoiceBatch]);
   }
 
   /**

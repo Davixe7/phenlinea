@@ -47,7 +47,9 @@
                 </a>
 
                 <a
-                  :href="`/descargar-factura/${invoice.id}`"
+                  v-if="payments = invoice.resident_invoice_payments.length ? invoice.resident_invoice_payments : false"
+                  :href="`/pago/${payments[payments.length-1].id}`"
+                  target="_blank"
                   class="btn btn-sm btn-link">
                   Recibo
                 </a>

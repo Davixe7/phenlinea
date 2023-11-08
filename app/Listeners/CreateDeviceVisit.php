@@ -6,7 +6,7 @@ use App\Traits\Devices;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Storage;
 
-class CreateDeviceVisit implements ShouldQueue
+class CreateDeviceVisit
 {
     /**
      * Create the event listener.
@@ -27,6 +27,8 @@ class CreateDeviceVisit implements ShouldQueue
     public function handle($event)
     {
       if( !$event->visit->admin->device_serial_number ){ return; }
+      if( !$event->visit->admin->device_community_id ){ return; }
+      if( !$event->visit->admin->device_building_id ){ return; }
       $devices = new Devices();
 
       if( $event->visit->visitor->getFirstMedia('picture') ){

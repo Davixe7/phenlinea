@@ -3545,12 +3545,13 @@ var render = function render() {
       attrs: {
         href: "/descargar-factura/".concat(invoice.id)
       }
-    }, [_vm._v("\n                Factura\n              ")]), _vm._v(" "), _c("a", {
+    }, [_vm._v("\n                Factura\n              ")]), _vm._v(" "), (_vm.payments = invoice.resident_invoice_payments.length ? invoice.resident_invoice_payments : false) ? _c("a", {
       staticClass: "btn btn-sm btn-link",
       attrs: {
-        href: "/descargar-factura/".concat(invoice.id)
+        href: "/pago/".concat(_vm.payments[_vm.payments.length - 1].id),
+        target: "_blank"
       }
-    }, [_vm._v("\n                Recibo\n              ")]), _vm._v(" "), _c("a", {
+    }, [_vm._v("\n                Recibo\n              ")]) : _vm._e(), _vm._v(" "), _c("a", {
       staticClass: "btn btn-sm btn-link",
       attrs: {
         href: "/descargar-factura/".concat(invoice.id)

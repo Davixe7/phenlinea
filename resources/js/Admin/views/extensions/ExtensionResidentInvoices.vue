@@ -3,10 +3,24 @@
     <extensions-nav :extension="extension" :page="'invoices'"></extensions-nav>
     <div class="table-responsive">
       <div class="d-flex aling-items-center">
-        <div class="col-lg-6">
+        <div class="col-lg-4">
           <h1>
             Facturas del apartamento
           </h1>
+        </div>
+        <div class="col-lg-8 d-flex justify-content-end">
+          <span class="d-flex align-items-center me-3">
+            <i class="material-symbols-outlined receipt_long me-1">receipt_long</i>
+            <span class="title">Recibo de caja</span>
+          </span>
+          <span class="d-flex align-items-center me-3">
+            <i class="material-symbols-outlined receipt me-1">receipt</i>
+            <span class="title">Factura</span>
+          </span>
+          <span class="d-flex align-items-center me-3">
+            <img src="/img/pse.png" class="me-1">
+            <span class="title">Pago PSE</span>
+          </span>
         </div>
       </div>
 
@@ -32,14 +46,16 @@
               <div class="btn-group">
                 <a
                   :href="`/descargar-factura/${invoice.id}`"
+                  target="_blank"
                   class="btn btn-sm btn-link">
-                  Factura
+                  <i class="material-symbols-outlined receipt_long">receipt_long</i>
                 </a>
 
                 <a
-                  :href="`/descargar-factura/${invoice.id}`"
+                  v-if="payments = invoice.resident_invoice_payments.length ? invoice.resident_invoice_payments : false"
+                  :href="`/pago/${payments[payments.length-1].id}`"
                   class="btn btn-sm btn-link">
-                  Recibo
+                  <i class="material-symbols-outlined receipt">receipt</i>
                 </a>
               </div>
             </td>
@@ -63,7 +79,16 @@ const results = computed(() => {
 })
 </script>
 
-<style>
+<style scoped>
+i.material-symbols-outlined.receipt {
+  color: #FF9B3F;
+}
+i.material-symbols-outlined.receipt_long {
+  color: #1A61A3;
+}
+.title {
+  font-size: 13px;
+}
 th, td {
   white-space: nowrap;
 }

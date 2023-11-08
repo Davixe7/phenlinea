@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Admin;
+use App\Extension;
 use App\Imports\ResidentInvoiceImport;
 use App\ResidentInvoice;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -16,8 +17,12 @@ class ResidentInvoiceController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function index()
+  public function index(Request $request, ?Extension $extension)
   {
+    if( $extension ){
+      $resident_invoices = $extension->resident_invoices;
+      return view('admin.extensions.invoices', compact('extension', 'resident_invoices'));
+    }
     $resident_invoices = auth()->user()->resident_invoices;
     return view('admin.resident-invoices.index', compact('resident_invoices'));
   }

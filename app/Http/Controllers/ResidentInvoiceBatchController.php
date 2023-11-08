@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Imports\ResidentInvoiceImport;
+use App\Imports\ResidentInvoiceUpdateImport;
 use App\ResidentInvoiceBatch;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -58,7 +59,8 @@ class ResidentInvoiceBatchController extends Controller
    */
   public function show(ResidentInvoiceBatch $residentInvoiceBatch)
   {
-    return view('admin.resident-invoice-batches.show', ['resident_invoice_batch' => $residentInvoiceBatch->load('resident_invoices')]);
+    $residentInvoiceBatch->load('resident_invoices.resident_invoice_payments');
+    return view('admin.resident-invoice-batches.show', ['resident_invoice_batch' => $residentInvoiceBatch]);
   }
 
   /**
@@ -69,7 +71,7 @@ class ResidentInvoiceBatchController extends Controller
    */
   public function edit(ResidentInvoiceBatch $residentInvoiceBatch)
   {
-    //
+    return view('admin.resident-invoice-batches.upload', ['batch'=>$residentInvoiceBatch]);
   }
 
   /**
@@ -81,7 +83,14 @@ class ResidentInvoiceBatchController extends Controller
    */
   public function update(Request $request, ResidentInvoiceBatch $residentInvoiceBatch)
   {
-    //
+    $request->validate(['file' => 'file|max:5000|mimes:xls,xlsx']);
+    $file = $request->file('file');
+    $path = $file->store('resident-invoices');
+
+    Excel::import(new ResidentInvoiceUpdateImport($residentInvoiceBatch), $path);
+    return response()->json([
+      'count' => $residentInvoiceBatch->resident_invoices()->count()
+    ]);
   }
 
   /**

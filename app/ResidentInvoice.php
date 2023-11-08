@@ -9,27 +9,16 @@ class ResidentInvoice extends Model
   protected $fillable = [
     'apto',
     'resident_invoice_batch_id',
-    'link',
-    'note',
-    'periodo',
-    'emision',
-    'limite',
-    'concepto1',
-    'vencido1',
-    'actual1',
-    'concepto2',
-    'vencido2',
-    'actual2',
-    'concepto3',
-    'vencido3',
-    'actual3'
+    'extension_id',
   ];
   
   protected $casts = [
-    'total' => 'integer'
+    'total'   => 'double',
+    'paid'    => 'double',
+    'pending' => 'double',
   ];
   
-  protected $appends = ['total'];
+  protected $appends = ['total', 'paid', 'pending'];
 
   protected $hidden  = [
     'created_at',
@@ -40,8 +29,28 @@ class ResidentInvoice extends Model
     return $this->belongsTo(ResidentInvoiceBatch::class);
   }
 
-  function apartment(){
-    return $this->belongsTo(Extension::class, 'apto', 'name');
+  function extension(){
+    return $this->belongsTo(Extension::class);
+  }
+
+  function resident_invoice_items(){
+    return $this->hasMany(ResidentInvoiceItem::class);
+  }
+
+  function resident_invoice_payments(){
+    return $this->hasMany(ResidentInvoicePayment::class);
+  }
+
+  function getTotalAttribute(){
+    return $this->resident_invoice_items->reduce(fn(?int $carry, $item) => $carry + ($item->pending + $item->current));
+  }
+
+  function getPaidAttribute(){
+    return $this->resident_invoice_payments->reduce(fn(?float $carry, $payment) => $carry + $payment->amount);
+  }
+
+  function getPendingAttribute(){
+    return $this->total - $this->paid;
   }
 
   public function getPeriodoEsAttribute(){
@@ -53,12 +62,5 @@ class ResidentInvoice extends Model
   public function getLimiteEsAttribute(){
     return ucfirst( \Carbon\Carbon::parse( $this->limite )->translatedFormat('F d') );
   }
-  
-  public function getTotalAttribute(){
-    $total = 0;
-    for($i = 1; $i < 7; $i++){
-        $total += $this->{"vencido$i"} + $this->{"actual$i"};
-    }
-    return $total;
-  }
+
 }

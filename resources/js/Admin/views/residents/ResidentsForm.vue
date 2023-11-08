@@ -103,8 +103,8 @@
 </template>
   
 <script setup>
-import { ref, computed, defineEmits, watch } from 'vue'
-import Camera from '../../../components/Camera.vue';
+import { ref, computed, watch } from 'vue'
+import Camera from '../../components/Camera.vue';
 
 const props = defineProps(['resident', 'extension'])
 const emit  = defineEmits('reset', 'residentUpdated', 'residentStored')

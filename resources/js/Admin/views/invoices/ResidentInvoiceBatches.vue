@@ -25,25 +25,25 @@
             <form ref="invoiceForm" @submit.prevent="importInvoices" method="POST" enctype="multipart/form-data">
               <div class="d-flex align-items-center justify-content-between mb-3">
                 <label for="#" class="mb-2">Periodo</label>
-                <input type="date" v-model="invoice.periodo" class="form-control" required>
+                <input type="date" v-model="invoice.periodo" class="form-control" required :disabled="batch && batch.id">
               </div>
               <div class="d-flex align-items-center justify-content-between mb-3">
                 <label for="#" class="mb-2">Emisión</label>
-                <input type="date" v-model="invoice.emision" class="form-control" value="" required>
+                <input type="date" v-model="invoice.emision" class="form-control" value="" required :disabled="batch && batch.id">
               </div>
               <div class="d-flex align-items-center justify-content-between mb-3">
                 <label for="#" class="mb-2">Pagar antes de</label>
-                <input type="date" v-model="invoice.limite" class="form-control" required>
+                <input type="date" v-model="invoice.limite" class="form-control" required :disabled="batch && batch.id">
               </div>
 
               <div class="d-flex align-items-center justify-content-between mb-3">
                 <label for="">URL de Pago Online</label>
-                <input type="url" class="form-control" v-model="invoice.link" placeholder="https://enlacebancario.com">
+                <input type="url" class="form-control" v-model="invoice.link" placeholder="https://enlacebancario.com" :disabled="batch && batch.id">
               </div>
               
               <div class="form-group">
                 <label for="" class="form-label">Notas</label>
-                <textarea rows="3" class="form-control" v-model="invoice.note" placeholder="Escribe alguna nota para las facturas"></textarea>
+                <textarea rows="3" class="form-control" v-model="invoice.note" placeholder="Escribe alguna nota para las facturas" :disabled="batch && batch.id"></textarea>
               </div>
               
               <div class="d-flex align-items-center pt-3" style="border-top: 1px solid rgba(0,0,0,.087);">
@@ -87,7 +87,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+
+const props       = defineProps(['batch'])
 
 const invoiceForm = ref(null)
 const fileInput   = ref(null)
@@ -98,14 +100,24 @@ const success     = ref(false)
 const progress    = ref(0)
 const importedInvoicesCount = ref(0)
 
-function importInvoices(){
-  if( !invoiceForm.value.reportValidity() ) return
+function loadData(){
   uploading.value = true
   let data = new FormData();
   data.append('file', fileInput.value.files[0])
   Object.keys( invoice.value ).forEach(key => data.append(key, invoice.value[key]))
+  if( props.batch?.id ){
+    data.append('_method', 'PUT')
+  }
+  return data
+}
 
-  axios.post('/resident-invoice-batches/import', data, {
+function importInvoices(){
+  if( !invoiceForm.value.reportValidity() ) return
+  let url = props.batch?.id
+            ? `/resident-invoice-batches/${props.batch.id}`
+            : '/resident-invoice-batches/import'
+
+  axios.post(url, loadData(), {
     onUploadProgress: function (progressEvent) {
       console.log(progressEvent.loaded)
       progress.value = Math.round((progressEvent.loaded / progressEvent.total) * 100);
@@ -118,6 +130,12 @@ function importInvoices(){
   .catch(error=> data.log(error.response))
   .finally(() => uploading.value = false)
 }
+
+onMounted(()=>{
+  if( props.batch?.id ){
+    invoice.value = {...props.batch}
+  }
+})
 </script>
 
 <style scoped>

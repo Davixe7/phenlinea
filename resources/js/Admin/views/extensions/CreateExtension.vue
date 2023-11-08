@@ -1,18 +1,6 @@
 <template>
   <div id="create-census">
-    <ul class="nav nav-pills nav-fill mb-3">
-      <li class="nav-item">
-        <a class="nav-link active" aria-current="page" href="#">Apartamento</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" :class="{ disabled: !extension.id }"
-          :href="`/extensions/${extension.id}/vehicles`">Vehículos</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" :class="{ disabled: !extension.id }"
-          :href="`/extensions/${extension.id}/residents`">Residentes</a>
-      </li>
-    </ul>
+    <extensions-nav :extension="extension" :page="'extension'"/>
 
     <form ref="storeCensusForm" id="create-census-form" @submit.prevent="extension.id ? updateCensus : storeCensus">
       <div class="row" style="margin-bottom: 50px;">
@@ -287,7 +275,7 @@
             </a>
             <button dark v-if="extension.id" class="btn btn-primary justify-content-center text-center"
               @click="updateCensus()" :loading="loading">
-              Actualizar
+              Actualizars
             </button>
           </div>
         </div>
@@ -297,11 +285,11 @@
 </template>
     
 <script setup>
-import { onMounted, ref } from 'vue'
-import Residents from '../residents/Residents.vue'
-import "vue-toastification/dist/index.css";
 import Vue from 'vue'
-import { createToastInterface } from 'vue-toastification';
+import { onMounted, ref } from 'vue'
+import ExtensionsNav from './ExtensionsNav.vue'
+import "vue-toastification/dist/index.css"
+import { createToastInterface } from 'vue-toastification'
 
 var toast = null
 const props = defineProps(['_extension'])

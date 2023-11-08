@@ -66,7 +66,7 @@
 import Vue from 'vue'
 import { onMounted, ref } from 'vue'
 
-import ExtensionsNav from './../ExtensionsNav.vue'
+import ExtensionsNav from './../extensions/ExtensionsNav.vue'
 import CreateVehicle from './CreateVehicle.vue';
 import { createToastInterface } from "vue-toastification";
 

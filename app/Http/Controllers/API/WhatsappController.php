@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use App\WhatsappClient;
+use Exception;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Storage;
 
@@ -39,8 +40,12 @@ class WhatsappController extends Controller
     $media_url = null;
     
     if ( $file = $request->file('media') ) {
-      $extension->addMedia( $file )->toMediaCollection('deliveries');
-      $media_url = $extension->getMedia('deliveries')->last()->getUrl(); 
+      try {
+        $extension->addMedia( $file )->toMediaCollection('deliveries');
+        $media_url = $extension->getMedia('deliveries')->last()->getUrl(); 
+      }catch(Exception $e){
+        Storage::append('deliveries.log', $e->getMessage());
+      }
     }
 
     $admin_name = auth()->user()->admin ? auth()->user()->admin->name : '';

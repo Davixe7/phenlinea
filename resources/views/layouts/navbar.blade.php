@@ -1,4 +1,4 @@
-<div class="ph-navbar-wrap">
+<div class="ph-navbar-wrap" style="background: #345493;">
   <nav class="ph-navbar">
     <div class="ph-navbar-brand" href="{{ url('/') }}">
       PHEnlinea

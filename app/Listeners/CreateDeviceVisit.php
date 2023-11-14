@@ -28,7 +28,7 @@ class CreateDeviceVisit
     {
       if( !$event->visit->admin->device_serial_number ){ return; }
       if( !$event->visit->admin->device_community_id ){ return; }
-      if( !$event->visit->admin->device_building_id ){ return; }
+      
       $devices = new Devices();
 
       if( $event->visit->visitor->getFirstMedia('picture') ){

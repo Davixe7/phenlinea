@@ -66,6 +66,7 @@ class WhatsappController extends Controller
       $data['number'] = $extension->id == '13955' ? '584147912134' : '57' . $phone;
       try {
         $response = $this->api->get('send', ['query' => $data]);
+        sleep(1);
       }
       catch(GuzzleException $e){
         Storage::append( 'deliveries.log', $e->getMessage());

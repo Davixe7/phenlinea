@@ -141,7 +141,7 @@ class Extension extends Authenticatable implements HasMedia
   }
   
   public function getValidWhatsappPhoneNumbersAttribute(){
-    return collect($this->phone_1, $this->phone_2, $this->phone_3, $this->phone_4)
+    return collect([$this->phone_1, $this->phone_2, $this->phone_3, $this->phone_4])
     ->reject(fn($phone) => !$phone || $phone[0] != '3')
     ->take(2)
     ->toArray();

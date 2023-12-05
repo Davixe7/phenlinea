@@ -45,16 +45,23 @@
       </div>
 
       <div class="row">
-        <div class="form-group col-6">
+        <div class="form-group col-12">
           <label for="dni">Cédula <span class="text-danger">*</span></label>
           <input type="tel" class="form-control" v-model="resident.dni" minlength="5" maxlength="11"
             :class="{ 'is-invalid': errors.dni }">
           <div v-if="errors.dni" class="invalid-feedback">{{ errors.dni[0] }}</div>
         </div>
 
-        <div class="form-group col-6">
+        <div class="form-group col-12">
           <label for="card">Tarjeta</label>
-          <input type="tel" class="form-control" v-model="resident.card" minlength="5" maxlength="11">
+          <input
+            type="tel"
+            class="form-control"
+            :class="{'is-invalid': errors && errors.card}"
+            v-model="resident.card"
+            minlength="5"
+            maxlength="11">
+            <div v-if="errors && errors.card" class="invalid-feedback">{{ errors.card[0] }}</div>
         </div>
       </div>
 
@@ -72,12 +79,21 @@
 
       <div class="form-group">
         <label for="card">Foto</label>
-        <div class="d-flex">
-          <button type="button" class="btn btn-primary me-4" @click="camera = true">
+        <div class="d-flex align-items-center">
+          <button
+            @click="camera = true"
+            type="button"
+            class="btn btn-primary d-flex me-4"
+            >
             <i class="material-symbols-outlined">camera</i>
           </button>
-          <input type="file" class="form-control" ref="fileInput"
-            @change="fileInput.files.length ? (picture = fileInput.files[0]) : ''">
+
+          <input
+            ref="fileInput"
+            @change="fileInput.files.length ? (picture = fileInput.files[0]) : ''"
+            type="file"
+            class="form-control"
+            >
         </div>
       </div>
 
@@ -131,6 +147,7 @@ function updatePicture(blob) {
 
 function loadData() {
   loading.value = true
+  errors.value = {}
   let data = new FormData();
   data.append('extension_id', props.extension.id)
   Object.keys(resident.value).map(key => {
@@ -144,7 +161,11 @@ function loadData() {
 function updateResident() {
   let data = loadData()
   axios.post(`/residents/${resident.value.id}`, data)
-  .then(response => emit('residentUpdated', response.data.data))
+  .then(response => {
+    emit('residentUpdated', response.data.data)
+    fileInput.value.value = ''
+    picture.value = ''
+  })
   .catch(error => {
     if (error.response.status == '422') {
       errors.value = error.response.data.errors ? error.response.data.errors : {}
@@ -156,7 +177,11 @@ function updateResident() {
 function storeResident() {
   let data = loadData()
   axios.post('residents', data)
-  .then(response => emit('residentStored', response.data.data))
+  .then(response => {
+    emit('residentStored', response.data.data)
+    fileInput.value.value = ''
+    picture.value = ''
+  })
   .catch(error   => {
     if (error.response.status == '422') {
       errors.value = error.response.data.errors ? error.response.data.errors : {}
@@ -169,5 +194,15 @@ function storeResident() {
 <style lang="scss" scoped>
 .form-check-label {
   color: #0075ff;
-}</style>
+}
+label {
+  font-size: .9rem;
+}
+.form-group {
+  margin-bottom: .5rem;
+}
+.form-group .form-control {
+  border: 1px solid #000;
+}
+</style>
 

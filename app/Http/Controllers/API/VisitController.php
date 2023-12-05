@@ -70,8 +70,8 @@ class VisitController extends Controller
         "plate"        => $request->plate,
       ]);
 
-      if( $request->file('picture') ){
-        $visitor->addMediaFromRequest('picture')->toMediaCollection('picture');
+      if( $picture = $request->file('picture') ){
+        $visitor->addMedia( $picture )->toMediaCollection('picture');
       }
 
       VisitCreatedEvent::dispatch( $visit );

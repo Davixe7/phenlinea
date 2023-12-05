@@ -42,7 +42,9 @@
             <td>
               <i v-if="resident.disability" class="material-symbols-outlined">done</i>
             </td>
-            <td>{{ resident.device_synced ? 'SÍ' : 'NO' }}</td>
+            <td>
+              {{ resident.device_synced ? 'SÍ' : 'NO' }}
+            </td>
             <td class="d-flex align-items-center justify-content-end">
               <a href="#" @click.prevent="$emit('residentSelection', resident)" class="me-2">
                 <i class="material-symbols-outlined">edit</i>

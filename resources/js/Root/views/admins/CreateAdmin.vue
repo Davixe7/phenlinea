@@ -152,7 +152,10 @@ function loadData() {
   let picture = pictureInput.value.files[0]
   if( picture ){ data.append('picture', picture)}
 
-  Object.keys(props.admin).forEach(key => data.append(key, props.admin[key]))
+  Object.keys(props.admin).forEach(key => {
+    let nullSafeValue = props.admin[key] == null ? '' : props.admin[key]
+    data.append(key, nullSafeValue)
+  })
   return data;
 }
 

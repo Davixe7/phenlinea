@@ -11,6 +11,19 @@
 @endsection
 
 @section('content')
+@if( !count( $resident_invoice_batches ) )
+  <div style="height: calc(100vh - 200px); display: flex; align-items: center; justify-content: center;">
+    <div class="text-center">
+      <img src="{{ asset('img/empty_invoices.png') }}" alt="" class="mb-3">
+      <p>No hay facturas existentes</p>
+      <a
+        href="/resident-invoice-batches/upload"
+        class="btn btn-primary">
+        Cargar lote de facturas
+      </a>
+    </div>
+  </div>
+@else
 <div class="table-responsive">
   <table class="table">
     <thead>
@@ -50,4 +63,5 @@
     <i class="material-symbols-outlined">add</i>
   </a>
 </div>
+@endif
 @endsection

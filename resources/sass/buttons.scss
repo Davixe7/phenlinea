@@ -23,6 +23,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  position: fixed;
+  right: 30px;
+  bottom: 30px;
 }
 .form-control {
   font-family: 'Roboto', sans-serif !important;

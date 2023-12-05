@@ -14,11 +14,11 @@ class CreateResidentInvoicesTable extends Migration
     public function up()
     {
         Schema::create('resident_invoices', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
+            $table->timestamps();
             $table->string('apto');
             $table->foreignId('extension_id');
             $table->foreignId('resident_invoice_batch_id');
-            $table->timestamps();
         });
     }
 

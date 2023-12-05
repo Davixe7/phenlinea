@@ -50,4 +50,8 @@ class Resident extends Model implements HasMedia
   public function getPictureAttribute(){
     return $this->getFirstMediaUrl('picture');
   }
+
+  public function registerMediaCollections(): void{
+    $this->addMediaCollection('picture')->singleFile();
+  }
 }

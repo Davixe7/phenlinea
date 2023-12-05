@@ -79,8 +79,13 @@ class ExtensionController extends Controller
         'resident_id_4'    => $request->resident_id_4,
       ]);
 
-      $devices = new Devices();
-      $devices->addRoom($extension);
+      if( auth()->user()->device_building_id ){
+        $devices = new Devices();
+        if( !$devices->addRoom($extension) ){
+          $extension->delete();
+          abort(500, 'Error al sincronizar con la plataforma de dispositivos');
+        }
+      }
 
       return new CensusResource( $extension );
     }

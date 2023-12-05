@@ -72,6 +72,7 @@
 
     <div class="fab-container">
       <button
+	      style="width: 50px; height: 50px; border-radius: 50%; position: fixed; bottom: 30px; right: 30px; display: flex; align-items: center; justify-content: center;"
         color="primary"
         data-toggle="modal"
         data-target="#adminEditModal"
@@ -166,7 +167,7 @@ function editPayment(admin) {
 }
 
 function updateAdmin(admin) {
-  rows.value.splice( rows.value.indexOf( adminToEdit ), 1, admin )
+  results.value.splice( results.value.indexOf( adminToEdit ), 1, admin )
   $(AdminsModal.value).modal('hide')
 }
 
@@ -190,6 +191,16 @@ onMounted(() => {
 </script>
 
 <style>
+label {
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+input.form-control {
+  height: 45px;
+}
+.form-control {
+  margin-bottom: 10px;
+}
 .modal-title {
   font-size: 1.1em;
 }

@@ -43,7 +43,7 @@ class VehicleController extends Controller
         $vehicle = Vehicle::create($request->all());
         $devices = new Devices();
         if( $resident = $vehicle->resident ){
-          $devices->updateResident( $resident );
+          $devices->updateResident( $resident, null );
         }
         return $vehicle;
     }
@@ -81,7 +81,7 @@ class VehicleController extends Controller
     {
         $vehicle->update($request->all());
         $devices = new Devices();
-        $devices->updateResident($vehicle->resident);
+        $devices->updateResident($vehicle->resident, null);
         return $vehicle;
     }
 

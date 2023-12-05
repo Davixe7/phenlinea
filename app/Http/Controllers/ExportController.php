@@ -8,6 +8,7 @@ use App\Http\Resources\ResidentExport;
 use Rap2hpoutre\FastExcel\FastExcel;
 use Rap2hpoutre\FastExcel\SheetCollection;
 use App\Admin;
+use App\Http\Resources\ZhyafExtension;
 use DB;
 
 class ExportController extends Controller
@@ -18,7 +19,7 @@ class ExportController extends Controller
         $admin = auth()->user();
     }
     
-    $extensions = ExtensionsExport::collection( $admin->extensions )->toArray(true);
+    $extensions = ZhyafExtension::collection( $admin->extensions )->toArray(true);
     $residents  = ResidentExport::collection( $admin->residents )->toArray(true);
     
     $collection = new SheetCollection([

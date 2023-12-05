@@ -101,6 +101,8 @@ class ResidentInvoiceBatchController extends Controller
    */
   public function destroy(ResidentInvoiceBatch $residentInvoiceBatch)
   {
-    //
+    $residentInvoiceBatch->delete();
+    return redirect()->route('resident-invoice-batches.index')
+           ->with('message', 'Lote y sus facturas eliminados exitosamente');
   }
 }

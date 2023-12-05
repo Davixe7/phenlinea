@@ -11,12 +11,21 @@
 |
 */
 
+use App\Admin;
 use App\Extension;
 use App\Http\Controllers\InvoiceController;
-use App\ResidentInvoice;
+use App\Resident;
 use App\ResidentInvoicePayment;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+
+Route::view('cuenta', 'cuenta', ['admin'=>Admin::first()]);
+
+Route::get('devices/exportResidents', 'ZhyafController@exportResidents');
+Route::get('devices/exportRooms', 'ZhyafController@exportRooms');
+Route::get('devices/exportMedia', 'ZhyafController@exportMedia');
 
 Route::get('numbers', function(){
   $e = Extension::select('phone_1', 'phone_2', 'phone_3', 'phone_4')->get();

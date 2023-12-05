@@ -30,8 +30,8 @@
             <td>
               <i
                 class="material-symbols-outlined"
-                :class="{'text-success':extension.device_room_id, 'text-danger':!extension.device_room_id}">
-                {{ extension.device_room_id ? 'cloud_done' : 'cloud_off' }}
+                :class="{'text-success':extension.device_room_id || extension.device_synced, 'text-danger':!extension.device_room_id && !extension.device_synced}">
+                {{ (extension.device_room_id || extension.device_synced) ? 'cloud_done' : 'cloud_off' }}
               </i>
             </td>
             <td>{{ extension.name }}</td>

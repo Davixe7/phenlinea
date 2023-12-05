@@ -30,7 +30,7 @@ class NotifyDeviceVisit implements ShouldQueue
       $message = "*CONTROL DE VISITANTES* \n\n";
       $message = $message . "Facial✅-QR✅-Clave Temporal✅ \n\n";
       $message = $message . "🏢UNIDAD:  *{$visit->admin->name}* \n";
-      $message = $message . "🕒ACCESO VALIDO POR: *{$visit->admin->visits_lifespan} H* \n";
+      $message = $message . "🕒VALIDO PARA *1 INGRESO* \n";
       $message = $message . "🔢CLAVE TEMPORAL:  *{$visit->password}* \n\n";
       $message = $message . "Servicio prestado por PHEnlinea.com";
       return $message;

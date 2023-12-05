@@ -12,6 +12,7 @@ class Extension extends Authenticatable implements HasMedia
   
   protected $fillable = [
     'admin_id',
+    'device_synced',
     'name',
     'phone_1',
     'phone_2',

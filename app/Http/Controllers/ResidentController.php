@@ -8,6 +8,7 @@ use App\Http\Requests\StoreResident as StoreResidentRequest;
 use App\Http\Resources\Resident as ResidentResource;
 use App\Traits\Devices;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ResidentController extends Controller
 {
@@ -54,6 +55,10 @@ class ResidentController extends Controller
 
   public function store(StoreResidentRequest $request)
   {
+    $request->validate([
+      'card' => 'nullable|unique:residents'
+    ]);
+
     $resident = Resident::create([
       'extension_id'    => $request->extension_id,
       'name'            => $request->name,
@@ -68,14 +73,24 @@ class ResidentController extends Controller
       'device_synced'   => false
     ]);
 
+    $picturePath = null;
+
     if( $picture = $request->file('picture') ){
       $resident->addMedia( $picture )->toMediaCollection('picture');
+      $picturePath = $resident->getFirstMediaPath('picture');
     }
 
-    $devices = new Devices();
-    $devices->addResident( $resident );
+    
+    if( auth()->user()->device_building_id ){
+      $devices = new Devices();
+      if ( !$devices->addResident( $resident, $picturePath ) ){
+        $resident->delete();
+        abort(422, 'Error al sincronizar con plataforma de dispositivos');
+      }
+    }
 
     return new ResidentResource( $resident );
+
   }
 
   /**
@@ -114,26 +129,27 @@ class ResidentController extends Controller
       'dni'  => 'required',
     ]);
 
-    $resident->update([
-      'name'            => $request->name,
-      'email'           => $request->email,
-      'age'             => $request->age,
-      'dni'             => $request->dni,
-      'is_owner'        => $request->is_owner,
-      'is_resident'     => $request->is_resident,
-      'is_authorized'   => $request->is_authorized,
-      'disability'      => $request->disability,
-      'card'            => $request->card,
-      'device_synced'   => false
-    ]);
+    $resident->name          = $request->name;
+    $resident->email         = $request->email;
+    $resident->age           = $request->age;
+    $resident->dni           = $request->dni;
+    $resident->is_owner      = $request->is_owner;
+    $resident->is_resident   = $request->is_resident;
+    $resident->is_authorized = $request->is_authorized;
+    $resident->disability    = $request->disability;
+    $resident->card          = $request->card;
 
-    if( $picture = $request->file('picture') ){
-      $resident->addMedia( $picture )->toMediaCollection('picture');
+    $path = $request->file('picture') ? $request->file('picture')->getPathName() : null;
+
+    if( $resident->extension->admin->device_building_id ){
+      $devices    = new Devices();
+      if( !$devices->updateResident($resident, $path) ){
+        abort(500, 'Error al sincronizar con el servidor de dispositivos');
+      }
     }
 
-    $devices = new Devices();
-    $devices->updateResident($resident);
-
+    if( $path ) $resident->addMedia($path)->toMediaCollection('picture');
+    $resident->save();
     return new ResidentResource( $resident );
   }
 

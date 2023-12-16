@@ -2,12 +2,10 @@
 
 namespace App\Console;
 
+use App\BatchMessage;
+use App\Traits\Whatsapp;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use Illuminate\Support\Facades\Storage;
-use GuzzleHttp\Client;
-use Illuminate\Support\Facades\DB;
-use App\WhatsappClient;
 
 class Kernel extends ConsoleKernel
 {
@@ -28,8 +26,24 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->call(function(){ 
-        });
+        $schedule->call(function(){
+          $api    = new Whatsapp();
+
+          $batch   = BatchMessage::whereStatus('pending')->firstOrFail();
+          $batch->update(['status'=>'taken']);
+          $numbers = explode( ',', $batch->numbers );
+
+          foreach( $numbers as $number ){
+            $api->send(
+              $batch->admin->whatsapp_instance_id,
+              '57'. $number,
+              $batch->message,
+              $batch->media_url,
+              null
+            );
+            sleep(1);
+          }
+        })->everyMinute();
     }
 
     /**

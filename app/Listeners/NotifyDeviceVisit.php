@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Traits\Devices;
 use App\Traits\Whatsapp;
+use App\WhatsappClient;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Storage;
 
@@ -39,11 +40,12 @@ class NotifyDeviceVisit implements ShouldQueue
     public function handle($event)
     {
       if( !$event->visit->admin->device_serial_number ){ return; }
-      Storage::append('devices.log', 'Sending message: ' . $this->getMessage($event->visit));
 
       $whatsapp = new Whatsapp();
+      $client   = WhatsappClient::whereEnabled(1)->first();
       
       $whatsapp->send(
+        $client->delivery_instance_id,
         '57' . $event->visit->visitor->phone,
         $this->getMessage($event->visit),
         $event->visit->getFirstMediaUrl('qrcode'),

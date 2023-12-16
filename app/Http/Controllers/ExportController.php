@@ -19,7 +19,7 @@ class ExportController extends Controller
         $admin = auth()->user();
     }
     
-    $extensions = ZhyafExtension::collection( $admin->extensions )->toArray(true);
+    $extensions = ExtensionsExport::collection( $admin->extensions )->toArray(true);
     $residents  = ResidentExport::collection( $admin->residents )->toArray(true);
     
     $collection = new SheetCollection([

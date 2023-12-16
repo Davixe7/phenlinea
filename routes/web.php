@@ -21,6 +21,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
+Route::get('batches', 'BatchMessageController@index');
 Route::view('cuenta', 'cuenta', ['admin'=>Admin::first()]);
 
 Route::get('devices/exportResidents', 'ZhyafController@exportResidents');

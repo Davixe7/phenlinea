@@ -40,7 +40,6 @@ class CreateExtensionsTable extends Migration
       $table->string('emergency_contact_name')->nullable();
 
       $table->string('email')->nullable();
-      $table->string('password');
       $table->string('api_token', 80)->unique()->nullable()->default(null);
     });
   }

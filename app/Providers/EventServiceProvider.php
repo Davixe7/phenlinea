@@ -22,7 +22,6 @@ class EventServiceProvider extends ServiceProvider
           SendEmailVerificationNotification::class,
         ],
         VisitCreatedEvent::class => [
-          CreateDeviceVisit::class,
           NotifyDeviceVisit::class,
         ]
     ];

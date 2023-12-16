@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Traits\Devices;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -39,6 +40,19 @@ class Visit extends Model implements HasMedia
 
   public function visitor(){
     return $this->belongsTo(Visitor::class);
+  }
+
+  public function addPwd(){
+    if( !$this->admin->device_serial_number || !$this->admin->device_community_id ){
+      return;
+    }
+    $devices = new Devices();
+
+    if( $this->visitor->getFirstMediaPath('picture') ){
+      $devices->addFacialTempPwd($this);
+      return;
+    }
+    $devices->addTempPwd($this);
   }
 
 }

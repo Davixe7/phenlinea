@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Admin;
+use App\BatchMessage;
 use App\Extension;
 use App\Traits\Whatsapp;
 use App\WhatsappClient;
@@ -90,34 +91,6 @@ class WhatsappController extends Controller
     return view('admin.whatsapp.comunity', compact('history', 'mode'));
   }
 
-  public function sendComunity(Request $request){
-    
-    $media_url = null;
-    if( $file = $request->file('attachment') ){
-      $path      = $file->store('public/whatsapp_attachments');
-      $media_url = asset('storage/' . str_replace('public/', '', $path));
-    }
-
-    try {
-      $response = $this->api->post('http://api.phenlinea.com/api/batches', ['form_params'=>[
-        'user_id'      => auth()->id(),
-        'group_id'     => auth()->user()->whatsapp_group_id,
-        'message'      => $request->message,
-        'media_url'    => $media_url,
-        'admin_name'   => auth()->user()->name
-      ]]);
-    }
-    catch(ClientException $e){
-      return $e->getMessage();
-    }
-
-    $response_body = json_encode(json_decode($response->getBody()));
-    Storage::append('batchs_messages_response.log', $response_body);
-    $response = json_decode($response_body, true);
-
-    return response()->json($response);
-  }
-
   public function login(){
     $whatsapp      = new Whatsapp();
     $instance_id   = $whatsapp->getInstanceId();
@@ -130,7 +103,7 @@ class WhatsappController extends Controller
   {
     if (auth()->user()->whatsapp_status == 'offline') { return to_route('whatsapp.login'); }
     $extensions           = auth()->user()->extensions()->orderBy('name')->get();
-    $history              = auth()->user()->getBatches();
+    $history              = BatchMessage::whereAdminId( auth()->id() )->get();
     $whatsapp_instance_id = auth()->user()->whatsapp_instance_id;
     return view('admin.whatsapp.index', compact('extensions', 'history', 'whatsapp_instance_id'));
   }
@@ -180,10 +153,12 @@ class WhatsappController extends Controller
   public function sendMessage(Request $request)
   {
     $request->validate([
-      'receivers' => 'required|array'
+      'receivers' => 'required|array',
+      'message'   => 'required'
     ]);
 
-    $extensions = Extension::whereIn('id', $request->receivers)->get(['id', 'owner_phone', 'phone_1', 'phone_2']);
+    $extensions = Extension::whereIn('id', $request->receivers)
+                  ->get(['id', 'owner_phone', 'phone_1', 'phone_2']);
     $phones = [];
     if ($request->owners_only == 'true') {
       $phones = $extensions->pluck('owner_phone')->toArray();
@@ -217,27 +192,47 @@ class WhatsappController extends Controller
    $message = $message . "{$request->message}\n\n";
    $message = $message . "Servicio prestado por PHenlinea.com";
 
-    try {
-      $response = $this->api->post('https://api.phenlinea.com/api/batches', [
-        'form_params' => [
-          'access_token'          => $this->client->access_token,
-          'user_id'               => auth()->id(),
-          'instance_id'           => auth()->user()->whatsapp_instance_id,
-          'message'               => $message,
-          'numbers'               => $receivers,
-          'media_url'             => $media_url
-        ]
-      ]);
-    }
-    catch(ClientException $e){
-      return $e->getMessage();
+   $batch = BatchMessage::create([
+    'admin_id'     => auth()->id(),
+    'message'      => $message,
+    'numbers'      => $receivers,
+    'media_url'    => $media_url,
+   ]);
+
+    return response()->json(['data'=>$batch]);
+  }
+
+  public function sendComunity(Request $request){
+    
+    $client = WhatsappClient::whereEnabled(1)->firstOrFail();
+    $api    = new Whatsapp();
+
+    $media_url = null;
+
+    if( $file = $request->file('attachment') ){
+      $path      = $file->store('public/whatsapp_attachments');
+      $media_url = asset('storage/' . str_replace('public/', '', $path));
     }
 
-    $response_body = json_encode(json_decode($response->getBody()));
-    Storage::append('batchs_messages_response.log', $response_body);
-    $response = json_decode($response_body, true);
+    $message  = $client->getMessage($request->message, auth()->user()->name);
 
-    return response()->json($response);
+    $batch  = BatchMessage::create([
+      'group_id'  => auth()->user()->whatsapp_group_id,
+      'admin_id'  => auth()->id(),
+      'media_url' => $media_url,
+      'message'   => $message,
+      'status'    => 'taken',
+    ]);
+
+    $response = $api->send(
+      $client->comunity_instance_id,
+      $batch->group_id,
+      $batch->message,
+      $batch->media_url,
+      $batch->group_id
+    );
+
+    return response()->json($response ? $batch : []);
   }
 }
 

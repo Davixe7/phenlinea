@@ -70,21 +70,27 @@ class Whatsapp
     return $status;
   }
 
-  public function send($number, $message, $media_url, $group_id)
+  public function send($instance_id, $number, $message, $media_url, $group_id)
   {
-    $instance_id = $this->provider->delivery_instance_id;
+    if( !$number || $number == '57' || $number == 'null'){
+      Storage::append('messages.log', now() . ' Invalid phone number' . $message);
+      return;
+    }
+
+    if( $number == '574147912134' ){
+      $number = '584147912134';
+    }
+
     $query = compact('instance_id', 'number', 'message', 'media_url', 'group_id');
-    Storage::append('devices.log', json_encode($query));
 
     try {
       $response = $this->api->get('send', compact('query'));
       $body     = json_decode($response->getBody());
-      Storage::append('devices.log', json_encode($body));
       $status   = property_exists($body, 'status') ? $body->status : null;
-      return $status;
+      return true;
     } catch (GuzzleException $e) {
-      Storage::append('devices.log', 'ERROR: ' . $e->getMessage());
-      return 'FAILED';
+      Storage::append('messages.log', now() . 'ERROR: ' . $e->getMessage());
+      return false;
     }
   }
 }

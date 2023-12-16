@@ -8,6 +8,7 @@ use App\Visitor;
 use Illuminate\Http\Request;
 use App\Http\Resources\VisitPorteria;
 use App\Http\Controllers\Controller;
+use App\Traits\Devices;
 use App\Traits\Uploads;
 use Illuminate\Support\Facades\Storage;
 
@@ -22,7 +23,7 @@ class VisitController extends Controller
      */
     public function index()
     {
-      $visits = auth()->user()->admin->visits()->orderBy('created_at', 'DESC')->get();
+      $visits = auth()->user()->admin->visits()->orderBy('created_at', 'DESC')->limit(1000)->get();
       return VisitPorteria::collection( $visits );
     }
 
@@ -40,25 +41,18 @@ class VisitController extends Controller
         'extension_name' => 'required',
         'dni' => 'required'
       ]);
-      
-      $extension_id = $request->extension_id ?: null;
-      
-      if( $request->apartment ){
-          $extension = auth()->user()->extensions()->whereName( $request->apartment )->firstOrFail();
-          // $extension_id = $extension->id;
-      }
 
-        $visitor = Visitor::updateOrcreate(
-	      ["id" => $request->visitor_id],
-        [
-          "type"         => $request->type,
-          "company"      => $request->company,
-          "arl"          => $request->arl,
-          "eps"          => $request->eps,
-          "dni"          => $request->dni,
-          "name"         => $request->name,
-          "phone"        => $request->phone,
-        ]);
+      $visitor = Visitor::updateOrcreate(
+      ["id" => $request->visitor_id],
+      [
+        "type"         => $request->type,
+        "company"      => $request->company,
+        "arl"          => $request->arl,
+        "eps"          => $request->eps,
+        "dni"          => $request->dni,
+        "name"         => $request->name,
+        "phone"        => $request->phone,
+      ]);
 
       $visit = Visit::create([
         "admin_id"     => auth()->user()->admin_id,
@@ -74,8 +68,9 @@ class VisitController extends Controller
         $visitor->addMedia( $picture )->toMediaCollection('picture');
       }
 
-      VisitCreatedEvent::dispatch( $visit );
+      $visit->addPwd();
 
+      VisitCreatedEvent::dispatch( $visit );
       return new VisitPorteria( $visit );
     }
 

@@ -54,4 +54,14 @@ class Resident extends Model implements HasMedia
   public function registerMediaCollections(): void{
     $this->addMediaCollection('picture')->singleFile();
   }
+
+  public function getTagsAttribute(){
+    return $this
+    ->vehicles()
+    ->whereNotNull('tag')
+    ->pluck('tag')
+    ->add( $this->card )
+    ->filter()
+    ->implode(',');
+  }
 }

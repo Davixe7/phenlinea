@@ -138,14 +138,8 @@ class Devices
       ['name' => $id ? 'id' : 'uuid', 'contents' => $id ?: $resident->id],
       ['name' => 'name',              'contents' => $resident->name],
       ['name' => 'phone',             'contents' => $resident->email],
-      ['name' => 'cardNos',           'contents' => $resident->card]
+      ['name' => 'cardNos',           'contents' => $resident->tags]
     ];
-
-
-    if( $resident->vehicles()->count() ){
-      $tags = implode(',', $resident->vehicles()->pluck('tag')->toArray());
-      $multipart[5]['contents'] = $multipart[5]['contents'] . ',' . $tags;
-    }
 
     if( $picturePath ){
       $base64 = base64_encode(file_get_contents($picturePath));
@@ -167,7 +161,6 @@ class Devices
         return true;
       }
 
-      Storage::append('residents.log', $code . ' ' . $body->msg);
       return false;
       
     } catch (GuzzleException $e) {
@@ -205,10 +198,7 @@ class Devices
 
   public function addFacialTempPwd(Visit $visit)
   {
-    $path   = $visit->visitor->getFirstMediaPath('picture');
-    $type   = pathinfo($path, PATHINFO_EXTENSION);
-    $data   = file_get_contents($path);
-    $base64 = 'data:application/' . 'png' . ';base64,' . base64_encode($data);
+    $base64 = $visit->visitor->getFaceFileBase64();
 
     $multipart  = [
       ['name' => 'accessToken', 'contents'      => self::getAccessToken()],
@@ -225,17 +215,22 @@ class Devices
     try {
       $response    = $this->api->post('visEmpVisitor/extapi/add', compact('multipart'));
       $body        = json_decode($response->getBody());
-      $success     = property_exists($body, 'code') && $body->code == 0 ? true : false;
 
-      if (!$success) {
-        return;
+      $codeZero = property_exists($body, 'code') && $body->code == 0 ? true : false;
+      $tempPwd  = property_exists($body->data, 'tempPwd')  ? $body->data->tempPwd : '';
+      $tempCode = property_exists($body->data, 'tempCode') ? $body->data->tempCode : '';
+
+      if (!$codeZero || !$tempPwd || !$tempCode) {
+        Storage::append('visitors.log', now() . ' ' . json_encode($body));
+        return $visit;
       }
 
-      $visit->update(['password' => $body->data->tempPwd]);
-      $qrcode = QrCode::format('png')->size(270)->generate($body->data->tempCode);
+      $visit->update(['password' => $tempPwd]);
+      $qrcode = QrCode::format('png')->size(270)->generate($tempCode);
       $visit->addMediaFromBase64(base64_encode($qrcode))->usingFileName(Str::random() . '.png')->toMediaCollection('qrcode');
+      return $visit;
     } catch (GuzzleException $e) {
-      Storage::append('devices.log', $e->getMessage());
+      Storage::append('visitors.log', $e->getMessage());
     }
 
     if( $visit->admin->device_2_serial_number ){
@@ -252,6 +247,7 @@ class Devices
         $visit->update(['password' => $body->data->tempPwd]);
         $qrcode = QrCode::format('png')->size(270)->generate($body->data->tempCode);
         $visit->addMediaFromBase64(base64_encode($qrcode))->usingFileName(Str::random() . '.png')->toMediaCollection('qrcode');
+        return $visit;
       } catch (GuzzleException $e) {
         Storage::append('devices.log', $e->getMessage());
       }
@@ -272,15 +268,19 @@ class Devices
     try {
       $response    = $this->api->post('accVisitorTempPwd/extapi/add', compact('multipart'));
       $body        = json_decode($response->getBody());
+      $success     = property_exists($body, 'code') && $body->code == 0;
 
-      if (!property_exists($body, 'code') || $body->code != 0) {
-        return;
+      if (!$success) {
+        Storage::append('visitors.log', now() . ' ' . json_encode($body));
+        return $visit;
       }
 
       $visit->addMediaFromBase64($body->data->qrCode)->usingFileName(Str::random() . '.png')->toMediaCollection('qrcode');
       $visit->update(['password' => $body->data->tempPwd]);
+      return $visit;
     } catch (GuzzleException $e) {
-      return $e->getMessage();
+      Storage::append('visitors.log', $e->getMessage());
+      return $visit;
     }
   }
 }

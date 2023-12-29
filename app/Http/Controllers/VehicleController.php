@@ -79,6 +79,10 @@ class VehicleController extends Controller
      */
     public function update(Extension $extension, Vehicle $vehicle, Request $request)
     {
+        $request->validate([
+          'resident_id' => 'required'
+        ]);
+        
         $vehicle->update($request->all());
         $devices = new Devices();
         $devices->updateResident($vehicle->resident, null);

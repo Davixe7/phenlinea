@@ -34,12 +34,12 @@ class ResidentExport extends JsonResource
 
       return
       [
-        'apto' => $this->extension->name,
-        'nombre' => $this->name,
-        'edad' => $this->age,
-        'dni' => $this->dni,
+        'apto'           => $this->extension->name,
+        'nombre'         => $this->name,
+        'edad'           => $this->age,
+        'dni'            => $this->dni,
         'es_propietario' => $this->is_owner,
-        'es_residente' => $this->is_resident,
+        'es_residente'   => $this->is_resident,
       ];
     }
 }

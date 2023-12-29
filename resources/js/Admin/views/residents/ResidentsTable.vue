@@ -15,7 +15,6 @@
           <th>R</th>
           <th>A</th>
           <th>D</th>
-          <th>Sinc</th>
           <th class="text-right">Opciones</th>
         </thead>
         <tbody>
@@ -41,9 +40,6 @@
             </td>
             <td>
               <i v-if="resident.disability" class="material-symbols-outlined">done</i>
-            </td>
-            <td>
-              {{ resident.device_synced ? 'SÍ' : 'NO' }}
             </td>
             <td class="d-flex align-items-center justify-content-end">
               <a href="#" @click.prevent="$emit('residentSelection', resident)" class="me-2">

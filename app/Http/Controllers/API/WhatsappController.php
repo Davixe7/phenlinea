@@ -5,7 +5,6 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Traits\Whatsapp;
 use Illuminate\Http\Request;
-use GuzzleHttp\Client;
 use App\WhatsappClient;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
@@ -13,15 +12,6 @@ use Illuminate\Support\Facades\Storage;
 
 class WhatsappController extends Controller
 { 
-  public function getMessage($admin, $extension){
-      $message = "📦Encomienda Recibida.📦" . "\n\n";
-      $message .= "Unidad: *{$admin}*" . "\n";
-      $message .= "Apartamento: *{$extension}*" . "\n\n";
-      $message .= "Favor pasar a recogerla. 👍" . "\n\n";
-      $message .= "Servicio prestado por Phenlinea.com" . "\n";
-      return $message;
-  }
-
   public function sendDelivery(Request $request, $name = null)
   {
     $request->validate(['name:required']);
@@ -37,29 +27,19 @@ class WhatsappController extends Controller
       }
     }
 
-    $client = WhatsappClient::where('enabled', 1)->first();
-    $api    = new Whatsapp();
+    $whatsapp  = new Whatsapp();
 
-    $instance_id = $client->delivery_instance_id;
-    $admin_name  = auth()->user()->admin ? auth()->user()->admin->name : '';
-    $message     = $this->getMessage( $admin_name, $extension->name );
-    $media_url   = $media_url ?: null;
+    $options = [
+      'number'    => '',
+      'message'   => view('messages.delivery', compact('extension'))->render(),
+      'media_url' => $media_url ?: null,
+      'group_id'  => null
+    ];
 
     foreach( $extension->valid_whatsapp_phone_numbers as $phone ){
-      $number = $extension->id == '13955' ? '584147912134' : '57' . $phone;
-      try {
-        $api->send(
-          $instance_id,
-          $number,
-          $message,
-          $media_url,
-          null
-        );
-        sleep(1);
-      }
-      catch(GuzzleException $e){
-        Storage::append( 'deliveries.log', $e->getMessage());
-      }
+      $options['number'] = '57' . $phone;
+      $whatsapp->send($options);
+      sleep(1);
     }
 
     // Mobile App Expects

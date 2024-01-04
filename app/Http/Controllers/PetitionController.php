@@ -7,10 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Petition as PetitionResource;
 use App\Petition;
 use App\Admin;
+use App\Traits\Whatsapp;
 use App\WhatsappClient;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Storage;
 
 class PetitionController extends Controller
 {
@@ -189,30 +189,14 @@ class PetitionController extends Controller
     return response()->download($path, $filename, ['Content-Type' => 'image/jpg+xml']);
   }
 
-  public function getMessage($petition){
-    $petitionId = str_pad($petition->id, 4, '0', STR_PAD_LEFT);
-    $statuses   = ['pending'=>'pendiente', 'read'=>'Leído', 'replied'=>'Respuesta enviada'];
-    $status     = $statuses[ $petition->status ];
-    $link       = route('pqrs.show', compact('petition'));
-
-    $message = "Unidad: *{$petition->admin->name}* \n\n";
-    $message .= "Su PQRS ha sido actualizado con éxito. Y su código de seguimiento es el *{$petitionId}* \n\n";
-    $message .= "Estado: *{$status}* \n\n";
-    $message .= "Link de seguimiento del estado: {$link} \n\n";
-    $message .= "Servicio prestado por PHenlinea.com";
-    return $message;
-  }
-
   public function notifyPetitionUpdate($petition){
-    $data = [
-      'access_token' => $this->client->access_token,
-      'instance_id'  => $this->client->delivery_instance_id,
-      'number'       => ($petition->phone == '4147912134') ? '584147912134' : '57' . $petition->phone,
-      'message'      => $this->getMessage($petition),
-      'type'         => 'text'
-    ];
+    $whatsapp = new Whatsapp();
 
-    $response = $this->api->get('send', ['query'=>$data]);
-    Storage::append('pqrs.log', $response->getBody());
+    $whatsapp->send([
+      'number'    => '57' . $petition->phone,
+      'message'   => view('messages.pqrs', compact('petition')),
+      'media_url' => null,
+      'group_id'  => null
+    ]);
   }
 }

@@ -3,11 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\BatchMessage;
-use Illuminate\Http\Request;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class BatchMessageController extends Controller
+class BatchMessageController extends Controller implements HasMedia
 {
-    function index(){
-      return BatchMessage::all();
-    }
+  use InteractsWithMedia;
+
+  function index()
+  {
+    return BatchMessage::all();
+  }
+
+  public function registerMediaCollections(): void
+  {
+    $this->addMediaCollection('attachment')->singleFile();
+  }
+
+  public function admin()
+  {
+    return $this->belongsTo('App\Admin');
+  }
 }

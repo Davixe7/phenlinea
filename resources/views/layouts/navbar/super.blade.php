@@ -10,9 +10,19 @@
 <li class="nav-item">
   <a class="nav-link" href="{{ route('admin.invoices.upload') }}">Facturas</a>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="{{ route('admin.documentos.index') }}">Documentos Legales</a>
-</li>
-<li class="nav-item">
-  <a class="nav-link" href="{{ route('admin.whatsapp_clients.index') }}">Whatsapp</a>
+<li class="nav-item dropdown">
+  <a
+    href="#"
+    class="nav-link dropdown-toggle"
+    data-bs-toggle="dropdown">
+    Whatsapp
+  </a>
+  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+    <li>
+      <a class="dropdown-item" href="{{ route('admin.whatsapp_clients.index') }}">Instancias</a>
+    </li>
+    <li>
+      <a class="dropdown-item" href="{{ route('admin.batch_messages.index') }}">Mensajes masívos</a>
+    </li>
+  </ul>
 </li>

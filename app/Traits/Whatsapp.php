@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\WhatsappClient;
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Storage;
@@ -14,8 +15,13 @@ class Whatsapp
 
   public function __construct()
   {
-    $this->provider  = WhatsappClient::whereEnabled(true)->first();
-    $this->api = new Client(['base_uri' => $this->provider->base_url]);
+    try {
+      $this->provider = WhatsappClient::whereEnabled(true)->firstOrFail();
+      $this->api      = new Client(['base_uri' => $this->provider->base_url]);
+    }
+    catch(Exception $e){
+      Storage::append('messages.log', now() . $e->getMessage());
+    }
   }
 
   public function getInstanceId()
@@ -70,23 +76,23 @@ class Whatsapp
     return $status;
   }
 
-  public function send($instance_id, $number, $message, $media_url, $group_id)
+  public function send($options)
   {
-    if( !$number || $number == '57' || $number == 'null'){
-      Storage::append('messages.log', now() . ' Invalid phone number' . $message);
+    if( $options['number'] == '574147912134' ){
+      $options['number'] = '584147912134';
+    }
+
+    if(!key_exists('instance_id', $options)){
+      $options['instance_id'] = $this->provider->delivery_instance_id;
+    }
+
+    if( !$options['number'] || $options['number'] == '57' || $options['number'] == 'null'){
+      Storage::append('messages.log', now() . ' Invalid phone number: ' . $options['number']);
       return;
     }
 
-    if( $number == '574147912134' ){
-      $number = '584147912134';
-    }
-
-    $query = compact('instance_id', 'number', 'message', 'media_url', 'group_id');
-
     try {
-      $response = $this->api->get('send', compact('query'));
-      $body     = json_decode($response->getBody());
-      $status   = property_exists($body, 'status') ? $body->status : null;
+      $this->api->get('send', ['query'=>$options]);
       return true;
     } catch (GuzzleException $e) {
       Storage::append('messages.log', now() . 'ERROR: ' . $e->getMessage());

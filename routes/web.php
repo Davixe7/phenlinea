@@ -14,12 +14,8 @@
 use App\Admin;
 use App\Extension;
 use App\Http\Controllers\InvoiceController;
-use App\Resident;
 use App\ResidentInvoicePayment;
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 Route::get('batches', 'BatchMessageController@index');
 Route::view('cuenta', 'cuenta', ['admin'=>Admin::first()]);
@@ -112,6 +108,7 @@ Route::get('whatsapp_clients/getclient', 'Admin\WhatsappClientController@getClie
 
 //Admin routes
 Route::name('admin.')->prefix('admin')->middleware('auth:web')->group(function () {
+  Route::get('whatsapp_messages', 'Admin\BatchMessageController@index')->name('batch_messages.index');
   Route::get('whatsapp_clients', 'Admin\WhatsappClientController@index')->name('whatsapp_clients.index');
   Route::get('whatsapp_clients/{whatsapp_client}/scan', 'Admin\WhatsappClientController@scan')->name('whatsapp_clients.scan');
   Route::put('whatsapp_clients/{whatsapp_client}', 'Admin\WhatsappClientController@update')->name('whatsapp_clients.update');

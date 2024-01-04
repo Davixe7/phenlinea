@@ -27,20 +27,23 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->call(function(){
-          $api    = new Whatsapp();
+          $whatsapp = new Whatsapp();
 
-          $batch   = BatchMessage::whereStatus('pending')->firstOrFail();
-          $batch->update(['status'=>'taken']);
+          $batch = BatchMessage::whereStatus('pending')->firstOrFail();
+          $batch->update(['status'=>'processing']);
+
           $numbers = explode( ',', $batch->numbers );
+          $options = [
+            'instance_id' => $batch->admin->whatsapp_instance_id,
+            'number'      => '',
+            'message'     => $batch->message,
+            'media_url'   => $batch->media_url,
+            'group_id'    => null
+          ];
 
           foreach( $numbers as $number ){
-            $api->send(
-              $batch->admin->whatsapp_instance_id,
-              '57'. $number,
-              $batch->message,
-              $batch->media_url,
-              null
-            );
+            $options['number'] = $number;
+            $whatsapp->send($options);
             sleep(1);
           }
         })->everyMinute();

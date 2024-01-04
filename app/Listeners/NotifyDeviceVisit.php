@@ -2,11 +2,8 @@
 
 namespace App\Listeners;
 
-use App\Traits\Devices;
 use App\Traits\Whatsapp;
-use App\WhatsappClient;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Facades\Storage;
 
 class NotifyDeviceVisit implements ShouldQueue
 {

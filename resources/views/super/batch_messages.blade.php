@@ -22,7 +22,7 @@
           <td>{{ $message->body }}</td>
           <td>
             <div class="badge">
-              {{ $message->status == 'taken' ? 'enviado' : 'pendiente'}}
+              {{ ['taken'=>'enviado', 'pending'=>'pendiente'][$message->status] }}
             </div>
           </td>
           <td>_</td>
@@ -34,12 +34,12 @@
 </div>
 @endsection
 
-@push('style')
+@push('styles')
 <style>
   .badge {
-    padding: 0 .5rem;
-    border-radius: .5rem;
-    color: green;
+    padding: .25rem .5rem;
+    border-radius: .25rem;
+    color: green !important;
     background: lightgreen;
     width: fit-content;
   }

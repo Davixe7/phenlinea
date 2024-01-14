@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('resident_invoice_item_resident_invoice_payment', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('resident_invoice_item_id');
-            $table->foreignId('resident_invoice_payment_id');
+            $table->foreignId('resident_invoice_item_id')->constrained()->onDelete('cascade');
+            $table->foreignId('resident_invoice_payment_id')->constrained()->onDelete('cascade');
             $table->double('amount');
         });
     }

@@ -4,25 +4,25 @@
   <div class="table-responsive">
     <table class="table">
       <thead>
+        <th>ID</th>
         <th>Fecha</th>
         <th>Admin</th>
-        <th>Resumen</th>
         <th>Estado</th>
         <th>Acciones</th>
       </thead>
       <tbody>
         @foreach( $messages as $message )
         <tr>
+          <td>{{ $message->id }}</td>
           <td>{{ $message->created_at }}</td>
           <td>
             <a href="/admin/admins/{{ $message->admin_id }}" target="_blank">
               {{ $message->admin->name }}
             </a>
           </td>
-          <td>{{ $message->body }}</td>
           <td>
             <div class="badge">
-              {{ ['taken'=>'enviado', 'pending'=>'pendiente'][$message->status] }}
+              {{ ['taken'=>'enviado', 'pending'=>'pendiente', 'processing'=>'procesando'][$message->status] }}
             </div>
           </td>
           <td>_</td>

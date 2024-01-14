@@ -7,11 +7,7 @@ use App\BatchMessage;
 use App\Extension;
 use App\Traits\Whatsapp;
 use App\WhatsappClient;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -23,89 +19,42 @@ class WhatsappController extends Controller
    * @return \Illuminate\Http\Response
    */
 
-  protected $client;
+  protected $whatsapp;
   protected $query;
-  protected $api;
 
   public function __construct()
   {
-    $this->client = WhatsappClient::where('enabled', 1)->first();
-    $this->api    = new Client(['base_uri' => $this->client['base_url'], 'verify'=>false]);
-    $this->query  = ['access_token' => $this->client->access_token];
-  }
-
-  public function createInstance()
-  {
-    $query    = $this->query;
-    $headers  = [['accept'=>'application/json']];
-    try {
-      $response = $this->api->get('create_instance', compact('query', 'headers'));
-      $body = json_decode($response->getBody(), 1);
-      if( is_array($body) && array_key_exists('instance_id', $body ) ){
-        return $body['instance_id'];
-      }
-    }
-    catch(GuzzleException $e){
-      return abort('200', $e->getMessage());
-    }
-  }
-
-  public function getQrCode($instance_id)
-  {
-    $this->query['instance_id'] = $instance_id;
-    $response = $this->api->get('get_qrcode', ['query' => $this->query]);
-    $data = json_decode($response->getBody(), 1);
-
-    if (($response->getStatusCode() >= 400) || ($data && ($data['status'] == 'error'))) {
-      Storage::append('whatsapp_error.log', 'InstanceID: ' . $instance_id . ' ' . $response->getBody());
-      if (request()->expectsJson()) {
-        return null;
-      }
-      return redirect()->route('whatsapp.index');
-    }
-
-    if ($data && array_key_exists('base64', $data)) {
-      return $data['base64'];
-    }
-
-    Storage::append('whatsapp_error.log', 'InstanceID: ' . $instance_id . ' ' . $response->getStatusCode() . ' ' . $response->getReasonPhrase() . ' No error message available');
-    return null;
-  }
-
-  public function getQRurl()
-  {
-    $instance_id = $this->createInstance();
-    return response()->json(['data' => $this->getQrCode($instance_id)]);
-  }
-
-  public function comunity(){
-    if( !auth()->user()->whatsapp_group_id ){
-      return view('admin.whatsapp.disabled');
-    }
-    $response = $this->api->get('http://api.phenlinea.com/api/batches/', ['query'=>[
-      'user_id' => auth()->id(),
-      'type'    => 'comunity',
-    ]]); 
-    $history  = json_decode($response->getBody())->data;
-    $mode = 'comunity';
-    return view('admin.whatsapp.comunity', compact('history', 'mode'));
+    $this->whatsapp = new Whatsapp();
   }
 
   public function login(){
-    $whatsapp      = new Whatsapp();
-    $instance_id   = $whatsapp->getInstanceId();
-    $webook_status = $whatsapp->setWebHook( $instance_id, route('whatsapp.hook') );
-    $base64        = $whatsapp->getQrCode( $instance_id );
+    if( auth()->user()->whatsapp_instance_id ){ return to_route('whatsapp.index'); }
+    $instance_id   = $this->whatsapp->getInstanceId();
+    $webook_status = $this->whatsapp->setWebHook( $instance_id, route('whatsapp.hook') );
+    $base64        = $this->whatsapp->getQrCode( $instance_id );
     return view('admin.whatsapp.login', compact('instance_id', 'base64'));
   }
 
   public function index()
   {
-    if (auth()->user()->whatsapp_status == 'offline') { return to_route('whatsapp.login'); }
-    $extensions           = auth()->user()->extensions()->orderBy('name')->get();
+    if (! $instance_id = auth()->user()->whatsapp_instance_id) {
+      return to_route('whatsapp.login');
+    }
+
+    // if( $this->whatsapp->validateInstance( $instance_id ) ){
+    //   auth()->user()->update(['whatsapp_instance_id' => null]);
+    //   return to_route('whatsapp.login');
+    // }
+
+    $extensions           = auth()->user()->extensions()->orderBy('name')->get('name', 'admin_id', 'phone_1', 'phone_2', 'owner_phone');
     $history              = BatchMessage::whereAdminId( auth()->id() )->get();
     $whatsapp_instance_id = auth()->user()->whatsapp_instance_id;
     return view('admin.whatsapp.index', compact('extensions', 'history', 'whatsapp_instance_id'));
+  }
+
+  public function getQR(Request $request){
+    $data = $this->whatsapp->getQrCode($request->instance_id);
+    return response()->json(compact('data'));
   }
 
   public function hook(Request $request)
@@ -137,8 +86,7 @@ class WhatsappController extends Controller
 
   public function logout()
   {
-    $whatsapp = new Whatsapp();
-    $whatsapp->logout(auth()->user()->whatsapp_instance_id);
+    $this->whatsapp->logout(auth()->user()->whatsapp_instance_id);
 
     auth()->user()->update(['whatsapp_status' => 'offline', 'whatsapp_instance_id' => null]);
     return redirect()->route('home');

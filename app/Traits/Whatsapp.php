@@ -44,7 +44,8 @@ class Whatsapp
       $body        = json_decode($response->getBody());
       $base64      = property_exists($body, 'base64') ? $body->base64 : null;
     } catch (GuzzleException $e) {
-      return $e->getMessage();
+      Storage::append('messages.log', $e->getMessage());
+      return null;
     }
 
     return $base64;

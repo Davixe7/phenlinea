@@ -1,7 +1,8 @@
 <template>
   <div>
     <extensions-nav :extension="extension" :page="'invoices'"></extensions-nav>
-    <div class="table-responsive">
+    <div class="container">
+      <div class="table-responsive">
       <div class="d-flex aling-items-center">
         <div class="col-lg-4">
           <h1>
@@ -57,11 +58,18 @@
                   class="btn btn-sm btn-link">
                   <i class="material-symbols-outlined receipt">receipt</i>
                 </a>
+
+                <a
+                  :href="`/extensions/${extension.id}/cuenta`"
+                  class="btn btn-sm btn-link">
+                  Edo. Cuenta
+                </a>
               </div>
             </td>
           </tr>
         </tbody>
       </table>
+    </div>
     </div>
   </div>
 </template>

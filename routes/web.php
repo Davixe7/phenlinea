@@ -17,33 +17,8 @@ use App\Http\Controllers\InvoiceController;
 use App\ResidentInvoicePayment;
 use Illuminate\Http\Request;
 
-Route::get('batches', 'BatchMessageController@index');
-Route::view('cuenta', 'cuenta', ['admin'=>Admin::first()]);
-
-Route::get('devices/exportResidents', 'ZhyafController@exportResidents');
-Route::get('devices/exportRooms', 'ZhyafController@exportRooms');
-Route::get('devices/exportMedia', 'ZhyafController@exportMedia');
-
-Route::get('numbers', function(){
-  $e = Extension::select('phone_1', 'phone_2', 'phone_3', 'phone_4')->get();
-  $e = array_filter(collect($e->toArray())->flatten()->toArray());
-  return count($e);
-});
-
-Route::get('/pago/{id}', function(Request $request){
-  $payment = ResidentInvoicePayment::find($request->id);
-  return view('pdf.recibo', compact('payment'));
-});
-
-Route::get('test', function () {
-  $visits = App\Visit::select(['plate', 'extension_name'])->groupBy('plate')->get();
-  $visits = $visits->map(fn ($v) => $v->plate . " " . $v->extension_name . " visitante")->toArray();
-  $plates = App\Vehicle::with('extension')->get();
-  $plates = $plates->map(fn ($v) => $v->plate . " " . $v->extension->name . " residente")->toArray();
-  return array_merge($visits, $plates);
-});
-
 Route::view('home', 'admin.home')->name('home');
+Route::view('/', 'public.landing')->middleware('guest');
 
 Route::get('logout', function () {
   auth()->logout();
@@ -58,27 +33,18 @@ Route::put('pqrs/{petition}/markAsRead', 'PetitionController@markAsRead')->name(
 Route::post('pqrs', 'PetitionController@store')->name('pqrs.store');
 Route::get('/unidades/{admin}/pqrs', 'PetitionController@create')->name('pqrs.create');
 
-Route::get('whatsapp/hook', 'WhatsappController@hook')->name('whatsapp.hook');
-Route::post('whatsapp/hook', 'WhatsappController@hook')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
-
 Route::middleware(['auth:admin', 'modules:whatsapp'])->group(function () {
+  Route::get('whatsapp/login', 'WhatsappController@login')->name('whatsapp.login');
+  Route::get('whatsapp/logout', 'WhatsappController@logout')->name('whatsapp.logout');
+  Route::get('whatsapp/getQR', 'WhatsappController@getQR');
+  Route::get('whatsapp/status', 'WhatsappController@isOnline');
   Route::get('comunity', 'WhatsappController@comunity')->name('whatsapp.comunity');
   Route::get('whatsapp', 'WhatsappController@index')->name('whatsapp.index');
-  Route::get('whatsapp/logout', 'WhatsappController@logout')->name('whatsapp.logout');
   Route::post('whatsapp/send', 'WhatsappController@sendMessage')->name('whatsapp.send');
   Route::post('whatsapp/comunity', 'WhatsappController@sendComunity')->name('whatsapp.sendcomunity');
-  Route::get('whatsapp/status', 'WhatsappController@isOnline');
-  Route::get('whatsapp/getQR', 'WhatsappController@getQRurl');
-  Route::get('whatsapp/login', 'WhatsappController@login')->name('whatsapp.login');
 });
-
-Route::view('/', 'public.landing')->middleware('guest');
-
-Route::view('politica-de-privacidad', 'public.policy');
-Route::resource('attachments', 'AttachmentController');
-
-Route::view('configuracion', 'configuration');
-Route::get('apk', fn () => response()->download(public_path('app-release.apk'), 'app-release.apk', ['Content-Type' => 'application/vnd.android.package-archive']));
+Route::get('whatsapp/hook', 'WhatsappController@hook')->name('whatsapp.hook');
+Route::post('whatsapp/hook', 'WhatsappController@hook')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 
 /**
  *  Auth Routes
@@ -182,7 +148,28 @@ Route::middleware(['auth:admin,extension', 'phoneverified', 'suspended'])->group
   Route::view('modulo-deshabilitado', 'disabled_module')->name('modules.disabled');
 });
 
+Route::get('batches', 'BatchMessageController@index');
+Route::get('/extensions/{extension}/cuenta', 'ResidentInvoiceController@balance');
+Route::view('politica-de-privacidad', 'public.policy');
+Route::get('apk', fn () => response()->download(public_path('app-release.apk'), 'app-release.apk', ['Content-Type' => 'application/vnd.android.package-archive']));
+
+Route::get('devices/exportResidents', 'ZhyafController@exportResidents');
+Route::get('devices/exportRooms', 'ZhyafController@exportRooms');
+Route::get('devices/exportMedia', 'ZhyafController@exportMedia');
+
+Route::get('test', function () {
+  $visits = App\Visit::select(['plate', 'extension_name'])->groupBy('plate')->get();
+  $visits = $visits->map(fn ($v) => $v->plate . " " . $v->extension_name . " visitante")->toArray();
+  $plates = App\Vehicle::with('extension')->get();
+  $plates = $plates->map(fn ($v) => $v->plate . " " . $v->extension->name . " residente")->toArray();
+  return array_merge($visits, $plates);
+});
+
 Route::view('consultar-facturas', 'public.resident-invoices.query');
 Route::post('consultar-facturas', [App\Http\Controllers\ResidentInvoiceController::class, 'apartmentInvoices'])->name('public.resident-invoices');
 Route::get('detalle-factura/{resident_invoice}', [App\Http\Controllers\ResidentInvoiceController::class, 'show']);
 Route::get('descargar-factura/{resident_invoice}', [App\Http\Controllers\ResidentInvoiceController::class, 'download'])->name('resident-invoices.download');
+Route::get('/pago/{id}', function(Request $request){
+  $payment = ResidentInvoicePayment::find($request->id);
+  return view('pdf.recibo', compact('payment'));
+});

@@ -7,7 +7,7 @@
         <h1>
           WhatsApp - Mensajería general
         </h1>
-        <div class="text-secondary d-none" style="padding: 0 1.15rem;">
+        <div id="instance_id" class="text-secondary d-none" style="padding: 0 1.15rem;">
           {{ $instance_id }}
         </div>
         @if( isset( $base64 ) && $base64 )
@@ -53,23 +53,23 @@
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
 
-  function setQrDisplay(flag = true, src = null){
-    let qrImage     = document.querySelector('#qrImage')
-    let qrPreloader = document.querySelector('#qrPreloader')
+  const instance_id = document.querySelector('#instance_id').innerHTML
+  const qrImage     = document.querySelector('#qrImage')
+  const qrPreloader = document.querySelector('#qrPreloader')
 
-    qrImage.style.display     = flag ? 'block' : 'none'
-    qrPreloader.style.display = flag ? 'none'  : 'flex'
+  function setQrDisplay(src = null){
+    qrImage.style.display     = src ? 'block' : 'none'
+    qrPreloader.style.display = src ? 'none'  : 'flex'
     qrImage.setAttribute('src', src ? src : qrImage.src)
     return
   }
 
-  setInterval(function() {
-    axios.get('/whatsapp/getQR')
-    .then(response => {
-      response.data.data ? setQrDisplay(true, response.data.data) : setQrDisplay(false)
-    })
-    .catch(error => setQrDisplay(false))
-  }, 31000)
+  async function getQR(){
+    let src = (await axios.get(`/whatsapp/getQR/?instance_id=${instance_id}`)).data.data
+    setQrDisplay(src)
+  }
+
+  setInterval(() => getQR(), 31000)
 
   setInterval(function() {
     axios.get('/whatsapp/status')

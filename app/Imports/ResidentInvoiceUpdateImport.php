@@ -31,8 +31,10 @@ class ResidentInvoiceUpdateImport implements ToCollection, WithHeadingRow
       $resident_invoice_payment = ResidentInvoicePayment::firstOrCreate([
         'resident_invoice_id' => $resident_invoice->id,
         'amount'              => $row['ultimo_pago'],
-        'date'                => \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['fecha_ultimo_pago'])
+        'date'                => $row['fecha_ultimo_pago']
       ]);
+
+      // \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['fecha_ultimo_pago'])
 
       $items   = $resident_invoice->resident_invoice_items()->with('resident_invoice_payments');
       $balance = $resident_invoice_payment->amount;

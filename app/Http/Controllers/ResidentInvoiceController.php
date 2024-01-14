@@ -6,7 +6,9 @@ use App\Admin;
 use App\Extension;
 use App\Imports\ResidentInvoiceImport;
 use App\ResidentInvoice;
+use App\ResidentInvoicePayment;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -70,5 +72,19 @@ class ResidentInvoiceController extends Controller
     $apto      = $admin->extensions()->whereName( $request->apto )->firstOrFail();
     $invoices  = $apto->resident_invoices;
     return view('public.resident-invoices.index', compact('invoices'));
+  }
+
+  public function balance(Request $request, Extension $extension){
+    $start_date = $request->start_date ?: now()->startOfMonth();
+    $end_date   = $request->end_date   ?: now()->endOfDay();
+
+    $invoices   = $extension->resident_invoices()
+                  ->whereBetween('created_at', [$start_date, $end_date])
+                  ->with('resident_invoice_payments')
+                  ->get();
+
+    $total      = $invoices->reduce(fn(?float $carry, $invoice) => $carry + $invoice->pending);
+
+    return view('pdf.cuenta', compact('extension', 'invoices', 'total'));
   }
 }

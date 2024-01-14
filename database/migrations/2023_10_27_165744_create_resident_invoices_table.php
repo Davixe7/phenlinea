@@ -18,7 +18,7 @@ class CreateResidentInvoicesTable extends Migration
             $table->timestamps();
             $table->string('apto');
             $table->foreignId('extension_id');
-            $table->foreignId('resident_invoice_batch_id');
+            $table->foreignId('resident_invoice_batch_id')->constrained()->onDelete('cascade');
         });
     }
 

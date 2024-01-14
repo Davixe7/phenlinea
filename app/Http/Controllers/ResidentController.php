@@ -7,6 +7,7 @@ use App\Resident;
 use App\Http\Requests\StoreResident as StoreResidentRequest;
 use App\Http\Resources\Resident as ResidentResource;
 use App\Traits\Devices;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -161,9 +162,11 @@ class ResidentController extends Controller
   */
   public function destroy(Resident $resident)
   {
-    $resident->delete();
     $devices = new Devices();
-    $devices->deleteResident($resident);
-    return response()->json(['message'=>'Resident deleted successfuly']);
+    if( $devices->deleteResident($resident) ){
+      $resident->delete();
+      return response()->json(['message'=>'Resident deleted successfuly']);
+    }
+    return response()->json(['message'=>'Resident not deleted']);
   }
 }

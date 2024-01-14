@@ -16,9 +16,10 @@ class ResidentInvoice extends Model
     'total'   => 'double',
     'paid'    => 'double',
     'pending' => 'double',
+    'emision' => 'date'
   ];
   
-  protected $appends = ['total', 'paid', 'pending'];
+  protected $appends = ['total', 'paid', 'pending', 'formatted_id'];
 
   protected $hidden  = [
     'created_at',
@@ -51,6 +52,10 @@ class ResidentInvoice extends Model
 
   function getPendingAttribute(){
     return $this->total - $this->paid;
+  }
+
+  function getFormattedIdAttribute(){
+    return str_pad($this->id, 4, '0', STR_PAD_LEFT);
   }
 
   public function getPeriodoEsAttribute(){

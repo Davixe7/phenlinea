@@ -24,7 +24,7 @@ class Resident extends Model implements HasMedia
     'device_synced'
   ];
   protected $hidden   = ['created_at', 'updated_at'];
-  protected $appends  = ['picture'];
+  protected $appends  = ['picture', 'tags'];
   
   protected $casts = [
     'is_owner'    => 'integer',

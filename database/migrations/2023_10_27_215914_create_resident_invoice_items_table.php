@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('resident_invoice_items', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('resident_invoice_id');
+            $table->foreignId('resident_invoice_id')->constrained()->onDelete('cascade');
             $table->string('title');
             $table->double('pending')->nullable()->default(0);
             $table->double('current')->nullable()->default(0);

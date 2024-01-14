@@ -161,7 +161,10 @@ class Devices
         return true;
       }
 
+      Storage::append('residents.log', json_encode($body));
+
       return false;
+      
       
     } catch (GuzzleException $e) {
       Storage::append('residents.log', $e->getMessage());

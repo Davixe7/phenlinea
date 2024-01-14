@@ -22,7 +22,7 @@
     <v-app>
       <v-main>
         <div class="container">
-            <div class="row" style="height: 100vh; displax: flex;">
+            <div class="row" style="height: 100vh; display: flex;">
               <div class="col-md-5 mx-auto">
                 <div class="text-center py-3">
                   <img src="{{ asset('img/logo.png') }}" alt="" style="width: 150px;">

@@ -26,9 +26,9 @@ class ResidentInvoiceBatchController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function upload()
+  public function create()
   {
-    return view('admin.resident-invoice-batches.upload');
+    return view('admin.resident-invoice-batches.create');
   }
 
   /**
@@ -37,7 +37,7 @@ class ResidentInvoiceBatchController extends Controller
    * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\Response
    */
-  public function import(Request $request)
+  public function store(Request $request)
   {
     $request->validate(['file' => 'file|max:5000|mimes:xls,xlsx']);
 

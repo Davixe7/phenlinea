@@ -114,4 +114,10 @@ th, td {
 
 th {
   border-bottom: 1px solid rgba(0, 0, 0, .097) !important;
-}</style>
+}
+.btn-group > * {
+  display: flex;
+  align-items: center;
+  line-height: 1;
+}
+</style>

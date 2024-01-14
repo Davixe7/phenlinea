@@ -49,6 +49,6 @@ class DatabaseSeeder extends Seeder
       'password' => bcrypt('123456'),
     ]);
 
-    DB::unprepared(file_get_contents(storage_path('app/ddbb.sql')));
+    // DB::unprepared(file_get_contents(storage_path('app/ddbb.sql')));
   }
 }

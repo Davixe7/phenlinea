@@ -50,7 +50,7 @@
       'icon' => 'facturas.png'
       ],
       [
-      'name' => 'resident_invoice_batches.index',
+      'name' => 'resident-invoice-batches.index',
       'icon' => 'facturas.png'
       ],
       ]

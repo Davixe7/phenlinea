@@ -185,7 +185,7 @@
   text-decoration: none;
 }
 
-.btn-round {
+.btn-round, .btn-round--sm {
   text-decoration: none;
   display: inline-flex;
   align-items: center;
@@ -194,8 +194,15 @@
   width: 40px;
   border-radius: 50%;
 }
-.btn-round i {
+.btn-round i, .btn-round--sm i {
   font-size: 24px;
+}
+.btn-round:hover, .btn-round--sm:hover {
+  background: linear-gradient(rgba(0, 0, 0, 0.07), rgba(0, 0, 0, 0.07));
+}
+.btn-round--sm {
+  width: 35px;
+  height: 35px;
 }
 
 .btn-fab {
@@ -205,6 +212,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  position: fixed;
+  right: 30px;
+  bottom: 30px;
 }
 
 .form-control {
@@ -252,7 +262,7 @@ h2 {
   border-radius: 5px;
   background: #fff;
   padding-bottom: 0.5rem;
-  box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 6px 3px rgba(0, 0, 0, 0.05);
 }
 
 .table-responsive h1 {
@@ -267,6 +277,7 @@ h2 {
 
 .table th {
   font-size: 0.85rem !important;
+  border-color: rgba(0, 0, 0, 0.125) !important;
 }
 
 .table th, .table td {
@@ -303,11 +314,6 @@ h2 {
   border-radius: 5px;
 }
 
-.menu-option:hover {
-  /* background-color: #fff;
-  box-shadow: 0 3px 10px #1A61A350; */
-}
-
 .menu-option__icon {
   height: 200px;
 }
@@ -328,7 +334,7 @@ h2 {
   letter-spacing: 0.015em;
 }
 
-.btn-round i {
+.btn-round i, .btn-round--sm i {
   font-size: 24px;
 }
 

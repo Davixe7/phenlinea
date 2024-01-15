@@ -16,33 +16,65 @@
   <title>Home</title>
   <style>
     body {
-      background: #F3F6FC;
       font-family: 'Roboto', sans-serif;
+      background: linear-gradient(to bottom, var(--bs-primary), var(--bs-primary) 25%, #F3F6FC 25%);
+    }
+    #app {
+      min-height: 100vh;
+      display: flex;
+      flex-flow: column;
+    }
+    .footer {
+      margin-top: auto;
+      padding: 1rem 0;
+      font-size: 13px;
+      color: rgba(0,0,0,.5);
+      border-top: 1px solid rgba(0,0,0,.15);
     }
   </style>
   @yield('styles')
+  @stack('styles')
 </head>
 
 <body>
   <div class="container-fluid" id="app">
     <div class="public-navbar d-flex justify-content-center p-3">
-      <img src="{{ asset('img/logo.png') }}" alt="" style="width: 125px;">
+      <img src="{{ asset('img/logo.png') }}" alt="" style="width: 100px;">
     </div>
     <div class="main-content">
       @yield('content')
     </div>
+
+    <div class="footer">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-4 text-center mx-auto">
+            PHenlinea SAS &copy; 2024
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="btn btn-fab" style="position: fixed; right: 20px; bottom: 100px; border: 1px solid #000;">
+  <div
+    class="btn btn-fab"
+    style="position: fixed; right: 20px; bottom: 30px; background: #0d6efd;">
     <a
+      class="text-white d-inline-flex"
       target="_blank"
       title="Soporte Whatsapp"
+      style="text-decoration: none;"
       href="https://api.whatsapp.com/send?phone=573144379170&text=Hola,%20necesito%20asistencia%20relativa%20a%20PHEnLinea">
-      <img
+      <i
+        class="material-symbols-outlined"
+        style="font-size: 36px; text-decoration: none;">
+        contact_support
+      </i>
+      <!-- <img
         src="{{ asset('img/iconos/soporte.png') }}"
         alt="soporte"
         style="max-width: 100%;"
-        />
+        /> -->
     </a>
   </div>
 

@@ -1,11 +1,5 @@
 @extends('layouts.app')
-@section('styles')
-<style>
-  .w-fit {
-    width: fit-content !important;
-  }
-</style>
-@endsection
+
 @section('content')
 <div class="container">
   <ul class="nav nav-pills nav-fill mb-3">

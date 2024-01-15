@@ -6,9 +6,7 @@ use App\Admin;
 use App\Extension;
 use App\Imports\ResidentInvoiceImport;
 use App\ResidentInvoice;
-use App\ResidentInvoicePayment;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -21,6 +19,17 @@ class ResidentInvoiceController extends Controller
    */
   public function index(Request $request, ?Extension $extension)
   {
+    if( auth()->guest() ){
+      $request->validate([
+        'nit'  => 'required',
+        'apto' => 'required'
+      ]);
+
+      $admin     = Admin::whereNit($request->nit)->firstOrFail();
+      $extension = $admin->extensions()->whereName($request->apto)->firstOrFail();
+
+    }
+
     if( $extension ){
       $resident_invoices = $extension->resident_invoices;
       return view('admin.extensions.invoices', compact('extension', 'resident_invoices'));
@@ -62,29 +71,25 @@ class ResidentInvoiceController extends Controller
 
   public function download(ResidentInvoice $resident_invoice)
   {
-    $pdf = Pdf::loadView('pdf.factura', ['resident_invoice' => $resident_invoice]);
+    $download = request()->download;
+    $pdf = Pdf::loadView('pdf.resident-invoice', compact('resident_invoice', 'download'));
     return $pdf->download('invoice.pdf');
   }
 
-  public function apartmentInvoices(Request $request){
-    $request->validate(['nit'=>'required', 'apto'=>'required']);
-    $admin     = Admin::whereNit($request->nit)->firstOrFail();
-    $apto      = $admin->extensions()->whereName( $request->apto )->firstOrFail();
-    $invoices  = $apto->resident_invoices;
-    return view('public.resident-invoices.index', compact('invoices'));
-  }
-
   public function balance(Request $request, Extension $extension){
-    $start_date = $request->start_date ?: now()->startOfMonth();
-    $end_date   = $request->end_date   ?: now()->endOfDay();
+    $start_date = $request->startdate ?: now()->startOfMonth()->format('Y-m-d');
+    $end_date   = $request->enddate   ?: now()->endOfDay()->format('Y-m-d');
 
     $invoices   = $extension->resident_invoices()
                   ->whereBetween('created_at', [$start_date, $end_date])
                   ->with('resident_invoice_payments')
                   ->get();
 
-    $total      = $invoices->reduce(fn(?float $carry, $invoice) => $carry + $invoice->pending);
+    $total      = $invoices->reduce(fn(float $carry, $invoice) => $carry + $invoice->pending, 0);
+    $data       = compact('extension', 'invoices', 'total', 'start_date', 'end_date');
 
-    return view('pdf.cuenta', compact('extension', 'invoices', 'total'));
+    return $request->download
+    ? Pdf::loadView('pdf.cuenta', $data)->download('edo-cta.pdf')
+    : view('admin.extensions.balance', $data);
   }
 }

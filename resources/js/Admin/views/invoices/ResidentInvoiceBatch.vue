@@ -67,7 +67,8 @@
                 </a>
 
                 <a
-                  :href="`/descargar-factura/${invoice.id}`"
+                  :href="`/extensions/${invoice.extension_id}/balance`"
+                  target="_blank"
                   class="btn btn-sm btn-link">
                   Edo. Cta
                 </a>

@@ -15,6 +15,7 @@ use App\Admin;
 use App\Extension;
 use App\Http\Controllers\InvoiceController;
 use App\ResidentInvoicePayment;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 Route::view('home', 'admin.home')->name('home');
@@ -109,9 +110,11 @@ Route::middleware(['auth:admin', 'phoneverified', 'suspended'])->group(function 
 
   Route::resource('novelties', 'NoveltyController');
   Route::resource('extensions', 'ExtensionController');
+
   Route::prefix('extensions/{extension}')->name('extensions.')->group(function(){
     Route::resource('residents', 'ResidentController');
     Route::get('invoices', 'ResidentInvoiceController@index');
+    Route::get('balance', 'ResidentInvoiceController@balance')->name('balance');
   });
 
   Route::resource('residents', 'ResidentController');
@@ -143,7 +146,6 @@ Route::middleware(['auth:admin,extension', 'phoneverified', 'suspended'])->group
 });
 
 Route::get('batches', 'BatchMessageController@index');
-Route::get('/extensions/{extension}/cuenta', 'ResidentInvoiceController@balance');
 Route::view('politica-de-privacidad', 'public.policy');
 Route::get('apk', fn () => response()->download(public_path('app-release.apk'), 'app-release.apk', ['Content-Type' => 'application/vnd.android.package-archive']));
 
@@ -159,11 +161,11 @@ Route::get('test', function () {
   return array_merge($visits, $plates);
 });
 
-Route::view('consultar-facturas', 'public.resident-invoices.query');
-Route::post('consultar-facturas', [App\Http\Controllers\ResidentInvoiceController::class, 'apartmentInvoices'])->name('public.resident-invoices');
-Route::get('detalle-factura/{resident_invoice}', [App\Http\Controllers\ResidentInvoiceController::class, 'show']);
+Route::view('consultar-facturas', 'public.resident-invoices.query')->name('public.resident-invoices.query');
+Route::post('consultar-facturas', [App\Http\Controllers\Public\ResidentInvoiceController::class, 'balance'])->name('public.resident-invoices.balance');
 Route::get('descargar-factura/{resident_invoice}', [App\Http\Controllers\ResidentInvoiceController::class, 'download'])->name('resident-invoices.download');
 Route::get('/pago/{id}', function(Request $request){
   $payment = ResidentInvoicePayment::find($request->id);
-  return view('pdf.recibo', compact('payment'));
+  // return view('pdf.recibo', compact('payment'));
+  return Pdf::loadView('pdf.recibo', compact('payment'))->download('recibo-caja.pdf');
 });

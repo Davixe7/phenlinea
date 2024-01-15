@@ -44,7 +44,7 @@
       <tr>
         <td>{{ $batch->id }}</td>
         <td>{{ $batch->resident_invoices_count }}</td>
-        <td>{{ Carbon\Carbon::parse($batch->periodo)->isoFormat('D MMMM') }}</td>
+        <td style="text-transform: capitalize;">{{ Carbon\Carbon::parse($batch->periodo)->isoFormat('D MMMM') }}</td>
         <td>{{ $batch->emision }}</td>
         <td>{{ $batch->limite }}</td>
         <td>

@@ -7,11 +7,11 @@
   <title>Estado de cuenta</title>
   <style>
     body {
-      background: #4f4f4f;
       font-family: sans-serif;
       font-size: 14px;
     }
     table {
+      width: 100%;
       border: 1px solid #000;
       border-collapse: collapse;
     }
@@ -24,21 +24,9 @@
     }
 
     .container {
-      width: 825px;
       padding: 1.5rem;
       margin: 0 auto;
       background: #fff;
-    }
-
-    #client-info {
-      display: flex;
-    }
-
-    #client-info > table {
-      width: 50%;
-    }
-    #client-info th, #client-info td {
-      text-align: left;
     }
 
     td:nth-child(4) {
@@ -46,6 +34,25 @@
     }
     .text-red {
       color: red;
+    }
+
+    #client-info {
+      width: 100%;
+      border-collapse: collapse;
+      border: none;
+      margin-bottom: 1.5rem;
+    }
+    #client-info > tbody > tr > td {
+      border: none !important;
+      padding: 0;
+      width: 50% !important;
+    }
+    #client-info > tbody > tr > td:last-child > table {
+      border-left: none !important;
+    }
+    #client-info > tbody > tr > td:last-child > table td,
+    #client-info > tbody > tr > td:last-child > table th {
+      border-left: none !important;
     }
   </style>
 </head>
@@ -79,40 +86,47 @@
         </td>
       </tr>
     </table>
-    <div id="client-info" style="margin-bottom: 1.5rem">
-      <table>
-        <tbody>
-          <tr>
-            <th>Cliente</th>
-            <td>{{ $extension->owner_name }}</td>
-          </tr>
-          <tr>
-            <th>NIT</th>
-            <td>{{ $extension->owner_phone }}</td>
-          </tr>
-          <tr>
-            <th>Dirección</th>
-            <td>{{ $extension->admin->address }}</td>
-          </tr>
-        </tbody>
-      </table>
-      <table>
-        <tbody>
-          <tr>
-            <th>Correo</th>
-            <td>{{ $extension->admin->email }}</td>
-          </tr>
-          <tr>
-            <th>Teléfono</th>
-            <td>{{ $extension->admin->phone }}</td>
-          </tr>
-          <tr>
-            <th>Encargado</th>
-            <td>{{ $extension->admin->address }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+
+    <table id="client-info">
+      <tr>
+        <td>
+          <table>
+            <tbody>
+              <tr>
+                <th>Cliente</th>
+                <td>{{ $extension->owner_name }}</td>
+              </tr>
+              <tr>
+                <th>NIT</th>
+                <td>{{ $extension->owner_phone }}</td>
+              </tr>
+              <tr>
+                <th>Dirección</th>
+                <td>{{ $extension->admin->address }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+        <td>
+          <table>
+            <tbody>
+              <tr>
+                <th>Correo</th>
+                <td>{{ $extension->admin->email }}</td>
+              </tr>
+              <tr>
+                <th>Teléfono</th>
+                <td>{{ $extension->admin->phone }}</td>
+              </tr>
+              <tr>
+                <th>Encargado</th>
+                <td>{{ $extension->admin->address }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+    </table>
 
     <table style="width: 100%; text-align: center;">
       <thead>
@@ -124,16 +138,17 @@
       </thead>
       <tbody>
         @foreach( $invoices as $invoice )
-        <tr>
-          <td>{{ $invoice->formatted_id }}</td>
-          <td>{{ $extension->owner_name }}</td>
-          <td>{{ $invoice->created_at->format('Y-m-d') }}</td>
-          <td>{{ $invoice->created_at->translatedFormat('F') }}</td>
-          <td>
-            <div style="width: 40%; margin: 0 auto; text-align: left;">
-              $ {{ $invoice->total }}</td>
-            </div>
-        </tr>
+          <tr>
+            <td>{{ $invoice->formatted_id }}</td>
+            <td>{{ $extension->owner_name }}</td>
+            <td>{{ $invoice->created_at->format('Y-m-d') }}</td>
+            <td>{{ $invoice->created_at->translatedFormat('F') }}</td>
+            <td>
+              <div style="width: 50%; margin: 0 auto; text-align: left;">
+                $ {{ $invoice->total }}
+              </div>
+            </td>
+          </tr>
           @foreach($invoice->resident_invoice_payments as $payment)
             <tr class="text-red">
               <td>PAGO</td>
@@ -141,7 +156,7 @@
               <td>{{ $payment->created_at->format('Y-m-d') }}</td>
               <td>{{ $payment->created_at->translatedFormat('F') }}</td>
               <td>
-                <div style="width: 40%; margin: 0 auto; text-align: left;">
+                <div style="width: 50%; margin: 0 auto; text-align: left;">
                   -$ {{ $payment->amount }}
                 </div>
               </td>
@@ -152,7 +167,7 @@
           <td colspan="3"></td>
           <td>Total</td>
           <td>
-            <div style="width: 40%; margin: 0 auto; text-align: left;">
+            <div style="width: 50%; margin: 0 auto; text-align: left;">
               $ {{ $total }}
             </div>
           </td>

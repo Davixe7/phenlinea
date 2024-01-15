@@ -1,6 +1,10 @@
 @extends('layouts.public')
 @section('styles')
 <style>
+    #app {
+      background: #95a7be !important;
+      height: 100vh;
+    }
     input.form-control  {
       font-size: 2rem;
       text-align: center;
@@ -13,17 +17,14 @@
     .card-header {
       font-size: 20px;
     }
-    #app {
-      background: #95a7be !important;
-    }
   </style>
 @endsection
 @section('content')
 <div class="container">
     <div class="row">
       <div class="col-lg-4 mx-auto" style="margin-top: 50px;">
-        <form action="{{ route('public.resident-invoices') }}" method="POST">
-        @csrf
+        <form action="{{ route('public.resident-invoices.balance') }}" method="POST">
+          @csrf
         <div class="card text-center">
           <div class="card-header">
             Consulte sus facturas

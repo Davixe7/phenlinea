@@ -15,7 +15,6 @@
 
       <table class="table" v-if="results && results.length">
         <thead>
-          <th>Sync</th>
           <th>Apto.</th>
           <th>Mascotas</th>
           <th>Vehículos</th>
@@ -27,13 +26,6 @@
         </thead>
         <tbody>
           <tr v-for="extension in results" :key="extension.id">
-            <td>
-              <i
-                class="material-symbols-outlined"
-                :class="{'text-success':extension.device_room_id || extension.device_synced, 'text-danger':!extension.device_room_id && !extension.device_synced}">
-                {{ (extension.device_room_id || extension.device_synced) ? 'cloud_done' : 'cloud_off' }}
-              </i>
-            </td>
             <td>{{ extension.name }}</td>
             <td>{{ extension.pets_count }}</td>
             <td>{{ extension.vehicles ? extension.vehicles.length : 0 }}</td>
@@ -42,6 +34,9 @@
             <td>{{ extension.phone_1 }}</td>
             <td>{{ extension.phone_2 }}</td>
             <td>
+              <a :href="`extensions/${extension.id}/residents`">
+                <i class="material-symbols-outlined">supervisor_account</i>
+              </a>
               <a :href="`extensions/${extension.id}/visitors`">
                 <i class="material-symbols-outlined">lock_open</i>
               </a>

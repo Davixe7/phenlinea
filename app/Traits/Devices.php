@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Resident;
 use App\Visit;
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Cache;
@@ -14,6 +15,91 @@ use Illuminate\Support\Str;
 class Devices
 {
   protected $api;
+
+  public function importFaces($admin){
+    $data = ['multipart' => [
+      ['name' => 'accessToken', 'contents' => $this->getAccessToken()],
+      ['name' => 'timeZone',       'contents'  => 'America/Bogota'],
+      ['name' => 'language',       'contents'  => 'es_ES'],
+      ['name' => 'extCommunityId', 'contents'  => 57972],
+      ['name' => 'pageSize',       'contents'  => 1205],
+      ['name' => 'isHaveFace',     'contents'  => 1],
+      ['name' => 'currPage',       'contents'  => 1]
+    ]];
+
+    try {
+      $response = $this->api->get('persEmpHousehold/extapi/list', $data);
+      $body     = json_decode( $response->getBody() );
+      $code     = property_exists( $body, 'code' ) ? $body->code : null;
+
+      if( is_null($code) ){
+        Storage::append('import-faces-error.log');
+      }
+
+      if( $code == 0 ){
+        $count = 0;
+        $extensions = $admin->extensions;
+
+        foreach( $body->data->list as $resident){
+          if( !property_exists($resident, 'roomName') ){
+            Storage::append($admin->id ."-422-import-faces-error.log", "$resident->name $resident->id roomName not present");
+            continue;
+          }
+          else {
+            $roomName  = explode("Paseo sevilla/", $resident->roomName)[1];
+            $roomName  = explode('|', $roomName)[0];
+            $extension = $extensions->where('name', $roomName)->first();
+          }
+          if( !$extension ){
+            Storage::append($admin->id ."-422-import-faces-error.log", "Extension not found $roomName");
+            continue;
+          }
+
+          if( property_exists($resident, 'uuid') && $resident->uuid){
+            $phResident = $extension->residents()->find($resident->uuid);
+          }
+          else if( property_exists($resident, 'id') && $resident->id ){
+            $phResident = $extension->residents()->where('device_resident_id', $resident->id)->first();
+          }
+          else {
+            $residentName = trim($resident->name);
+            $residentName = str_replace("  ", " ", $residentName);
+            $residentName = explode(" ", $residentName)[0];
+            $phResident = $extension
+                          ->residents()
+                          ->where('name', 'LIKE', "%" . $residentName . "%")
+                          ->first();
+          }
+
+          if( !$phResident ){
+            Storage::append($admin->id . "-404-import-faces-error.log", "$resident->name $resident->id $resident->roomName $extension->name" );
+            continue;
+          }
+
+          if( $phResident->hasMedia('picture') ){
+            Storage::append($admin->id . "-200-import-faces-error.log", "200 $resident->name $resident->roomName $extension->name" );
+            continue;
+          }
+
+          else {
+            $phResident->update(['device_resident_id' => $resident->id]);
+            if(is_array($resident->images)){
+              $phResident->addMediaFromUrl($resident->images[0])->toMediaCollection('picture');
+            }
+            $count++;
+            Storage::append($admin->id . '-import-faces-error.log', "$count updated" );
+          }
+        }
+      }
+
+      if( $code != 0 ){
+        Storage::append('import-faces-error.log', $code . " " , $body->msg);
+      }
+    }catch( Exception $e ){
+      Storage::append('import-faces-error.log', $e->getMessage());
+    }
+
+  }
 
   public function __construct()
   {
@@ -33,10 +119,10 @@ class Devices
       try {
         $response = $this->api->get('platCompany/extapi/getAccessToken', [
           'multipart' => [
-            ['name' => 'timeZone', 'contents'  => 'America/Bogota'],
-            ['name' => 'language', 'contents'  => 'es_ES'],
-            ['name' => 'appId', 'contents'     => config('zhyaf.app_id')],
-            ['name' => 'appSecret', 'contents' => config('zhyaf.app_secret')]
+            ['name' => 'timeZone',    'contents'  => 'America/Bogota'],
+            ['name' => 'language',    'contents'  => 'es_ES'],
+            ['name' => 'appId',       'contents'     => config('zhyaf.app_id')],
+            ['name' => 'appSecret',   'contents' => config('zhyaf.app_secret')]
           ]
         ]);
 
@@ -93,7 +179,7 @@ class Devices
       ['name' => 'uuid',               'contents' => $resident->id],
       ['name' => 'name',               'contents' => $resident->name],
       ['name' => 'phone',              'contents' => $resident->email],
-      ['name' => 'cardNos',            'contents' => $resident->card],
+      ['name' => 'cardNos',            'contents' => $resident->card]
     ];
 
     $multipart[] = $resident->extension->device_room_id

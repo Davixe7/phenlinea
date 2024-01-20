@@ -65,9 +65,19 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="card">Email</label>
-        <input type="email" class="form-control" v-model="resident.email">
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="form-group">
+            <label for="card">Email</label>
+            <input type="text" class="form-control" v-model="resident.email">
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="form-group">
+            <label for="card">UUID</label>
+            <input type="text" class="form-control" v-model="resident.device_resident_id">
+          </div>
+        </div>
       </div>
 
       <div class="form-check form-check-inline">

@@ -45,6 +45,9 @@ class Visitor extends Model implements HasMedia
 
   public function getFaceFileBase64(){
     $path    = $this->getFirstMediaPath('picture');
+    if( !file_exists($path) ){
+      return null;
+    }
     $type    = pathinfo($path, PATHINFO_EXTENSION);
     $data    = file_get_contents($path);
     return 'data:application/' . $type . ';base64,' . base64_encode($data);

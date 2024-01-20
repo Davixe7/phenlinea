@@ -6,7 +6,9 @@
     <div v-if="residents && residents.length" class="table-responsive">
       <table class="table">
         <thead>
+          <!-- <th>Foto</th> -->
           <th>Foto</th>
+          <th>ID</th>
           <th>Nombre</th>
           <th>Edad</th>
           <th>Documento</th>
@@ -25,6 +27,7 @@
               </a>
               <div v-else style="width: 40px; height: 40px; border-radius: 50%"></div>
             </td>
+            <td>{{ resident.id }}</td>
             <td>{{ resident.name }}</td>
             <td>{{ resident.age }}</td>
             <td>{{ resident.dni }}</td>

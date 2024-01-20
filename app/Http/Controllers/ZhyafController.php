@@ -8,8 +8,10 @@ use App\Resident;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Rap2hpoutre\FastExcel\FastExcel;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use ZipArchive;
 
 class ZhyafController extends Controller
 {
@@ -41,22 +43,26 @@ class ZhyafController extends Controller
     return (new FastExcel( $residents ))->download("residents_" . time() . ".xlsx");
   }
 
-  function exportMedia(){
-    $extensions  = Admin::find(356)->extensions()->pluck('id');
-    $residents   = Resident::whereIn('extension_id', $extensions)->pluck('id');
-    $medias      = Media::where('model_type', 'App\Resident')->whereIn('model_id', $residents)->get();
+  function exportMedia(Admin $admin){
+    $residents  = $admin->residents()->pluck('residents.id');
+    $medias     = Media::where('model_type', 'App\Resident')->whereIn('model_id', $residents)->get();
+    $medias     = $medias->map(fn($m)=>['phone'=>$m->model_id, 'path'=>$m->getPath()]);
 
-    $userMedia   = $medias->map(fn($m)=>['phone'=>$m->model_id, 'path'=>$m->getPath()]);
+    $zip        = new ZipArchive();
+    $zipPath    = storage_path("{$admin->id}_" . now()->format('YmdHis') . "_faces.zip");
+    $zip->open($zipPath, $zip::CREATE);
     
-    foreach( $userMedia as $media ){
+    foreach( $medias as $media ){
       $extension = pathinfo($media['path'], PATHINFO_EXTENSION);
-      $extension = $extension ?: 'png';
-      $newPath   = storage_path('batch/' . $media['phone'] . '.' . $extension);
-      
-      if( !copy( $media['path'], $newPath ) ){
-        Storage::append('files.log', 'Unable to copy file ' . $newPath);
-      }
+      $extension = ".$extension";
+      $output    = str_replace($extension, "", $media['path']) . ".jpg";
+      $filename  = $media['phone'] . $extension;
+
+      exec("mogrify {$media['path']} -format jpg {$media['path']}");
+
+      $zip->addFile($output, $filename);
     }
+    $zip->close();
     return 'success';
   }
 }

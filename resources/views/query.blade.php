@@ -13,7 +13,7 @@
     <form action="{{ route('query-residents') }}">
       <div>
         <label for="#">Nombre del residente</label>
-        <input type="text" class="form-control" name="device_resident_id">
+        <input type="text" class="form-control" name="id">
       </div>
       <button class="btn btn-primary">
         Buscar

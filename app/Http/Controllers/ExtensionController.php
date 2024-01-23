@@ -7,6 +7,8 @@ use App\Extension;
 use App\Http\Requests\StoreExtension as StoreExtensionRequest;
 use App\Http\Resources\Census as CensusResource;
 use App\Traits\Devices;
+use Exception;
+use Illuminate\Support\Facades\Storage;
 
 class ExtensionController extends Controller
 {
@@ -47,19 +49,22 @@ class ExtensionController extends Controller
      */
     public function store(StoreExtensionRequest $request)
     {
-      $data = $request->only($request->only( Extension::getStoreAttributes() ));
+      $data = $request->only( Extension::getStoreAttributes() );
       $data = array_merge( $data, ['admin_id'=>auth()->id()] );
       $extension = Extension::create($data);
 
       if( auth()->user()->device_community_id && auth()->user()->device_building_id ){
-        $devices = new Devices();
-        if( !$devices->addRoom($extension) ){
+        try {
+          $devices = new Devices();
+          $devices->addRoom($extension);
+        }
+        catch(Exception $e){
+          Storage::append('zhyaf.error.log', $e->getMessage() . " Borrando extension");
           $extension->delete();
-          abort(500, 'Error al sincronizar con la plataforma de dispositivos');
         }
       }
 
-      return new CensusResource( $extension );
+      return response()->json(['data'=>new CensusResource( $extension )]);
     }
 
     /**
@@ -106,14 +111,28 @@ class ExtensionController extends Controller
      */
     public function destroy(Extension $extension)
     {
-      $extension->residents()->delete();
-      $extension->delete();
-      return response()->json(['data'=>'Extension deleted successfuly']);
-    }
+      $community_id = $extension->admin->device_community_id;
+      $building_id  = $extension->admin->device_building_id;
 
-    public function _list(){
-      $extensions = Extension::unidad( $request->name )->get();
-      return ExtensionResource::collection( $extensions );
+      if( !$community_id || !$building_id ){
+        $extension->residents()->delete();
+        $extension->delete();
+        return response()->json(['data'=>'Extension deleted successfuly']);
+      }
+
+      try {
+        $devices = new Devices();
+        $devices->deleteRoom($extension);
+        $extension->residents()->delete();
+        $extension->delete();
+        return response()->json(['data'=>'Extension deleted successfuly']);
+      }
+      catch(Exception $e){
+        if( $e->getCode() == 10000){
+          abort(422, $e->getMessage());  
+        }
+        abort(500, $e->getMessage());
+      }
     }
 
     public function getImport(Request $request){

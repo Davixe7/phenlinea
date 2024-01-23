@@ -3,44 +3,35 @@
 namespace App\Http\Controllers;
 
 use App\Admin;
-use App\Http\Resources\ResidentExport;
-use App\Resident;
-use Exception;
-use GuzzleHttp\Client;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use App\Http\Resources\ZhyafResidents;
+use App\Traits\Devices;
 use Rap2hpoutre\FastExcel\FastExcel;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use ZipArchive;
 
 class ZhyafController extends Controller
 {
-  function exportRooms(){
-    $extensions  = Admin::find(184)->extensions()->get([
-      'id as uuid',
-      'admin_id as buildingUuid',
-      'name',
-      'name as code'
-    ]);
-
-    $data        = ["RoomList" => $extensions];
-    $http        = new Client(['base_uri' => 'https://cloud.zhyaf.com:8790']);
-    $accessToken = "dfe2671c4c6775ab38ddb4eb7d73eccc4a35a6e6842612d86cf0348182a604240f01e78777025a5dfd2f73e48bb07eca-p37911";
-    
-    try {
-      $response = $http->get("sqRoom/extapi/saveBatchRooms/?accessToken={$accessToken}&extCommunityId=59884", [
-        "json" => $data
-      ]);
-      return $response->getBody();
-    }
-    catch( Exception $e ){
-      return $e->getMessage();
-    }
+  function restoreEmails(Admin $admin){
+    $devices = new Devices();
+    $devices->restoreEmails($admin);
+    return 'success';
+  }
+  
+  function dropRooms(Admin $admin){
+    $devices = new Devices();
+    $devices->dropRooms($admin);
+    return 'success';
   }
 
-  function exportResidents(){
-    $residents  = ResidentExport::collection( Admin::find(184)->residents )->toArray(true);
-    return (new FastExcel( $residents ))->download("residents_" . time() . ".xlsx");
+  function exportRooms(Admin $admin){
+    $devices = new Devices();
+    $devices->exportRooms($admin);
+    return 'success';
+  }
+
+  function exportResidents(Admin $admin){
+    $residents  = ZhyafResidents::collection( $admin->residents )->toArray(true);
+    return (new FastExcel( $residents ))->download("{$admin->id}_residents_" . time() . ".xlsx");
   }
 
   function exportMedia(Admin $admin){

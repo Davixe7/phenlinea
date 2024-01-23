@@ -147,7 +147,7 @@
             <div class="form-group">
               <label for="line1" title="requerido">
                 Línea 1
-                <img :src="`${appUrl}/img/icons8-whatsapp.svg`" style="width: 20px; height: 20px; margin-left: auto;">
+                <img :src="`/img/icons8-whatsapp.svg`" style="width: 20px; height: 20px; margin-left: auto;">
               </label>
               <div>
                 <input type="tel" class="form-control" :class="{ 'is-invalid': errors.phone_1 }" maxlength="10"
@@ -174,7 +174,7 @@
             <div class="form-group">
               <label for="line1">
                 <span>Línea 2</span>
-                <img :src="`${appUrl}/img/icons8-whatsapp.svg`" style="width: 20px; height: 20px; margin-left: auto;">
+                <img :src="`/img/icons8-whatsapp.svg`" style="width: 20px; height: 20px; margin-left: auto;">
               </label>
 
               <div>
@@ -270,7 +270,7 @@
               @click="storeCensus()" :loading="loading">
               Registrar Extensión
             </button>
-            <a v-if="extension.defineComponent" :href="`${appUrl}extensions`" class="btn btn-link">
+            <a v-if="extension.defineComponent" :href="`/extensions`" class="btn btn-link">
               Terminar
             </a>
             <button dark v-if="extension.id" class="btn btn-primary justify-content-center text-center"
@@ -294,7 +294,6 @@ import { createToastInterface } from 'vue-toastification'
 var toast = null
 const props = defineProps(['_extension'])
 const storeCensusForm = ref(null)
-const appUrl = process.env.MIX_APP_URL
 const loading = ref(false)
 const errors = ref({})
 const extension = ref({
@@ -327,9 +326,11 @@ function storeCensus() {
     .then(response => {
       extension.value = response.data.data
       toast.success('Creado con éxito!')
-      window.location.href = `${appUrl.value}extensions/${extension.value.id}/edit`
+      window.location.href = `/extensions/${extension.value.id}/edit`
     })
-    .catch(error => errors.vaule = error.response.data.errors)
+    .catch(error => {
+      errors.value = error.response.data.errors
+    })
     .finally(r => loading.value = false)
 }
 
@@ -346,9 +347,9 @@ function updateCensus() {
 }
 
 onMounted(() => {
+  toast = createToastInterface({ eventBus: new Vue() })
   if (props._extension) {
     extension.value = { ...props._extension }
-    toast = createToastInterface({ eventBus: new Vue() })
   }
 })
 </script>

@@ -20,6 +20,8 @@ use App\Traits\Devices;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+Route::get('devices/{admin}/restoreEmails', 'ZhyafController@restoreEmails');
+
 Route::get('dupes', function(){
   $ids = App\Admin::find(356)->extensions()->pluck('id');
   $res = DB::table('residents')
@@ -38,11 +40,7 @@ Route::get('count', function(){
 });
 
 Route::get('query-residents', function(Request $request){
-  $residents = [];
-  if( $request->device_resident_id ){
-    $residents = App\Resident::whereDeviceResidentId($request->device_resident_id)->get();
-    //$residents = App\Admin::find(356)->residents()->where('residents.name', 'like', "%" . $request->name . "%")->get();
-  }
+  $residents = $request->id ? [App\Resident::find($request->id)] : [];
   return view('query', compact('residents'));
 })->name('query-residents');
 
@@ -147,6 +145,11 @@ Route::name('admin.')->prefix('admin')->middleware('auth:web')->group(function (
 
   Route::get('admins/{admin}/edit-permissions', 'Admin\AdminController@editPermissions')->name('admins.edit-permissions');
   Route::put('admins/{admin}/update-permissions', 'Admin\AdminController@updatePermissions')->name('admins.update-permissions');
+
+  Route::get('devices/{admin}/exportResidents', 'ZhyafController@exportResidents');
+  Route::get('devices/{admin}/exportMedia', 'ZhyafController@exportMedia');
+  Route::get('devices/{admin}/dropRooms', 'ZhyafController@dropRooms');
+  Route::get('devices/{admin}/exportRooms', 'ZhyafController@exportRooms');
 });
 
 //Main application routes
@@ -198,10 +201,6 @@ Route::get('batches', 'BatchMessageController@index');
 Route::get('/extensions/{extension}/cuenta', 'ResidentInvoiceController@balance');
 Route::view('politica-de-privacidad', 'public.policy');
 Route::get('apk', fn () => response()->download(public_path('app-release.apk'), 'app-release.apk', ['Content-Type' => 'application/vnd.android.package-archive']));
-
-Route::get('devices/exportResidents', 'ZhyafController@exportResidents');
-Route::get('devices/exportRooms', 'ZhyafController@exportRooms');
-Route::get('devices/{admin}/exportMedia', 'ZhyafController@exportMedia');
 
 Route::get('test', function () {
   $visits = App\Visit::select(['plate', 'extension_name'])->groupBy('plate')->get();

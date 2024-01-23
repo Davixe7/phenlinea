@@ -10,6 +10,7 @@ use App\Traits\Devices;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class ResidentController extends Controller
 {
@@ -84,14 +85,15 @@ class ResidentController extends Controller
     
     if( auth()->user()->device_building_id ){
       $devices = new Devices();
-      if ( !$devices->addResident( $resident, $picturePath ) ){
+      try {
+        $devices->addResident( $resident, $picturePath );
+      }
+      catch(Exception $e){
         $resident->delete();
         abort(422, 'Error al sincronizar con plataforma de dispositivos');
       }
     }
-
     return new ResidentResource( $resident );
-
   }
 
   /**
@@ -128,6 +130,10 @@ class ResidentController extends Controller
     $request->validate([
       'name' => 'required',
       'dni'  => 'required',
+      'card' => [
+        'nullable',
+        Rule::unique('residents')->ignore($resident->id)
+      ]
     ]);
 
     $resident->name          = $request->name;
@@ -142,9 +148,12 @@ class ResidentController extends Controller
 
     $path = $request->file('picture') ? $request->file('picture')->getPathName() : null;
 
-    if( $resident->extension->admin->device_building_id ){
-      $devices    = new Devices();
-      if( !$devices->updateResident($resident, $path) ){
+    if( auth()->user()->device_building_id ){
+      try {
+        $devices = new Devices();
+        $devices->updateResident($resident, $path);
+      }
+      catch( Exception $e ){
         abort(500, 'Error al sincronizar con el servidor de dispositivos');
       }
     }
@@ -162,11 +171,14 @@ class ResidentController extends Controller
   */
   public function destroy(Resident $resident)
   {
-    $devices = new Devices();
-    if( $devices->deleteResident($resident) ){
+    try {
+      $devices = new Devices();
+      $devices->deleteResident($resident);
       $resident->delete();
       return response()->json(['message'=>'Resident deleted successfuly']);
     }
-    return response()->json(['message'=>'Resident not deleted']);
+    catch( Exception $e ){
+      abort(500, $e->getMessage());
+    }
   }
 }

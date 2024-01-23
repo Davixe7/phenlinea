@@ -65,19 +65,10 @@
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-lg-6">
-          <div class="form-group">
-            <label for="card">Email</label>
-            <input type="text" class="form-control" v-model="resident.email">
-          </div>
-        </div>
-        <div class="col-lg-6">
-          <div class="form-group">
-            <label for="card">UUID</label>
-            <input type="text" class="form-control" v-model="resident.device_resident_id">
-          </div>
-        </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" class="form-control" v-model="resident.email" :class="{ 'is-invalid': errors.email }">
+        <div v-if="errors.email" class="invalid-feedback">{{ errors.email[0] }}</div>
       </div>
 
       <div class="form-check form-check-inline">
@@ -114,7 +105,7 @@
             type="button"
             class="btn btn-link me-3"
             @click="$emit('reset')">
-            Cancelar
+            Restablecer
           </button>
           <button
             type="submit"

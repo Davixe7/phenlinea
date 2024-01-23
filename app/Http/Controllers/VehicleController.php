@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Extension;
 use App\Traits\Devices;
 use App\Vehicle;
+use Exception;
 use Illuminate\Http\Request;
 
 class VehicleController extends Controller
@@ -97,7 +98,13 @@ class VehicleController extends Controller
      */
     public function destroy(Vehicle $vehicle)
     {
-      $vehicle->delete();
-      return $vehicle;
+      try {
+        $vehicle->delete();
+        $devices = new Devices();
+        $devices->updateResident($vehicle->resident, null);
+        return $vehicle;
+      } catch (Exception $e) {
+        abort(422, $e->getCode() . " " . $e->getMessage());
+      }
     }
 }

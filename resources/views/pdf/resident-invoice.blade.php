@@ -6,23 +6,25 @@
     <style>
       body {
         background: #faf7fb;
+        font-size: 14px;
+        line-height: 1rem;
       }
       #factura {
-        font-size: 13px;
         padding: 20px;
         margin: 20px auto;
         border: 1px solid #efefef;
         background: #fff;
         width: 420px;
       }
-      #factura .header .logo-wrap {
-        display: inline-block;
-        width: 150px;
-        margin-right: 15px;
+      .logo-wrap {
+        box-sizing: border-box;
         padding: 10px 20px;
         border: 1px solid lightgray;
         background: #fff;
-        overflow: hidden;
+      }
+      .logo-wrap img {
+        width: 100%;
+        object-fit: contain;
       }
       #factura .header .header-info {
         display: inline-block;
@@ -36,13 +38,21 @@
         font-size: 15px;
         font-weight: 600;
       }
-
-      .billing-dates {
-        display: block;
+      .table {
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 5px 0;
+        border: 1px solid rgba(0,0,0,.09);
+        border-left: none;
+        border-right: none;
+        border-collapse: collapse;
       }
-      .billing-dates > div {
-        display: inline-block;
-        width: 32%;
+      .billing-dates td {
+        padding-bottom: 7.5px;
+      }
+      .billing-dates th {
+        text-align: left;
+        padding-top: 7.5px;
       }
       .billing-account {
         margin-bottom: 15px;
@@ -73,75 +83,61 @@
   <body>
     <div class="container">
       <div id="factura">
-        <div class="header">
-          <div class="logo-wrap">
-            @if( $resident_invoice->resident_invoice_batch->admin->getFirstMediaPath('picture') )
-              <img src="{{ $resident_invoice->resident_invoice_batch->admin->getFirstMediaPath('picture') }}" style="width: 100%;">
-            @else
-              <img src="{{ public_path('img/logo.png') }}" style="width: 100%;">
-            @endif
-          </div>
-          <div class="header-info">
-            <div class="d-flex">
-              <h1>Cuenta de cobro</h1>
-              <div class="bill-id ml-auto">
-                <b>#{{ str_pad($resident_invoice->id,4,'0',STR_PAD_LEFT) }}</b>
-              </div>
-            </div>
-            <div class="unit-name">
-              <b>{{ $resident_invoice->resident_invoice_batch->admin->name }}</b>
-            </div>
-            <div class="phone">
-              {{ $resident_invoice->resident_invoice_batch->admin->phone }}
-            </div>
-            <div class="address">
-              {{ $resident_invoice->resident_invoice_batch->admin->address }}
-            </div>
-            <div class="email">
-              {{ $resident_invoice->resident_invoice_batch->admin->email }}
-            </div>
-          </div>
-        </div>
+        <table class="table header">
+          <tbody>
+            <tr>
+              <td style="width: 50%;">
+                <div class="logo-wrap">
+                  @if( $resident_invoice->resident_invoice_batch->admin->getFirstMediaPath('picture') )
+                    <img src="{{ $resident_invoice->resident_invoice_batch->admin->getFirstMediaPath('picture') }}" style="width: 100%;">
+                  @else
+                    <img src="{{ public_path('img/logo.png') }}" style="width: 100%;">
+                  @endif
+                </div>
+              </td>
+              <td style="padding: 10px;">
+                <div style="line-height: 1.05rem;">
+                  <div><h1 style="margin-bottom: 4px;">Cuenta de cobro</h1></div>
+                  <div><b>#{{ str_pad($resident_invoice->id,4,'0',STR_PAD_LEFT) }}</b></div>
+                  <div><b>{{ $resident_invoice->resident_invoice_batch->admin->name }}</b></div>
+                  <div>{{ $resident_invoice->resident_invoice_batch->admin->phone }}</div>
+                  <div>{{ $resident_invoice->resident_invoice_batch->admin->address }}</div>
+                  <div>{{ $resident_invoice->resident_invoice_batch->admin->email }}</div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
 
-        <hr style="margin: 10px 0; border-color: rgba(0, 0, 0, 0.1);">
-
-        <div class="billing-info">
-          <div class="extension-info">
-            <div class="extension-number">
-              Referente de pago: {{ $resident_invoice->resident_invoice_batch->admin_id }}-{{ $resident_invoice->apto }}
-            </div>
-            <div class="extension-owner">
+        <table class="table" style="border: none">
+          <tr>
+            <td style="font-size: 15px; font-weight: bold; vertical-align: middle;">
+              Referente de pago: {{ $resident_invoice->resident_invoice_batch->admin_id }}-{{ $resident_invoice->apto }} <br>
               {{ $resident_invoice->extension->residents->count() ? $resident_invoice->extension->residents->first()->name : '' }}
-              {{-- Juan Ignacio Restrepo Restrepo | Sonia Contanza Restrepo Zapata --}}
-            </div>
-          </div>
+            </td>
+          </tr>
+        </table>
 
-          <hr style="margin: 10px 0; border-color: rgba(0, 0, 0, 0.1);">
+        <table class="table billing-dates">
+          <thead>
+            <th>Período</th>
+            <th>Emitido</th>
+            <th>Pagar antes de</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ $resident_invoice->periodo_es }}</td>
+              <td>{{ $resident_invoice->limite_es }}</td>
+              <td>{{ $resident_invoice->emision_es }}</td>
+            </tr>
+          </tbody>
+        </table>
 
-          <div class="billing-dates">
-            <div>
-              <b>Período</b>
-              <br>
-              {{ $resident_invoice->periodo_es }}
-            </div>
-            <div>
-              <b>Emitido</b><br>
-              {{ $resident_invoice->emision_es }}
-            </div>
-            <div>
-              <b>Pagar antes de</b><br>
-              {{ $resident_invoice->limite_es }}
-            </div>
-          </div>
-
-          <hr style="margin: 10px 0; border-color: rgba(0, 0, 0, 0.1);">
-
-          @if( $resident_invoice->note )
-          <div class="billing-account">
-            {{ $resident_invoice->note }}
-          </div>
-          @endif
+        @if( $resident_invoice->note )
+        <div class="billing-account">
+          {{ $resident_invoice->note }}
         </div>
+        @endif
 
         <div class="billing-table">
           <table style="width: 100%; border-collapse: collapse;">

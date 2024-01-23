@@ -16,6 +16,7 @@
   <link href="{{ asset('css/app.css') }}" rel="stylesheet">
   <title>PHenlínea</title>
   @yield('styles')
+  @stack('styles')
 </head>
 
 <body>

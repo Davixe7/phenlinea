@@ -59,13 +59,13 @@ class ResidentInvoice extends Model
   }
 
   public function getPeriodoEsAttribute(){
-    return ucfirst( \Carbon\Carbon::parse( $this->periodo )->translatedFormat('F d') );
+    return ucfirst( \Carbon\Carbon::parse( $this->resident_invoice_batch->periodo )->isoFormat('MMMM D') );
   }
   public function getEmisionEsAttribute(){
-    return ucfirst( \Carbon\Carbon::parse( $this->emision )->translatedFormat('F d') );
+    return ucfirst( \Carbon\Carbon::parse( $this->resident_invoice_batch->emision )->isoFormat('MMMM D') );
   }
   public function getLimiteEsAttribute(){
-    return ucfirst( \Carbon\Carbon::parse( $this->limite )->translatedFormat('F d') );
+    return ucfirst( \Carbon\Carbon::parse( $this->resident_invoice_batch->limite )->isoFormat('MMMM D') );
   }
 
 }

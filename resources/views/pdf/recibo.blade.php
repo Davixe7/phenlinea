@@ -59,7 +59,7 @@
               <div>{{ $payment->resident_invoice->extension->admin->phone }}</div>
             </td>
             <td style="text-align: center;">
-              <img src="{{ asset('img/logo.png') }}" alt="" style="width: 75px;">
+              <img src="{{ public_path('img/logo.png') }}" alt="" style="width: 75px;">
             </td>
           </tr>
         </table>

@@ -20,7 +20,7 @@
       <a
         class="nav-link"
         :class="{ disabled: !extension.id, active: page == 'invoices' }"
-        :href="`/extensions/${extension.id}/invoices`">
+        :href="`/extensions/${extension.id}/balance`">
         Facturación
       </a>
     </li>

@@ -109,7 +109,7 @@
               Referente de pago: {{ $resident_invoice->resident_invoice_batch->admin_id }}-{{ $resident_invoice->apto }}
             </div>
             <div class="extension-owner">
-              {{ $resident_invoice->apartment->residents->count() ? $resident_invoice->apartment->residents->first()->name : '' }}
+              {{ $resident_invoice->extension->residents->count() ? $resident_invoice->extension->residents->first()->name : '' }}
               {{-- Juan Ignacio Restrepo Restrepo | Sonia Contanza Restrepo Zapata --}}
             </div>
           </div>

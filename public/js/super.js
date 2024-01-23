@@ -118,7 +118,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       $(PaymentsModal.value).modal('show');
     }
     function updateAdmin(admin) {
-      rows.value.splice(rows.value.indexOf(adminToEdit), 1, admin);
+      results.value.splice(results.value.indexOf(adminToEdit), 1, admin);
       $(AdminsModal.value).modal('hide');
     }
     function deleteAdmin(id) {
@@ -231,7 +231,8 @@ __webpack_require__.r(__webpack_exports__);
         data.append('picture', picture);
       }
       Object.keys(props.admin).forEach(function (key) {
-        return data.append(key, props.admin[key]);
+        var nullSafeValue = props.admin[key] == null ? '' : props.admin[key];
+        data.append(key, nullSafeValue);
       });
       return data;
     }
@@ -883,7 +884,7 @@ var render = function render() {
       }
     }, [_c("i", {
       staticClass: "material-symbols-outlined"
-    }, [_vm._v("\n                  edit\n                ")])]), _vm._v(" "), _c("button", {
+    }, [_vm._v("\n                    edit\n                  ")])]), _vm._v(" "), _c("button", {
       staticClass: "btn btn-xs btn-link",
       on: {
         click: function click($event) {
@@ -895,9 +896,20 @@ var render = function render() {
     }, [_vm._v("delete")])])])])]);
   }), 0)]) : _vm._e()]), _vm._v(" "), !_setup.results || !_setup.results.length ? _c("div", {
     staticClass: "alert alert-info"
-  }, [_vm._v("\n    No hay administradores para mostrar\n  ")]) : _vm._e(), _vm._v(" "), _c("div", {
+  }, [_vm._v("\n      No hay administradores para mostrar\n    ")]) : _vm._e(), _vm._v(" "), _c("div", {
     staticClass: "fab-container"
   }, [_c("button", {
+    staticStyle: {
+      width: "50px",
+      height: "50px",
+      "border-radius": "50%",
+      position: "fixed",
+      bottom: "30px",
+      right: "30px",
+      display: "flex",
+      "align-items": "center",
+      "justify-content": "center"
+    },
     attrs: {
       color: "primary",
       "data-toggle": "modal",
@@ -935,7 +947,7 @@ var render = function render() {
     attrs: {
       id: "adminEditModalLabel"
     }
-  }, [!_setup.editing ? _c("span", [_vm._v("Crear")]) : _c("span", [_vm._v("Actualizar")]), _vm._v("\n            administrador\n          ")]), _vm._v(" "), _vm._m(1)]), _vm._v(" "), _c("div", {
+  }, [!_setup.editing ? _c("span", [_vm._v("Crear")]) : _c("span", [_vm._v("Actualizar")]), _vm._v("\n              administrador\n            ")]), _vm._v(" "), _vm._m(1)]), _vm._v(" "), _c("div", {
     staticClass: "modal-body"
   }, [_c(_setup.CreateAdmin, {
     attrs: {
@@ -9046,7 +9058,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.modal-title {\n  font-size: 1.1em;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\nlabel {\n  font-size: 12px;\n  margin-bottom: 8px;\n}\ninput.form-control {\n  height: 45px;\n}\n.form-control {\n  margin-bottom: 10px;\n}\n.modal-title {\n  font-size: 1.1em;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

@@ -67,7 +67,8 @@
                 </a>
 
                 <a
-                  :href="`/descargar-factura/${invoice.id}`"
+                  :href="`/extensions/${invoice.extension_id}/balance`"
+                  target="_blank"
                   class="btn btn-sm btn-link">
                   Edo. Cta
                 </a>
@@ -114,4 +115,10 @@ th, td {
 
 th {
   border-bottom: 1px solid rgba(0, 0, 0, .097) !important;
-}</style>
+}
+.btn-group > * {
+  display: flex;
+  align-items: center;
+  line-height: 1;
+}
+</style>

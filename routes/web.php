@@ -17,6 +17,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Resident;
 use App\ResidentInvoicePayment;
 use App\Traits\Devices;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -158,9 +159,11 @@ Route::middleware(['auth:admin', 'phoneverified', 'suspended'])->group(function 
 
   Route::resource('novelties', 'NoveltyController');
   Route::resource('extensions', 'ExtensionController');
+
   Route::prefix('extensions/{extension}')->name('extensions.')->group(function(){
     Route::resource('residents', 'ResidentController');
     Route::get('invoices', 'ResidentInvoiceController@index');
+    Route::get('balance', 'ResidentInvoiceController@balance')->name('balance');
   });
 
   Route::resource('residents', 'ResidentController');
@@ -175,13 +178,7 @@ Route::middleware(['auth:admin', 'phoneverified', 'suspended'])->group(function 
 
   Route::get('residents/list', 'ResidentController@list')->name('residents.list');
 
-  Route::get('resident-invoice-batches',                          [App\Http\Controllers\ResidentInvoiceBatchController::class, 'index'] )->name('resident_invoice_batches.index');
-  Route::get('resident-invoice-batches/upload',                   [App\Http\Controllers\ResidentInvoiceBatchController::class, 'upload'])->name('resident_invoice_batches.upload');
-  Route::post('resident-invoice-batches/import',                  [App\Http\Controllers\ResidentInvoiceBatchController::class, 'import'])->name('resident_invoice_batches.import');
-  Route::get('resident-invoice-batches/{resident_invoice_batch}', [App\Http\Controllers\ResidentInvoiceBatchController::class, 'show'] )->name('resident_invoice_batches.show');
-  Route::put('resident-invoice-batches/{resident_invoice_batch}', [App\Http\Controllers\ResidentInvoiceBatchController::class, 'update'] )->name('resident_invoice_batches.update');
-  Route::get('resident-invoice-batches/{resident_invoice_batch}/edit', [App\Http\Controllers\ResidentInvoiceBatchController::class, 'edit'] )->name('resident_invoice_batches.edit');
-
+  Route::resource('resident-invoice-batches', App\Http\Controllers\ResidentInvoiceBatchController::class);
   Route::get('extensions/import', 'ExtensionController@getImport')->name('extensions.getImport')->middleware('can:import,App\Extension');
   Route::post('extensions/import', 'ExtensionController@import')->name('extensions.import');
 });
@@ -198,7 +195,6 @@ Route::middleware(['auth:admin,extension', 'phoneverified', 'suspended'])->group
 });
 
 Route::get('batches', 'BatchMessageController@index');
-Route::get('/extensions/{extension}/cuenta', 'ResidentInvoiceController@balance');
 Route::view('politica-de-privacidad', 'public.policy');
 Route::get('apk', fn () => response()->download(public_path('app-release.apk'), 'app-release.apk', ['Content-Type' => 'application/vnd.android.package-archive']));
 
@@ -210,11 +206,11 @@ Route::get('test', function () {
   return array_merge($visits, $plates);
 });
 
-Route::view('consultar-facturas', 'public.resident-invoices.query');
-Route::post('consultar-facturas', [App\Http\Controllers\ResidentInvoiceController::class, 'apartmentInvoices'])->name('public.resident-invoices');
-Route::get('detalle-factura/{resident_invoice}', [App\Http\Controllers\ResidentInvoiceController::class, 'show']);
+Route::view('consultar-facturas', 'public.resident-invoices.query')->name('public.resident-invoices.query');
+Route::post('consultar-facturas', [App\Http\Controllers\Public\ResidentInvoiceController::class, 'balance'])->name('public.resident-invoices.balance');
 Route::get('descargar-factura/{resident_invoice}', [App\Http\Controllers\ResidentInvoiceController::class, 'download'])->name('resident-invoices.download');
 Route::get('/pago/{id}', function(Request $request){
   $payment = ResidentInvoicePayment::find($request->id);
-  return view('pdf.recibo', compact('payment'));
+  // return view('pdf.recibo', compact('payment'));
+  return Pdf::loadView('pdf.recibo', compact('payment'))->download('recibo-caja.pdf');
 });

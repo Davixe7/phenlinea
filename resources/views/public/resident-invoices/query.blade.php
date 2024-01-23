@@ -1,28 +1,28 @@
 @extends('layouts.public')
 @section('styles')
 <style>
-    input.form-control  {
-      font-size: 2rem;
-      text-align: center;
-    }
-    .card-header, .card-footer {
-      border-top: 0;
-      border-bottom: 0;
-      background: #fff;
-    }
-    .card-header {
-      font-size: 20px;
-    }
-    #app {
-      background: #95a7be !important;
-    }
-  </style>
+  input.form-control {
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  .card-header,
+  .card-footer {
+    border-top: 0;
+    border-bottom: 0;
+    background: #fff;
+  }
+
+  .card-header {
+    font-size: 20px;
+  }
+</style>
 @endsection
 @section('content')
 <div class="container">
-    <div class="row">
-      <div class="col-lg-4 mx-auto" style="margin-top: 50px;">
-        <form action="{{ route('public.resident-invoices') }}" method="POST">
+  <div class="row">
+    <div class="col-lg-4 mx-auto">
+      <form action="{{ route('public.resident-invoices.balance') }}" method="POST">
         @csrf
         <div class="card text-center">
           <div class="card-header">
@@ -42,8 +42,8 @@
             <button class="btn btn-primary">Consultar</button>
           </div>
         </div>
-        </form>
-      </div>
+      </form>
     </div>
   </div>
+</div>
 @endsection

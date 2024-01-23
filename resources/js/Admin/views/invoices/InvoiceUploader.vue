@@ -115,7 +115,7 @@ function importInvoices(){
   if( !invoiceForm.value.reportValidity() ) return
   let url = props.batch?.id
             ? `/resident-invoice-batches/${props.batch.id}`
-            : '/resident-invoice-batches/import'
+            : '/resident-invoice-batches'
 
   axios.post(url, loadData(), {
     onUploadProgress: function (progressEvent) {

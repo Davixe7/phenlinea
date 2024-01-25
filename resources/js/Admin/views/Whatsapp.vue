@@ -27,9 +27,13 @@
                 <label for="checkbox-owners_only">Solo propietarios</label>
               </li>
               <li v-for="extension in results" class="list-group-item">
-                <input v-model="receivers" :value="extension.id" type="checkbox" id="`checkbox-${extension.id}`"
+                <input
+                  v-model="receivers"
+                  :value="extension.id"
+                  type="checkbox"
+                  :id="`checkbox-${extension.id}`"
                   class="mr-3 extension-check">
-                <label for="`checkbox-${extension.id}`">
+                <label :for="`checkbox-${extension.id}`">
                   {{ extension.name }}
                 </label>
               </li>

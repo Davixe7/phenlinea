@@ -46,7 +46,7 @@ class WhatsappController extends Controller
     //   return to_route('whatsapp.login');
     // }
 
-    $extensions           = auth()->user()->extensions()->orderBy('name')->get('name', 'admin_id', 'phone_1', 'phone_2', 'owner_phone');
+    $extensions           = auth()->user()->extensions()->orderBy('name')->get(['extensions.name', 'extensions.id', 'admin_id', 'phone_1', 'phone_2', 'owner_phone']);
     $history              = BatchMessage::whereAdminId( auth()->id() )->get();
     $whatsapp_instance_id = auth()->user()->whatsapp_instance_id;
     return view('admin.whatsapp.index', compact('extensions', 'history', 'whatsapp_instance_id'));

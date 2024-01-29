@@ -24,6 +24,19 @@ class Whatsapp
     }
   }
 
+  public function validateInstance($instance_id){
+    $query    = ['instance_id'=>$instance_id, 'phone'=>auth()->user()->phone];
+    try {
+      $response = $this->api->get('validate', compact('query'));
+      $body     = json_decode($response->getBody());
+      $data     = property_exists($body, 'data') ? $body->data : null;
+      return $data;
+    }
+    catch( Exception $e ){
+      Storage::append('whatsapp.errors.log', $e->getMessage());
+    }
+  }
+
   public function getInstanceId()
   {
     try {

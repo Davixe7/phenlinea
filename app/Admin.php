@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Traits\Whatsapp;
+use Exception;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -116,9 +118,9 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
     return $this->hasMany('App\PushNotificationLog');
   }
 
-  public function whatsapp_messages_batches()
+  public function batch_messages()
   {
-    return $this->hasMany('App\WhatsappMessagesBatch');
+    return $this->hasMany('App\BatchMessage');
   }
 
   public function resident_invoices(){
@@ -174,5 +176,12 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
      $query    = ['user_id' => auth()->id(), 'type'=>'batch'];
      $response = $http->get("https://api.phenlinea.com/api/batches/", compact('query'));
      return json_decode($response->getBody(), true)['data'];
+  }
+
+  public function hasValidInstance(){
+    if( !$this->whatsapp_instance_id ){ return false; }
+    $whatsapp = new Whatsapp();
+    try { return $whatsapp->validateInstance($this->whatsapp_instance_id);}
+    catch(Exception $e){ return false; }
   }
 }

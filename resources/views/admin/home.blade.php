@@ -89,7 +89,7 @@
       </div>
 
       <div class="col-sm-6 col-lg-3">
-        <a href="{{ route('whatsapp.index') }}">
+        <a href="{{ route('batch-messages.index') }}">
           <div class="menu-option">
             <div class="brandnew-tag">
               Nuevo
@@ -102,7 +102,7 @@
       </div>
 
       <div class="col-sm-6 col-lg-3">
-        <a href="{{ route('whatsapp.comunity') }}">
+        <a href="#">
           <div class="menu-option">
             <div class="brandnew-tag">
               Nuevo

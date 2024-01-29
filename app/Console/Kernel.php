@@ -42,7 +42,7 @@ class Kernel extends ConsoleKernel
           ];
 
           foreach( $numbers as $number ){
-            $options['number'] = $number;
+            $options['number'] = '57' . $number;
             $whatsapp->send($options);
             sleep(1);
           }

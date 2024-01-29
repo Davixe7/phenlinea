@@ -171,6 +171,11 @@ class ResidentController extends Controller
   */
   public function destroy(Resident $resident)
   {
+    if( !auth()->user()->device_community_id ){
+      $resident->delete();
+      return response()->json(['message'=>'Resident deleted successfuly']);
+    }
+
     try {
       $devices = new Devices();
       $devices->deleteResident($resident);

@@ -82,7 +82,7 @@ class Devices
     }
     catch(Exception $e){
       Storage::append('zhyaf.error.log', $endpoint . " " . $e->getCode() . " " . $e->getMessage() );
-      throw new Exception($body->msg, $code);
+      throw $e;
     }
   }
 
@@ -140,7 +140,10 @@ class Devices
   }
 
   function deleteResident($resident){
-    $query = ['uuids' => $resident->id];
+    $query = [
+      'uuids'            => $resident->id,
+      'extCommunityUuid' => auth()->id()
+    ];
     return $this->fetchZhyaf('persEmpHousehold/extapi/delete', $query);
   }
 

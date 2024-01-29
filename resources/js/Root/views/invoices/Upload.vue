@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <button class="fab" @click="importing = !importing">
+    <button class="btn btn-primary btn-fab" @click="importing = !importing">
       <i class="material-symbols-outlined">add</i>
     </button>
     <div class="col">
@@ -23,6 +23,7 @@
                 <select name="year" v-model="year" class="form-control mb-2">
                   <option value="2022">2022</option>
                   <option value="2023">2023</option>
+                  <option value="2024">2024</option>
                 </select>
               </div>
               <div class="col mb-2">
@@ -119,6 +120,7 @@
                   <select v-model="year" class="form-control" required>
                     <option value="2022">2022</option>
                     <option value="2023">2023</option>
+                    <option value="2024">2024</option>
                   </select>
                 </div>
               </div>

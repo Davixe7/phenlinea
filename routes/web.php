@@ -11,26 +11,14 @@
 |
 */
 
-use App\Admin;
-use App\Extension;
 use App\Http\Controllers\BatchMessageController;
-use App\Http\Controllers\InvoiceController;
-use App\Http\Controllers\WhatsappController;
-use App\Resident;
 use App\ResidentInvoicePayment;
-use App\Traits\Devices;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
-Route::view('home', 'admin.home')->name('home');
+Route::get('home', 'HomeController@index')->name('home');
 Route::view('/', 'public.landing')->middleware('guest');
-
-Route::get('logout', function () {
-  auth()->logout();
-  return redirect('/');
-});
 
 Route::get('pqrs/qr', 'PetitionController@qr')->name('pqrs.qr')->middleware('auth:admin');
 Route::get('pqrs', 'PetitionController@index')->name('pqrs.index')->middleware('auth:admin');
@@ -39,40 +27,17 @@ Route::put('pqrs/{petition}', 'PetitionController@update')->name('pqrs.update');
 Route::put('pqrs/{petition}/markAsRead', 'PetitionController@markAsRead')->name('pqrs.markasread');
 Route::post('pqrs', 'PetitionController@store')->name('pqrs.store');
 Route::get('/unidades/{admin}/pqrs', 'PetitionController@create')->name('pqrs.create');
-
-Route::middleware(['auth', 'modules:whatsapp'])->group(function(){
-  Route::resource('batch-messages', BatchMessageController::class);
-  Route::post('batch-messages/authenticate', [BatchMessageController::class, 'authenticate']);
-});
-
-Route::get('whatsapp/hook', 'BatchMessageController@hook')->name('whatsapp.hook');
 Route::post('whatsapp/hook', 'BatchMessageController@hook')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
-
-/**
- *  Auth Routes
- */
-// Get login forms
-Route::get('root/login', 'Admin\Auth\LoginController@showLoginForm');
-
-// Login routes
-Route::post('admins/login', 'Auth\Admin\LoginController@login')->name('admins.login');
-Route::post('residents/login', 'Auth\Extension\LoginController@login')->name('residents.login');
-Route::post('root/login', 'Admin\Auth\LoginController@login')->name('root.login');
-//---
-Route::get('adminslist', 'Auth\Extension\LoginController@adminslist')->name('residents.adminslist');
-Route::get('extensionslist/{admin}', 'Auth\Extension\LoginController@extensionslist')->name('residents.extensionslist');
 
 // AUTH ROUTES
 Route::get('login', 'Auth\LoginController@showLoginForm');
-Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 Route::post('login', 'Auth\LoginController@login')->name('login');
-
+Route::get('root/login', 'Admin\Auth\LoginController@showLoginForm');
+Route::post('root/login', 'Admin\Auth\LoginController@login')->name('root.login');
+Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 Route::post('admins/logout', 'Auth\Admin\LoginController@logout')->name('admins.logout');
 Route::post('extensions/logout', 'Auth\Extension\LoginController@logout')->name('extensions.logout');
 Route::post('porterias/logout', 'Auth\Porteria\LoginController@logout')->name('porterias.logout');
-
-Route::get('home', 'HomeController@index')->middleware(['phoneverified', 'auth:web,admin,extension'])->name('home');
-Route::get('whatsapp_clients/getclient', 'Admin\WhatsappClientController@getClient')->name('whatsapp_clients.getClient');
 
 //Admin routes
 Route::name('admin.')->prefix('admin')->middleware('auth:web')->group(function () {
@@ -114,28 +79,26 @@ Route::name('admin.')->prefix('admin')->middleware('auth:web')->group(function (
 Route::middleware(['auth:admin', 'phoneverified', 'suspended'])->group(function () {
   Route::get('extensions/export', 'ExportController@exportCensus');
 
-  Route::resource('novelties', 'NoveltyController');
   Route::resource('extensions', 'ExtensionController');
 
   Route::prefix('extensions/{extension}')->name('extensions.')->group(function(){
     Route::resource('residents', 'ResidentController');
+    Route::resource('vehicles', App\Http\Controllers\VehicleController::class);
     Route::get('invoices', 'ResidentInvoiceController@index');
     Route::get('balance', 'ResidentInvoiceController@balance')->name('balance');
   });
 
+  Route::resource('novelties', 'NoveltyController');
+  Route::resource('batch-messages', BatchMessageController::class);
   Route::resource('residents', 'ResidentController');
-
-  Route::resource('visits', 'VisitController')->only(['index'])->middleware('modules:visits');
-
-  Route::resource('invoices', InvoiceController::class)->only(['index', 'show', 'update']);
-
-  Route::prefix('extensions/{extension}')->name('extensions.')
-  ->group(fn () => Route::resource('vehicles', App\Http\Controllers\VehicleController::class));
+  Route::resource('visits', 'VisitController')->only(['index']);
+  Route::resource('invoices', 'InvoiceController')->only(['index', 'show', 'update']);
+  Route::resource('resident-invoice-batches', 'ResidentInvoiceBatchController');
   Route::resource('vehicles', App\Http\Controllers\VehicleController::class);
 
-  Route::get('residents/list', 'ResidentController@list')->name('residents.list');
+  Route::post('batch-messages/authenticate', 'BatchMessageController@index');
 
-  Route::resource('resident-invoice-batches', App\Http\Controllers\ResidentInvoiceBatchController::class);
+  Route::prefix('extensions/{extension}')->name('extensions.')->group(fn () => Route::resource('vehicles', 'VehicleController'));
   Route::get('extensions/import', 'ExtensionController@getImport')->name('extensions.getImport')->middleware('can:import,App\Extension');
   Route::post('extensions/import', 'ExtensionController@import')->name('extensions.import');
 });
@@ -151,15 +114,14 @@ Route::middleware(['auth:admin,extension', 'phoneverified', 'suspended'])->group
   Route::view('modulo-deshabilitado', 'disabled_module')->name('modules.disabled');
 });
 
-Route::get('batches', 'BatchMessageController@index');
 Route::view('politica-de-privacidad', 'public.policy');
 Route::get('apk', fn () => response()->download(public_path('app-release.apk'), 'app-release.apk', ['Content-Type' => 'application/vnd.android.package-archive']));
 
 Route::get('test', function () {
   $visits = App\Visit::select(['plate', 'extension_name'])->groupBy('plate')->get();
-  $visits = $visits->map(fn ($v) => $v->plate . " " . $v->extension_name . " visitante")->toArray();
+  $visits = $visits->map(fn ($v) => "$v->plate $v->extension_name visitante")->toArray();
   $plates = App\Vehicle::with('extension')->get();
-  $plates = $plates->map(fn ($v) => $v->plate . " " . $v->extension->name . " residente")->toArray();
+  $plates = $plates->map(fn ($v) => "$v->plate $v->extension->name residente")->toArray();
   return array_merge($visits, $plates);
 });
 

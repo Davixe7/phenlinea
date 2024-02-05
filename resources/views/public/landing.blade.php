@@ -132,7 +132,7 @@
         </li>
         <li>
           <a
-            href="{{ route('residents.login') }}"
+            href="{{ false ? route('residents.login') : ''}}"
             class="btn btn-outline-primary">
             Propietario o Residente
           </a>
@@ -154,7 +154,7 @@
           </a>
         </li>
         <li>
-          <a href="{{ route('residents.login') }}" class="btn btn-link">
+          <a href="{{ false ? route('residents.login') : ''}}" class="btn btn-link">
             Ingresar Propietario o Residente
           </a>
         </li>

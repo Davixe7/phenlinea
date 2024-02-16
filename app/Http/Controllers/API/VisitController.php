@@ -57,11 +57,13 @@ class VisitController extends Controller
       $visit = Visit::create([
         "admin_id"     => auth()->user()->admin_id,
         "extension_name" => $request->extension_name,
-        "visitor_id"   => $visitor ? $visitor->id : $request->visitor_id,
-        "checkin"      => now(),
-        "start_date"   => now(),
-        "end_date"     => now()->addHours( auth()->user()->admin->visits_lifespan ?: 24 ),
-        "plate"        => $request->plate,
+        "visitor_id"    => $visitor ? $visitor->id : $request->visitor_id,
+        "checkin"       => now(),
+        "start_date"    => now(),
+        "end_date"      => now()->addHours( auth()->user()->admin->visits_lifespan ?: 24 ),
+        "plate"         => $request->plate,
+	"authorized_by" => $request->authorized_by,
+	"note" 		=> $request->note
       ]);
 
       if( $picture = $request->file('picture') ){

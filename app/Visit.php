@@ -20,7 +20,9 @@ class Visit extends Model implements HasMedia
     'extension_id',
     'extension_name',
     'visitor_id',
-    'plate'
+    'plate',
+    'note',
+    'authorized_by'
   ];
 
   protected $casts = [

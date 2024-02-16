@@ -24,8 +24,19 @@ Route::middleware('auth:api-porteria')->group(function () {
   Route::post('notifyDelivery', 'API\WhatsappController@sendDelivery');
 
   Route::get('plates', function(){
-    $visits = auth()->user()->visits()->distinct()->get();
+    $visitIds = auth()->user()
+              ->visits()->whereNotNull('plate')
+              ->selectRaw('MAX(`created_at`) as fecha')
+              ->groupBy(['plate', 'admin_id'])
+              ->pluck('fecha');
+
+    $visits = auth()->user()->visits()
+              ->select(['admin_id', 'plate', 'extension_name'])
+              ->whereIn('created_at', $visitIds)
+              ->get();
+
     $visits = $visits->map(fn($v) => $v->plate . " " . $v->extension_name . " visitante")->toArray();
+
     $plates = auth()->user()->vehicles()->with('extension')->get();
     $plates = $plates->map(fn($v) => $v->plate . " " . $v->extension->name . " residente")->toArray();
     return array_merge($visits, $plates);

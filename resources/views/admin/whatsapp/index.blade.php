@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', ['title'=>'Mensajería Masiva'])
 @push('styles')
 <style>
   .btn-fab {
@@ -17,7 +17,7 @@
 </style>
 @endpush
 @section('content')
-<div class="table-responsive">
+<div class="table-responsive" style="max-width: 600px; margin: 0 auto;">
   <h1>Historial de mensajes</h1>
   <table class="table">
     <thead>
@@ -32,7 +32,7 @@
         <td>{{ count(explode(",", $message->numbers)) }}</td>
         <td>{{ $message->title }}</td>
         <td>{{ Carbon\Carbon::parse($message->created_at)->format('Y-m-d H:i') }}</td>
-        <td>{{ $message->status }}</td>
+        <td>{{ $statuses[$message->status] }}</td>
       </tr>
       @endforeach
     </tbody>

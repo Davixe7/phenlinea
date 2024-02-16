@@ -44,7 +44,7 @@
 
 <script setup>
 import { ref } from 'vue';
-const props = defineProps(['residentInvoiceBatch'])
+const props = defineProps(['batch'])
 
 const fileInput = ref(null)
 const file      = ref(null)
@@ -66,7 +66,7 @@ function upload(){
   data.append('_method', 'PUT')
   data.append('file', file.value)
 
-  axios.post(`/resident-invoice-batches/${props.residentInvoiceBatch.id}`, data, {
+  axios.post(`/resident-invoice-batches/${props.batch.id}`, data, {
     onUploadProgress: function (progressEvent) {
       console.log(progressEvent.loaded)
       progress.value = Math.round((progressEvent.loaded / progressEvent.total) * 100);
@@ -75,6 +75,7 @@ function upload(){
   .then(response => {
     loading.value = false
     success.value = true
+    emit('paymentsUpdated', response.data.data)
     setTimeout(()=>resetState(), 2000)
   })
   .finally(()=>loading.value = false)

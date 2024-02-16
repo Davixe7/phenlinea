@@ -22,7 +22,7 @@
           </td>
           <td>
             <div class="badge">
-              {{ ['taken'=>'enviado', 'pending'=>'pendiente', 'processing'=>'procesando'][$message->status] }}
+              {{ $statuses[$message->status] }}
             </div>
           </td>
           <td>_</td>

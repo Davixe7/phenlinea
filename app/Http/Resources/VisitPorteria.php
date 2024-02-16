@@ -37,7 +37,9 @@ class VisitPorteria extends JsonResource
         "end_date"   => $this->end_date ? $this->end_date->format('Y-m-d H:i:s') : null,
         "password"   => $this->password,
         "qrcode"     => $this->getFirstMediaUrl('qrcode'),
-        "extension_name"     => $this->extension_name
+        "extension_name" => $this->extension_name,
+        "authorized_by"  => $this->authorized_by,
+        "note"           => $this->note
       ];
     }
 }

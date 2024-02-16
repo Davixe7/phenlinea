@@ -11,21 +11,23 @@ use Illuminate\Support\Facades\Storage;
 class Whatsapp
 {
   protected $api;
-  protected $provider;
+  public $provider;
 
-  public function __construct()
+  public function __construct(?WhatsappClient $provider = null)
   {
     try {
-      $this->provider = WhatsappClient::whereEnabled(true)->firstOrFail();
-      $this->api      = new Client(['base_uri' => $this->provider->base_url]);
+      $provider = $provider ?: WhatsappClient::whereEnabled(true)->firstOrFail();
+      
+      $this->provider = $provider;
+      $this->api      = new Client(['base_uri' => $provider->base_url]);
     }
     catch(Exception $e){
       Storage::append('messages.log', now() . $e->getMessage());
     }
   }
 
-  public function validateInstance($instance_id){
-    $query    = ['instance_id'=>$instance_id, 'phone'=>auth()->user()->phone];
+  public function validateInstance($instance_id, $phone){
+    $query    = compact('instance_id', 'phone');
     try {
       $response = $this->api->get('validate', compact('query'));
       $body     = json_decode($response->getBody());
@@ -100,14 +102,19 @@ class Whatsapp
       $options['instance_id'] = $this->provider->delivery_instance_id;
     }
 
+    if(!key_exists('access_token', $options)){
+      $options['access_token'] = $this->provider->access_token;
+    }
+
     if( !$options['number'] || $options['number'] == '57' || $options['number'] == 'null'){
       Storage::append('messages.log', now() . ' Invalid phone number: ' . $options['number']);
       return;
     }
 
     try {
-      $this->api->get('send', ['query'=>$options]);
-      return true;
+      $response = $this->api->get('send', ['query'=>$options]);
+      $body     = $response->getBody();
+      Storage::append('messages.log', now() . $body);
     } catch (GuzzleException $e) {
       Storage::append('messages.log', now() . 'ERROR: ' . $e->getMessage());
       return false;

@@ -15,17 +15,18 @@ class ApartmentPorteria extends JsonResource
     public function toArray($request)
     {
       return [
-        "id" => $this->id,
-        "name" => $this->name,
+        "id"                  => $this->id,
+        "name"                => $this->name,
         "parking_numbers_str" => $this->parking_numbers_str,
-        "pets_count" => $this->pets_count,
-        "plates" => $this->plates,
-        "admin_id" => $this->admin_id,
-        "residents" => $this->residents,
-        "phone_owner" => $this->phoneOwner,
-        "phone_owner_2" => $this->phoneOwner2,
-        "phone_owner_3" => $this->phoneOwner3,
-        "phone_owner_4" => $this->phoneOwner4,
+        "pets_count"          => $this->pets_count,
+        "plates"              => $this->plates,
+        "admin_id"            => $this->admin_id,
+        "residents"           => $this->residents,
+        "phone_owner"         => $this->phoneOwner,
+        "phone_owner_2"       => $this->phoneOwner2,
+        "phone_owner_3"       => $this->phoneOwner3,
+        "phone_owner_4"       => $this->phoneOwner4,
+        "deposit"             => $this->deposit,
       ];
     }
 }

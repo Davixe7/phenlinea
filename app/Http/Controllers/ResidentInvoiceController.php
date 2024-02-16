@@ -78,7 +78,7 @@ class ResidentInvoiceController extends Controller
 
   public function balance(Request $request, Extension $extension){
     $start_date = $request->startdate ?: now()->startOfMonth()->format('Y-m-d');
-    $end_date   = $request->enddate   ?: now()->endOfDay()->format('Y-m-d');
+    $end_date   = $request->enddate   ?: now()->addDays(1)->endOfDay()->format('Y-m-d');
 
     $invoices   = $extension->resident_invoices()
                   ->whereBetween('created_at', [$start_date, $end_date])

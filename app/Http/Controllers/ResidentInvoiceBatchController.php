@@ -28,7 +28,12 @@ class ResidentInvoiceBatchController extends Controller
    */
   public function create()
   {
-    return view('admin.resident-invoice-batches.create');
+    $batch = new ResidentInvoiceBatch([
+      'periodo' => now()->startOfMonth()->format('Y-m-d'),
+      'emision' => now()->format('Y-m-d'),
+      'limite'  => now()->endOfMonth()->format('Y-m-d'),
+    ]);
+    return view('admin.resident-invoice-batches.create', compact('batch'));
   }
 
   /**
@@ -89,6 +94,7 @@ class ResidentInvoiceBatchController extends Controller
 
     Excel::import(new ResidentInvoiceUpdateImport($residentInvoiceBatch), $path);
     return response()->json([
+      'data'  => $residentInvoiceBatch->resident_invoices,
       'count' => $residentInvoiceBatch->resident_invoices()->count()
     ]);
   }

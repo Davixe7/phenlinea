@@ -42,9 +42,11 @@ class VehicleController extends Controller
     public function store(Extension $extension, Request $request)
     {
         $vehicle = Vehicle::create($request->all());
-        $devices = new Devices();
-        if( $resident = $vehicle->resident ){
-          $devices->updateResident( $resident, null );
+        if( auth()->user()->device_community_id ){
+          $devices = new Devices();
+          if( $resident = $vehicle->resident ){
+            $devices->updateResident( $resident, null );
+          }
         }
         return $vehicle;
     }
@@ -85,8 +87,10 @@ class VehicleController extends Controller
         ]);
         
         $vehicle->update($request->all());
-        $devices = new Devices();
-        $devices->updateResident($vehicle->resident, null);
+        if( auth()->user()->device_community_id ){
+          $devices = new Devices();
+          $devices->updateResident($vehicle->resident, null);
+        }
         return $vehicle;
     }
 

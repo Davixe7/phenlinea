@@ -53,11 +53,11 @@
       <button class="btn btn-round--sm me-2" id="filtersToggler">
         <i class="material-symbols-outlined">filter_alt</i>
       </button>
-      <button
+      <a
         class="btn btn-link text-danger d-none d-sm-inline-flex"
         href="{{ route('extensions.balance', ['extension'=>$extension, 'download'=>1]) }}">
         Descargar PDF
-      </button>
+      </a>
       <button
         class="btn btn-round--sm text-danger d-inline-flex d-sm-none"
         href="{{ route('extensions.balance', ['extension'=>$extension, 'download'=>1]) }}"
@@ -70,7 +70,7 @@
 
 <div class="filters card d-none mb-3">
   <div class="card-body">
-    <form action="{{ $endpoint }}" method="POST">
+    <form action="{{ $endpoint }}" method="GET">
       @csrf
       <div class="d-flex align-items-center flex-wrap">
         <input type="date" class="form-control w-fit ms-auto me-3" name="startdate" value="{{ $startdate }}" />

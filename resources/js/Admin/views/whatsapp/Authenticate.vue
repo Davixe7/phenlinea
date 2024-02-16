@@ -3,7 +3,7 @@ import axios from 'axios'
 import { onMounted, ref } from 'vue';
 
 const api = axios.create({
-  baseURL: 'http://localhost:3000/',
+  baseURL: 'https://messages.phenlinea.com/',
   headers: {
     'Access-Control-Allow-Origin': '*',
     'mode': 'no-cors',
@@ -26,7 +26,7 @@ async function getInstance(){
 }
 
 function setSockets(){
-  const socket = io('http://localhost:3000');
+  const socket = io('https://messages.phenlinea.com');
   socket.on('qrcode', (data)=>{
     data = JSON.parse(data)
     qrcode.value = data.instance_id == instance_id.value

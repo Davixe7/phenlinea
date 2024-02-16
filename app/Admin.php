@@ -180,8 +180,8 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
 
   public function hasValidInstance(){
     if( !$this->whatsapp_instance_id ){ return false; }
-    $whatsapp = new Whatsapp();
-    try { return $whatsapp->validateInstance($this->whatsapp_instance_id);}
+    $whatsapp = new Whatsapp( WhatsappClient::find(1) );
+    try { return $whatsapp->validateInstance($this->whatsapp_instance_id, $this->phone);}
     catch(Exception $e){ return false; }
   }
 }

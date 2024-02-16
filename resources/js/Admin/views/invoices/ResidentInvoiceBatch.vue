@@ -1,13 +1,15 @@
 <template>
   <div>
-    <payment-uploader :resident-invoice-batch="resident_invoice_batch">
+    <payment-uploader
+      @paymentsUpdated="data => batch.resident_invoices = data"
+      :batch="batch">
     </payment-uploader>
 
     <div class="table-responsive">
       <div class="d-flex aling-items-center">
         <div class="col-lg-4">
           <h1>
-            Facturas del lote {{ resident_invoice_batch.id }}
+            Facturas del lote {{ batch.id }}
           </h1>
         </div>
         <div class="col-lg-8 px-3 d-flex justify-content-end align-items-center">
@@ -85,17 +87,12 @@
 import { computed, onMounted, ref } from 'vue';
 import PaymentUploader from './PaymentUploader.vue';
 
-const props = defineProps(['resident_invoice_batch'])
-const search = ref('')
+const props   = defineProps(['batch'])
+const search  = ref('')
 const results = computed(() => {
-  if (search.value == '') { return [...props.resident_invoice_batch.resident_invoices] }
-  return props.resident_invoice_batch.resident_invoices
+  if (search.value == '') { return [...props.batch.resident_invoices] }
+  return props.batch.resident_invoices
     .filter(i => i.apto.toLowerCase().includes(search.value.toLowerCase()))
-})
-
-
-onMounted(() => {
-  // results.value = [...props.resident_invoice_batch.resident_invoices]
 })
 </script>
 

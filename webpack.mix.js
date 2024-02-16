@@ -1,4 +1,11 @@
 const mix = require('laravel-mix');
+let url = process.env.APP_URL.replace(/(^\w+:|^)\/\//, '');
+mix.options({
+  hmrOptions: {
+      host: 'phenlinea.com',
+      port: 8080 // Can't use 443 here because address already in use
+  }
+});
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management

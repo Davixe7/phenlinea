@@ -6,6 +6,7 @@ use App\Admin;
 use App\BatchMessage;
 use App\Extension;
 use App\Traits\Whatsapp;
+use App\WhatsappClient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -16,22 +17,30 @@ class BatchMessageController extends Controller
 
   public function __construct()
   {
-    $this->whatsapp = new Whatsapp();
+    $this->whatsapp = new Whatsapp(WhatsappClient::find(1));
   }
 
   public function index(){
     $batch_messages = auth()->user()->batch_messages;
-    return view('admin.whatsapp.index', compact('batch_messages'));
+    $statuses       = [
+      'pending'    => 'Pendiente',
+      'ready'      => 'En cola',
+      'processing' => 'En proceso',
+      'sent'       => 'Enviado',
+      'taken'      => 'Enviado',
+      'failed'     => 'Fallido',
+    ];
+    return view('admin.whatsapp.index', compact('batch_messages', 'statuses'));
   }
   
   public function create(Request $request){
     $instance_id = auth()->user()->whatsapp_instance_id;
-    if( $instance_id && !$this->whatsapp->validateInstance($instance_id)){
+    if( $instance_id && !$this->whatsapp->validateInstance($instance_id, auth()->user()->phone)){
       $this->whatsapp->logout($instance_id);
       auth()->user()->update(['whatsapp_instance_id'=>null]);
     }
 
-    $message = auth()->user()->batch_messages()->where('status', 'pending')->latest()->first();
+    $message = auth()->user()->batch_messages()->whereIn('status', ['pending', 'failed'])->latest()->first();
     if( $message && !$request->filled('pending_adviced') ){
       return view('admin.whatsapp.pending', compact('message'));
     }
@@ -108,25 +117,22 @@ class BatchMessageController extends Controller
 
   public function hook(Request $request)
   {
-    Storage::append('whatsapp_hook.log', 'incoming data');
-    $data    = json_encode($request->all());
-    $arrData = json_decode($data, true);
+    $data = json_encode($request->all());
+    $data = json_decode($data, true);
 
-    Storage::append('whatsapp_hook.log', json_encode($arrData));
+    Storage::append('whatsapp_hook.log', json_encode($data));
 
-    if ($arrData['event'] == 'ready') {
-      $phone = $arrData['phone'] ?: explode(':', $arrData['data']['id'])[0];
+    if ($data['event'] == 'ready') {
+      $phone = substr($data['phone'], 2);
 
       Admin::where('phone', $phone)->update([
         'whatsapp_status'      => 'online',
-        'whatsapp_instance_id' => $arrData['instance_id']
+        'whatsapp_instance_id' => $data['instance_id']
       ]);
-      Storage::append('whatsapp_hook.log', json_encode($arrData));
-      return 1;
     }
 
-    if ($arrData->event == 'logout') {
-      Admin::where('instance_id', $arrData['instance_id'])->update([
+    if ($data->event == 'logout') {
+      Admin::where('instance_id', $data['instance_id'])->update([
         'whatsapp_status'      => 'offline',
         'whatsapp_instance_id' => null
       ]);

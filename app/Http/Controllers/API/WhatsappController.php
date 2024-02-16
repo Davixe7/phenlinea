@@ -27,13 +27,18 @@ class WhatsappController extends Controller
       }
     }
 
-
     $options = [
       'number'    => '',
       'message'   => view('messages.delivery', compact('extension'))->render(),
       'media_url' => $media_url ?: null,
       'group_id'  => null
     ];
+
+    if( $extension->admin_id == 1 ){
+      $options['number'] = '584147912134';
+      $whatsapp->send($options);
+      return 'Message sent to ' . '584147912134';
+    }
 
     foreach( $extension->valid_whatsapp_phone_numbers as $phone ){
       $options['number'] = '57' . $phone;

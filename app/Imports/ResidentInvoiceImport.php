@@ -30,6 +30,8 @@ class ResidentInvoiceImport implements ToCollection, WithHeadingRow
                ->where('name', $row['apto'])
                ->first();
 
+      if(!$extension){ continue; }
+      
       $invoice = ResidentInvoice::create([
         'apto'         => $row['apto'],
         'resident_invoice_batch_id' => $this->batch->id,

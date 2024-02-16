@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<invoice-uploader
-  :batch="{{ isset($batch) ? json_encode($batch) : json_encode([]) }}"> 
-</invoice-uploader>
+<invoice-batch-form
+  :batch="{{ $batch }}"> 
+</invoice-batch-form>
 @endsection

@@ -30,11 +30,14 @@ Route::get('/unidades/{admin}/pqrs', 'PetitionController@create')->name('pqrs.cr
 Route::post('whatsapp/hook', 'BatchMessageController@hook')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 
 // AUTH ROUTES
-Route::get('login', 'Auth\LoginController@showLoginForm');
+Route::get('login', 'Auth\LoginController@showLoginForm')->name('admins.login');
 Route::post('login', 'Auth\LoginController@login')->name('login');
 Route::get('root/login', 'Admin\Auth\LoginController@showLoginForm');
 Route::post('root/login', 'Admin\Auth\LoginController@login')->name('root.login');
-Route::post('logout', 'Auth\LoginController@logout')->name('logout');
+
+Route::post('logout', 'Auth\LoginController@logout');
+Route::get('logout', 'Auth\LoginController@logout')->name('logout');
+
 Route::post('admins/logout', 'Auth\Admin\LoginController@logout')->name('admins.logout');
 Route::post('extensions/logout', 'Auth\Extension\LoginController@logout')->name('extensions.logout');
 Route::post('porterias/logout', 'Auth\Porteria\LoginController@logout')->name('porterias.logout');
@@ -96,7 +99,7 @@ Route::middleware(['auth:admin', 'phoneverified', 'suspended'])->group(function 
   Route::resource('resident-invoice-batches', 'ResidentInvoiceBatchController');
   Route::resource('vehicles', App\Http\Controllers\VehicleController::class);
 
-  Route::post('batch-messages/authenticate', 'BatchMessageController@index');
+  Route::post('batch-messages/authenticate', 'BatchMessageController@authenticate');
 
   Route::prefix('extensions/{extension}')->name('extensions.')->group(fn () => Route::resource('vehicles', 'VehicleController'));
   Route::get('extensions/import', 'ExtensionController@getImport')->name('extensions.getImport')->middleware('can:import,App\Extension');

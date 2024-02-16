@@ -23,6 +23,8 @@ class CreateVisitsTable extends Migration
       $table->datetime('checkout')->nullable();
       $table->string('password')->nullable();
       $table->string('plate')->nullable();
+      $table->string('authorized_by')->nullable();
+      $table->text('note')->nullable();
 
       $table->string('extension_name');
       

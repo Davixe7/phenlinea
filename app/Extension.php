@@ -27,6 +27,13 @@ class Extension extends Authenticatable implements HasMedia
     // 'parking_numbers_str'
   ];
 
+	public function registerMediaCollections(): void
+	{
+	    $this
+	        ->addMediaCollection('deliveries')
+	        ->singleFile();
+	}
+
   public function resident_invoices()
   {
     return $this->hasMany(ResidentInvoice::class);

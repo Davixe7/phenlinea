@@ -21,13 +21,12 @@ class BatchMessageController extends Controller
   }
 
   public function index(){
-    $batch_messages = auth()->user()->batch_messages;
+    $batch_messages = auth()->user()->batch_messages()->orderBy('created_at', 'desc')->get();
     $statuses       = [
       'pending'    => 'Pendiente',
       'ready'      => 'En cola',
       'processing' => 'En proceso',
       'sent'       => 'Enviado',
-      'taken'      => 'Enviado',
       'failed'     => 'Fallido',
     ];
     return view('admin.whatsapp.index', compact('batch_messages', 'statuses'));

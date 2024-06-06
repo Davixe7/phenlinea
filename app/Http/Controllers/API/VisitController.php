@@ -21,9 +21,27 @@ class VisitController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-      $visits = auth()->user()->admin->visits()->orderBy('created_at', 'DESC')->limit(1000)->get();
+      $filter    = $request->filter ?: '';
+      $date_from = $request->date_from;
+      $date_to   = $request->date_to;
+      $per_page  = $request->per_page ?: 200;
+
+      $visits = auth()->user()->admin->visits()->orderBy('created_at', 'DESC');
+
+      if( $filter ){
+        Storage::append('visitsfilter.log', $filter);
+        $visits
+        ->where('extension_name', 'like', "%" . $filter . "%")
+        ->orWhere('plate', 'like', "%" . $filter . "%");
+      }
+
+      if( $date_from && $date_to ){
+        $visits->whereBetween('created_at', [$date_from, $date_to]);
+      }
+      $visits = $visits->paginate($per_page);
+
       return VisitPorteria::collection( $visits );
     }
 
@@ -62,8 +80,8 @@ class VisitController extends Controller
         "start_date"    => now(),
         "end_date"      => now()->addHours( auth()->user()->admin->visits_lifespan ?: 24 ),
         "plate"         => $request->plate,
-	"authorized_by" => $request->authorized_by,
-	"note" 		=> $request->note
+        "authorized_by" => $request->authorized_by,
+        "note" 		      => $request->note
       ]);
 
       if( $picture = $request->file('picture') ){

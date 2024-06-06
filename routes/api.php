@@ -19,6 +19,7 @@ Route::post('visitors', 'API\VisitorController@store');
 Route::get('getclient', 'Admin\WhatsappClientController@getClient');
 
 Route::middleware('auth:api-porteria')->group(function () {
+  Route::get('extensions/{extension}/residents', 'API\ExtensionController@residents');
   Route::post('extensions/delivery', 'API\WhatsappController@sendDelivery');
   Route::post('extensions/{name?}/delivery', 'API\WhatsappController@sendDelivery');
   Route::post('notifyDelivery', 'API\WhatsappController@sendDelivery');

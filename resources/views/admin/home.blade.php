@@ -49,10 +49,6 @@
       'name' => 'invoices.index',
       'icon' => 'facturas.png'
       ],
-      [
-      'name' => 'resident-invoice-batches.index',
-      'icon' => 'facturas.png'
-      ],
       ]
       @endphp
 

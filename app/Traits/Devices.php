@@ -147,8 +147,7 @@ class Devices
     return $this->fetchZhyaf('persEmpHousehold/extapi/delete', $query);
   }
 
-  function addFacialTempPwd(Visit $visit)
-  {
+  function addFacialTempPwd(Visit $visit){
     $query  = [
       'devSns'              => 'V'.$visit->admin->device_serial_number,
       'accStartdatetime'    => $visit->start_date,
@@ -172,8 +171,7 @@ class Devices
     }
   }
 
-  function addTempPwd(Visit $visit)
-  {
+  function addTempPwd(Visit $visit){
     $query = [
       'devSns'      => 'V' . $visit->admin->device_serial_number,
       'startDate'   => $visit->start_date,
@@ -183,7 +181,10 @@ class Devices
 
     try {
       $data = $this->fetchZhyaf('accVisitorTempPwd/extapi/add', $query);
-      $visit->addMediaFromBase64($data->qrCode)->usingFileName(Str::random() . '.png')->toMediaCollection('qrcode');
+      Storage::append('visits.log', json_encode($data));
+      if( property_exists($data, 'qrCode') ){
+        $visit->addMediaFromBase64($data->qrCode)->usingFileName(Str::random() . '.png')->toMediaCollection('qrcode');
+      }
       $visit->update(['password' => $data->tempPwd]);
       return $data;
     }

@@ -27,6 +27,10 @@ class ExtensionController extends Controller
     return ExtensionResource::collection( $extensions );
   }
 
+  public function residents(Request $request, Extension $extension){
+    return $extension->residents;
+  }
+
   /**
   * Store a newly created resource in storage.
   *

@@ -197,12 +197,12 @@ class PetitionController extends Controller
 
   public function notifyPetitionUpdate($petition){
     $whatsapp = new Whatsapp();
-
-    $whatsapp->send([
+    $options = [
       'number'    => '57' . $petition->phone,
-      'message'   => view('messages.pqrs', compact('petition')),
+      'message'   => view('messages.pqrs', compact('petition'))->render(),
       'media_url' => null,
       'group_id'  => null
-    ]);
+    ];
+    $whatsapp->send($options);
   }
 }

@@ -52,6 +52,25 @@
                 @endif
               </div>
             </div>
+
+            <!-- MASIVOS -->
+            <div class="mb-3">
+              <label for="instance_id">ID instancia masivos</label>
+              <div class="d-flex">
+                <input type="text" name="batch_instance_id" class="form-control" value="{{ $client->batch_instance_id }}" required>
+                @if( $client->batch_instance_id )
+                  <a onclick="document.querySelector('#batch_instance_id{{ $client->id }}').submit()" class="btn btn-link btn-link-primary">
+                    <i class="material-symbols-outlined">delete</i>
+                  </a>
+                @else
+                  <a href="{{ route('admin.whatsapp_clients.scan', ['whatsapp_client'=>$client->id, 'instance_type'=>'batch_instance_id']) }}" class="btn btn-link btn-link-primary">
+                    <i class="material-symbols-outlined">qr_code</i>
+                  </a>
+                @endif
+              </div>
+            </div>
+
+
             <div class="mb-3">
               <label for="instance_id">ID instancia comunidad</label>
               <div class="d-flex">
@@ -80,7 +99,7 @@
             </div>
           </form>
 
-          @foreach(['delivery_instance_id', 'comunity_instance_id'] as $name)
+          @foreach(['delivery_instance_id', 'comunity_instance_id', 'batch_instance_id'] as $name)
           <form id="{{ $name . $client->id }}" method="POST" action="{{ route('admin.whatsapp_clients.update', ['whatsapp_client'=>$client->id]) }}">
             @csrf
             @method('PUT')

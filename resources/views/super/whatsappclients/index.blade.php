@@ -69,6 +69,17 @@
                 @endif
               </div>
             </div>
+            <div class="mb-3">
+              <label for="instance_id">Tel. masivos</label>
+              <div class="d-flex">
+                <input
+                  type="text"
+                  name="batch_instance_phone"
+                  class="form-control"
+                  value="{{ $client->batch_instance_phone }}"
+                  required/>
+              </div>
+            </div>
 
 
             <div class="mb-3">

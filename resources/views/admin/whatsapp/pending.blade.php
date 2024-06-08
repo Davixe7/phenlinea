@@ -41,8 +41,9 @@
 <div class="col-lg-5 mx-auto pt-4">
 
   <div class="alert alert-danger">
-    Estimado usuario, existe un mensaje masivo pendiente de envío, para poder continuar enviando mensajes necesita tomar una decisión con respecto a este mensaje.
+    Estimado usuario, existe un mensaje masivo pendiente de envío,
   </div>
+  <!-- para poder continuar enviando mensajes necesita tomar una decisión con respecto a este mensaje. -->
 
   <div class="card" style="background: #efeae2">
     <div class="card-header">
@@ -66,11 +67,11 @@
         onclick="window.confirm('Seguro de eliminar el mensaje') ? document.querySelector('#deleteForm').submit() : ''" class="btn btn-outline-danger me-3">
         Eliminar
       </a>
-      <a
+      <!-- <a
         style="flex: 1 1 auto;"
         href="{{ route('batch-messages.create', ['pending_adviced'=>1]) }}" class="btn btn-primary">
         Validar
-      </a>
+      </a> -->
     </div>
     <form id="deleteForm" action="{{ route('batch-messages.destroy', ['batch_message'=>$message->id]) }}" method="POST">
         @csrf

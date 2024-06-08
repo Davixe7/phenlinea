@@ -46,10 +46,7 @@ function storeMessage(file){
   axios.post('/batch-messages', data)
   .then(response => {
     message.value.id = response.data.data.id
-    steps.value[0].enabled = false
-    steps.value[1].enabled = false
-    steps.value[2].enabled = true
-    activeStep.value = 3
+    enableStep(3)
   })
   .catch(err => console.log(err.response))
 }
@@ -60,12 +57,17 @@ function authenticate(data){
   .catch(err => console.log(err.response))
 }
 
+function enableStep(stepNumber){
+  steps.value = steps.value.map((step,i) => {
+    step.enabled = (i+1 == stepNumber ) ? true : false
+    return step;
+  })
+  activeStep.value = stepNumber
+}
+
 onMounted(() => {
   if( props.message.id ){
-    steps.value[0].enabled = false
-    steps.value[1].enabled = false
-    steps.value[2].enabled = true
-    activeStep.value = 3
+    enableStep(3)
   }
 })
 </script>

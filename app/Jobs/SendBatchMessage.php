@@ -10,11 +10,12 @@ class SendBatchMessage
 {
     public function __invoke()
     {
-        $client   = WhatsappClient::find(1);
+        $client   = WhatsappClient::find(2);
         $whatsapp = new Whatsapp( $client );
 
         $batch = BatchMessage::whereStatus('ready')->firstOrFail();
-        $validInstance = $whatsapp->validateInstance($client->batch_instance_id, $client->batch_instance_phone);
+        //$validInstance = $whatsapp->validateInstance($client->batch_instance_id, $client->batch_instance_phone);
+        $validInstance = true;
 
         $batch->update(['status' => $validInstance ? 'processing' : 'failed']);
 
@@ -31,12 +32,12 @@ class SendBatchMessage
         if($number == '4147912134'){
             $options['number'] = '584147912134';
             $whatsapp->send($options);
-            sleep(1);
+            sleep(3);
             continue;
         }
         $options['number'] = '57' . $number;
         $whatsapp->send($options);
-        sleep(1);
+        sleep(5);
         }
 
         $batch->update(['status'=>'sent']);

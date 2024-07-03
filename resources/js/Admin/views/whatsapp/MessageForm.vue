@@ -37,13 +37,13 @@ watch(
         class="form-control"
         placeholder="Asunto"
         v-model="message.title"
-        minlength="10"
+        minlength="3"
         required
         >
     </div>
     <div class="mb-3" style="flex: 1 1 auto;">
       <textarea
-        minlength="10"
+        minlength="3"
         rows="4"
         class="form-control"
         v-model="message.body"
@@ -65,7 +65,7 @@ watch(
           type="submit"
           class="btn btn-primary"
           style="white-space: nowrap;">
-          Guardar mensaje
+          Enviar mensaje
         </button>
     </div>
   </form>

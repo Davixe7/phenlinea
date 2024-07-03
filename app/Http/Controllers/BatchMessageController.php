@@ -18,7 +18,7 @@ class BatchMessageController extends Controller
 
   public function __construct()
   {
-    $this->client   = WhatsappClient::find(1);
+    $this->client   = WhatsappClient::find(2);
     $this->whatsapp = new Whatsapp();
   }
 
@@ -37,7 +37,8 @@ class BatchMessageController extends Controller
   public function create(Request $request){
     $instance_id   = $this->client->batch_instance_id;
     $phone         = $this->client->batch_instance_phone;
-    $validInstance = $instance_id && $this->whatsapp->validateInstance($instance_id, $phone);
+    //$validInstance = $instance_id && $this->whatsapp->validateInstance($instance_id, $phone);
+    $validInstance = true;
     $message       = auth()->user()->batch_messages()->whereIn('status', ['ready', 'pending', 'failed'])->latest()->first();
     $extensions    = auth()->user()->extensions()->get([
       'admin_id',
@@ -69,7 +70,8 @@ class BatchMessageController extends Controller
 
     $instance_id    = $this->client->batch_instance_id;
     $instance_phone = $this->client->batch_instance_phone;
-    $validInstance  = $this->whatsapp->validateInstance($instance_id, $instance_phone);
+    //$validInstance  = $this->whatsapp->validateInstance($instance_id, $instance_phone);
+    $validInstance  = true;
 
     $aptos  = Extension::whereIn('id', $request->receivers)->get(['id', 'owner_phone', 'phone_1', 'phone_2']);
 

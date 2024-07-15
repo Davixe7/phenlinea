@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue';
 
-const props      = defineProps({
+const props = defineProps({
   message: {
     type: Object,
     default:()=>({
@@ -19,7 +19,8 @@ const props      = defineProps({
     type: String,
     default: null
   },
-  phone: ''
+  phone: '',
+  method: ''
 })
 const activeStep = ref(1)
 const steps = ref([
@@ -66,6 +67,7 @@ function enableStep(stepNumber){
 }
 
 onMounted(() => {
+  console.log(process.env.MIX_SOCKET_BASE_URL)
   if( props.message.id ){
     enableStep(3)
   }
@@ -107,6 +109,7 @@ onMounted(() => {
       <template v-if="activeStep == 3">
         <Authenticate
           @authenticated="authenticate"
+          :method="method"
           :instance_id="instance_id"
           :phone="phone">
         </Authenticate>

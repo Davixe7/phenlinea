@@ -14,13 +14,14 @@ class SendBatchMessage
         $whatsapp = new Whatsapp( $client );
 
         $batch = BatchMessage::whereStatus('ready')->firstOrFail();
-        $validInstance = $whatsapp->validateInstance($client->batch_instance_id, $client->batch_instance_phone);
+        $instance_id   = $batch->admin->whatsapp_instance_id;
+        $validInstance = $whatsapp->validateInstance($instance_id, $batch->admin->phone);
 
-        $batch->update(['status' => $validInstance ? 'processing' : 'failed']);
+        $batch->update(['status' => $validInstance ? 'process' : 'pending']);
 
         $numbers = explode( ',', $batch->numbers );
         $options = [
-        'instance_id' => $client->batch_instance_id,
+        'instance_id' => $instance_id,
         'number'      => '',
         'message'     => $batch->body,
         'media_url'   => $batch->media_url,
@@ -31,12 +32,12 @@ class SendBatchMessage
         if($number == '4147912134'){
             $options['number'] = '584147912134';
             $whatsapp->send($options);
-            sleep(1);
+            sleep(5);
             continue;
         }
         $options['number'] = '57' . $number;
         $whatsapp->send($options);
-        sleep(1);
+        sleep(5);
         }
 
         $batch->update(['status'=>'sent']);

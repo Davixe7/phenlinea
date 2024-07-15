@@ -35,8 +35,9 @@ class BatchMessageController extends Controller
   }
   
   public function create(Request $request){
-    $instance_id   = $this->client->batch_instance_id;
-    $phone         = $this->client->batch_instance_phone;
+    $method        = "qrCode";
+    $instance_id   = auth()->user()->whatsapp_instance_id;
+    $phone         = auth()->user()->phone;
     $validInstance = $instance_id && $this->whatsapp->validateInstance($instance_id, $phone);
     $message       = auth()->user()->batch_messages()->whereIn('status', ['ready', 'pending', 'failed'])->latest()->first();
     $extensions    = auth()->user()->extensions()->get([
@@ -50,13 +51,14 @@ class BatchMessageController extends Controller
     if( !$validInstance ){
       $this->whatsapp->logout($instance_id);
       auth()->user()->update(['whatsapp_instance_id'=>null]);
+      $instance_id = null;
     }
 
     if( $message && !$request->filled('pending_adviced') ){
       return view('admin.whatsapp.pending', compact('message'));
     }
 
-    return view('admin.whatsapp.create', compact('extensions', 'instance_id', 'phone', 'message'));
+    return view('admin.whatsapp.create', compact('extensions', 'instance_id', 'phone', 'message', 'method'));
   }
 
   public function store(Request $request)
@@ -89,7 +91,7 @@ class BatchMessageController extends Controller
       'title'        => $request->title,
       'body'         => $this->formatMessage($request->body),
       'media_url'    => $this->saveMediaUrl($request),
-      'status'       => 'ready'
+      'status'       => 'pending'
     ]);
 
     return response()->json(['data' => $batch]);

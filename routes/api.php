@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Auth;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::post('/admin/login', 'Auth\LoginController@login');
+
 Route::get('visitors', 'API\VisitorController@index');
 Route::post('visitors', 'API\VisitorController@store');
 

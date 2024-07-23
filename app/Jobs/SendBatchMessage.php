@@ -5,7 +5,7 @@ namespace App\Jobs;
 use App\BatchMessage;
 use App\Traits\Whatsapp;
 use App\WhatsappClient;
-
+use Illuminate\Support\Facades\Storage;
 class SendBatchMessage
 {
     public function __invoke()
@@ -16,6 +16,10 @@ class SendBatchMessage
         $batch = BatchMessage::whereStatus('ready')->firstOrFail();
         $instance_id   = $batch->admin->whatsapp_instance_id;
         $validInstance = $whatsapp->validateInstance($instance_id, $batch->admin->phone);
+
+        if( !$validInstance ){
+            Storage::append('whatsapp.errors', 'Invalid instance id: '.$instance_id);
+        }
 
         $batch->update(['status' => $validInstance ? 'process' : 'pending']);
 

@@ -1,6 +1,6 @@
 <script setup>
 import axios from 'axios'
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 
 const api = axios.create({
   baseURL: `${process.env.MIX_SOCKET_BASE_URL}`,
@@ -15,6 +15,7 @@ const api = axios.create({
 
 const props = defineProps(['method', 'instance_id', 'phone'])
 const emits = defineEmits(['authenticated'])
+const formattedPhone = computed(() => props.phone == '4147912134' ? '584147912134' : `57${props.phone}`)
 
 const instance_id = ref(null)
 const qrcode = ref('')
@@ -22,7 +23,9 @@ const pairingCode = ref('')
 
 async function getInstance() {
   if (props.method == 'pairingCode') {
-    instance_id.value = (await api.get('pairing_code', { params: { phone: props.phone } })).data.instance_id
+    let response = (await api.get('pairing_code', { params: { phone: formattedPhone.value } })).data
+    instance_id.value = response.instance_id
+    pairingCode.value = response.pairingCode
     return
   }
   instance_id.value = (await api.get('create_instance')).data.instance_id
@@ -45,7 +48,7 @@ function setSockets() {
 
   socket.on('ready', (data) => {
     data = JSON.parse(data)
-    if (data.phone != props.phone) return
+    if (data.phone != formattedPhone.value) return
     emits('authenticated', data)
   })
 }

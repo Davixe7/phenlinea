@@ -22,25 +22,7 @@ class Whatsapp
       $this->api      = new Client(['base_uri' => $provider->base_url]);
     }
     catch(Exception $e){
-      Storage::append('messages.log', now() . $e->getMessage());
-    }
-  }
-
-  public function validateInstance($instance_id, $phone){
-    $prefix = $phone == '4147912134' ? '58' : '57';
-    $phone  = $prefix . $phone;
-    $query  = compact('instance_id', 'phone');
-
-    try {
-      $response = $this->api->get('validate', compact('query'));
-      $body     = $response->getBody();
-      $bodyJson = !is_null($body) ? json_decode($body) : null;
-      $data     = ($bodyJson && property_exists($bodyJson, 'data') )? $bodyJson->data : null;
-      return $data == '1' ? true : false;
-    }
-    catch( Exception $e ){
-      Storage::append('whatsapp.errors.log', $e->getMessage());
-      return false;
+      Storage::append('whatsapp.errors', now() . $e->getMessage());
     }
   }
 
@@ -50,7 +32,7 @@ class Whatsapp
       $query = ["query"=>["access_token"=>$this->provider->access_token]];
       $response    = $this->api->get('create_instance', $query);
       $body        = json_decode($response->getBody());
-      $instance_id = property_exists($body, 'instance_id') ? $body->instance_id : null;
+      $instance_id = $body && property_exists($body, 'instance_id') ? $body->instance_id : null;
     } catch (GuzzleException $e) {
       $message = $e->getMessage();
       Storage::append('whatsapp.errors', $message);
@@ -66,10 +48,14 @@ class Whatsapp
     $query = ['query' => compact('instance_id', 'access_token')];
     try {
       $response    = $this->api->get('get_qrcode', $query);
-      $body        = json_decode($response->getBody());
-      $base64      = property_exists($body, 'base64') ? $body->base64 : null;
+      $body        = $response->getBody();
+
+      Storage::append('whatsapp.errors', now() . ' ' . $instance_id . ' ' . $body);
+
+      $body        = json_decode($body);
+      $base64      = $body && property_exists($body, 'base64') ? $body->base64 : null;
     } catch (GuzzleException $e) {
-      Storage::append('messages.log', $e->getMessage());
+      Storage::append('whatsapp.errors', now() . 'ERROR: ' . $instance_id . ' ' . $e->getMessage());
       return null;
     }
 
@@ -85,9 +71,8 @@ class Whatsapp
       $response    = $this->api->get('set_webhook', $query);
       $body        = json_decode($response->getBody());
       $status      = property_exists($body, 'status') ? $body->status : null;
-      Storage::append('whatsapp.errors', json_encode($body));
     } catch (GuzzleException $e) {
-      Storage::append('whatsapp.errors', $e->getMessage());
+      Storage::append('whatsapp.errors', now() . 'ERROR: ' . $instance_id . ' ' . $e->getMessage());
       return null;
     }
   }
@@ -95,12 +80,13 @@ class Whatsapp
   public function logout($instance_id)
   {
     try {
-      $response = $this->api->get('logout', ['query' => compact('instance_id')]);
+      $access_token = $this->provider->access_token;
+      $response = $this->api->get('logout', ['query' => compact('instance_id', 'access_token')]);
       $body     = json_decode($response->getBody());
       $status   = $body && property_exists($body, 'status') ? $body->status : null;
       return $status;
     } catch (GuzzleException $e) {
-      return $e->getMessage();
+      Storage::append('whatsapp.errors', now() . 'ERROR: ' . $instance_id . ' ' . $e->getMessage());
     }
   }
 
@@ -119,16 +105,21 @@ class Whatsapp
     }
 
     if( !$options['number'] || $options['number'] == '57' || $options['number'] == 'null'){
-      Storage::append('messages.log', now() . ' Invalid phone number: ' . $options['number']);
+      Storage::append('whatsapp.errors', now() . ' Invalid phone number: ' . $options['number']);
       return;
     }
 
     try {
       $response = $this->api->get('send', ['query'=>$options]);
       $body     = $response->getBody();
-      Storage::append('messages.log', now() . $body);
+      $parsed   = json_decode($body);
+      if( $parsed && property_exists($parsed, 'status') && $parsed->status == 'error'){
+        Storage::append('whatsapp.errors', now() . ' ' . $options['instance_id'] . ' ' . $body);
+        return;
+      }
+      Storage::append('messages.log', now() . ' ' . $options['instance_id'] . ' ' . $body);
     } catch (GuzzleException $e) {
-      Storage::append('messages.log', now() . 'ERROR: ' . $e->getMessage());
+      Storage::append('whatsapp.errors', now() . 'ERROR: ' . $options['instance_id'] . ' ' . $e->getMessage());
       return false;
     }
   }

@@ -12,6 +12,7 @@
   @endif
 
   :phone="{{ $phone }}"
+  :access_token="'{{ $access_token }}'"
   :method="'{{ $method }}'">
 </Whatsapp>
 @endsection

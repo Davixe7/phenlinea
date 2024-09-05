@@ -3,23 +3,41 @@ import axios from 'axios'
 import { onMounted, ref, computed } from 'vue';
 
 const api = axios.create({
-  baseURL: `${process.env.MIX_SOCKET_BASE_URL}`,
-  headers: {
-    'Access-Control-Allow-Origin': '*',
-    'mode': 'no-cors',
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-  },
-  'credentials': 'same-origin',
+  baseURL: `https://phenlinea.com/whatsapp/`,
+  //baseURL: `${process.env.MIX_SOCKET_BASE_URL}`,
+  // headers: {
+  //   'Access-Control-Allow-Origin': '*',
+  //   'mode': 'no-cors',
+  //   'Content-Type': 'application/json',
+  //   'Accept': 'application/json',
+  // },
+  // 'credentials': 'same-origin',
 })
 
-const props = defineProps(['method', 'instance_id', 'phone'])
+const props = defineProps(['method', 'instance_id', 'phone', 'access_token'])
 const emits = defineEmits(['authenticated'])
 const formattedPhone = computed(() => props.phone == '4147912134' ? '584147912134' : `57${props.phone}`)
 
 const instance_id = ref(null)
 const qrcode = ref('')
 const pairingCode = ref('')
+
+async function authenticate(){
+  try {
+    emits('authenticated', {instance_id: instance_id.value})
+  }
+  catch(e){
+    console.log(e)
+  }
+}
+
+const local = {
+  getInstance: async () => instance_id.value = (await api.get('create_instance')).data.data,
+  getQrCode:   async () => qrcode.value = (await api.get(`get_qrcode/?instance_id=${instance_id.value}`)).data.data,
+  refreshQrCode: () => {
+    setInterval(async () => qrcode.value = (await api.get(`get_qrcode/?instance_id=${instance_id.value}`)).data.data, 15000)
+  }
+}
 
 async function getInstance() {
   if (props.method == 'pairingCode') {
@@ -28,8 +46,8 @@ async function getInstance() {
     pairingCode.value = response.pairingCode
     return
   }
-  instance_id.value = (await api.get('create_instance')).data.instance_id
-  qrcode.value = (await api.get('get_qrcode', { params: { instance_id: instance_id.value } })).data.base64
+  instance_id.value = (await api.get('create_instance', {params: {access_token: props.access_token}})).data.instance_id
+  qrcode.value = (await api.get('get_qrcode', { params: { instance_id: instance_id.value, access_token: props.access_token } })).data.base64
 }
 
 function setSockets() {
@@ -53,10 +71,12 @@ function setSockets() {
   })
 }
 
-onMounted(() => {
+onMounted(async() => {
   if (props.instance_id == null) {
-    getInstance();
-    setSockets();
+    await local.getInstance()
+    await local.getQrCode()
+    local.refreshQrCode();
+    //setSockets();
     return;
   }
 })
@@ -74,10 +94,15 @@ onMounted(() => {
         {{ props.phone ? props.phone : '' }}
       </div>
 
-      <div v-if="method=='qrCode'" class="qrcode d-flex justify-content-center align-items-center" style="flex: 1 1 auto;">
-        <img v-if="qrcode" :src="qrcode" alt="">
+      <div v-if="method=='qrCode'" class="qrcode d-flex flex-column justify-content-center align-items-center" style="flex: 1 1 auto;">
+        <div v-if="qrcode">
+          <img :src="qrcode" alt="">
+        </div>
         <div v-else class="spinner-border spinner-border-lg" role="status">
         </div>
+        <button v-if="instance_id" type="button" class="btn btn-primary mt-3" @click="authenticate">
+          He vinculado el dispositivo
+        </button>
       </div>
 
       <div v-else class="pairing-code">

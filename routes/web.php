@@ -28,7 +28,7 @@ Route::put('pqrs/{petition}', 'PetitionController@update')->name('pqrs.update');
 Route::put('pqrs/{petition}/markAsRead', 'PetitionController@markAsRead')->name('pqrs.markasread');
 Route::post('pqrs', 'PetitionController@store')->name('pqrs.store');
 Route::get('/unidades/{admin}/pqrs', 'PetitionController@create')->name('pqrs.create');
-Route::post('whatsapp/hook', 'BatchMessageController@hook')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
+Route::post('whatsapp/hook', 'BatchMessageController@hook')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])->name('whatsapp.hook');
 
 // AUTH ROUTES
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('admins.login');
@@ -45,7 +45,16 @@ Route::post('porterias/logout', 'Auth\Porteria\LoginController@logout')->name('p
 
 //Admin routes
 Route::name('admin.')->prefix('admin')->middleware('auth:web')->group(function () {
+  Route::delete('whatsapp_messages/{batch_message}', 'Admin\BatchMessageController@destroy')->name('batch_messages.delete');
   Route::get('whatsapp_messages', 'Admin\BatchMessageController@index')->name('batch_messages.index');
+  Route::get('whatsapp_messages/{batch_message}', 'Admin\BatchMessageController@show')->name('batch_messages.show');
+
+  Route::delete('whatsapp_instances/{admin}', 'Admin\BatchMessageController@clearInstance')->name('whatsapp_instances.clear_instance');
+
+  Route::put('whatsapp_instances/{admin}', 'Admin\BatchMessageController@updateInstance')->name('whatsapp_instances.update');
+  Route::get('whatsapp_instances', 'Admin\BatchMessageController@instances')->name('whatsapp_instances.index');
+  
+
   Route::get('whatsapp_clients', 'Admin\WhatsappClientController@index')->name('whatsapp_clients.index');
   Route::get('whatsapp_clients/{whatsapp_client}/scan', 'Admin\WhatsappClientController@scan')->name('whatsapp_clients.scan');
   Route::put('whatsapp_clients/{whatsapp_client}', 'Admin\WhatsappClientController@update')->name('whatsapp_clients.update');
@@ -101,6 +110,10 @@ Route::middleware(['auth:admin', 'phoneverified', 'suspended'])->group(function 
   Route::resource('vehicles', App\Http\Controllers\VehicleController::class);
 
   Route::post('batch-messages/authenticate', 'BatchMessageController@authenticate');
+  Route::get('whatsapp/create_instance', 'WhatsappController@getInstanceId');
+  Route::get('whatsapp/get_qrcode', 'WhatsappController@getQrCode');
+  Route::post('whatsapp/authenticate', 'WhatsappController@authenticate');
+  Route::get('whatsapp/logout', 'WhatsappController@logout');
 
   Route::prefix('extensions/{extension}')->name('extensions.')->group(fn () => Route::resource('vehicles', 'VehicleController'));
   Route::get('extensions/import', 'ExtensionController@getImport')->name('extensions.getImport')->middleware('can:import,App\Extension');

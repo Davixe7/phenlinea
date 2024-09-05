@@ -27,7 +27,7 @@ class BatchMessageController extends Controller
     $statuses       = [
       'pending'    => 'Pendiente',
       'ready'      => 'En cola',
-      'process'    => 'En proceso',
+      'processing' => 'En proceso',
       'sent'       => 'Enviado',
       'failed'     => 'Fallido',
     ];
@@ -35,10 +35,10 @@ class BatchMessageController extends Controller
   }
   
   public function create(Request $request){
-    $method        = "pairingCode";
+    $method        = "qrCode";
+    $access_token  = $this->client->access_token;
     $instance_id   = auth()->user()->whatsapp_instance_id;
     $phone         = auth()->user()->phone;
-    $validInstance = true; //$instance_id && $this->whatsapp->validateInstance($instance_id, $phone);
     $message       = auth()->user()->batch_messages()->whereIn('status', ['ready', 'pending', 'failed'])->latest()->first();
     $extensions    = auth()->user()->extensions()->get([
       'admin_id',
@@ -48,17 +48,11 @@ class BatchMessageController extends Controller
       'owner_phone'
     ]);
 
-    if( $instance_id && !$validInstance ){
-      $this->whatsapp->logout($instance_id);
-      auth()->user()->update(['whatsapp_instance_id'=>null]);
-      $instance_id = null;
-    }
-
     if( $message && !$request->filled('pending_adviced') ){
       return view('admin.whatsapp.pending', compact('message'));
     }
 
-    return view('admin.whatsapp.create', compact('extensions', 'instance_id', 'phone', 'message', 'method'));
+    return view('admin.whatsapp.create', compact('access_token', 'extensions', 'instance_id', 'phone', 'message', 'method'));
   }
 
   public function store(Request $request)
@@ -71,7 +65,8 @@ class BatchMessageController extends Controller
 
     $instance_id    = auth()->user()->whatsapp_instance_id;
     $instance_phone = auth()->user()->phone;
-    $validInstance  = $instance_id ? $this->whatsapp->validateInstance($instance_id, $instance_phone) : false;
+    $validInstance  = true;
+    //$validInstance  = $instance_id ? $this->whatsapp->validateInstance($instance_id, $instance_phone) : false;
 
     $aptos  = Extension::whereIn('id', $request->receivers)->get(['id', 'owner_phone', 'phone_1', 'phone_2']);
 
@@ -91,7 +86,7 @@ class BatchMessageController extends Controller
       'title'        => $request->title,
       'body'         => $this->formatMessage($request->body),
       'media_url'    => $this->saveMediaUrl($request),
-      'status'       => $validInstance ? 'ready' : 'pending'
+      'status'       => $instance_id ? 'ready' : 'pending'
     ]);
 
     return response()->json(['data' => $batch]);

@@ -1,11 +1,11 @@
 const mix = require('laravel-mix');
-let url = process.env.APP_URL.replace(/(^\w+:|^)\/\//, '');
-mix.options({
-  hmrOptions: {
-      host: 'phenlinea.com',
-      port: 8080 // Can't use 443 here because address already in use
-  }
-});
+
+if( process.env.APP_ENV == 'production' ){
+    mix.options({
+        // Can't use 443 here because address already in use
+        hmrOptions: { host: 'phenlinea.com', port: 8080 }
+    });
+}
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management
@@ -20,16 +20,17 @@ mix.options({
 let publicPath = process.env.MIX_PUBLIC_PATH ? process.env.MIX_PUBLIC_PATH : './public/'
 mix.setPublicPath( publicPath )
 
-//const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
-// mix.webpackConfig({
-//   plugins: [
-//     new VuetifyLoaderPlugin()
-//   ]
-// })
-
-mix
-.js('resources/js/app.js', 'js')
-.js('resources/js/super.js', 'js')
-.vue()
-.version()
-.sass('resources/sass/app.scss', 'css');
+if( process.env.APP_ENV == 'local'){
+    mix
+    .js('resources/js/app.js', 'js')
+    .js('resources/js/super.js', 'js')
+    .vue()
+    .sass('resources/sass/app.scss', 'css');
+}else {
+    mix
+    .js('resources/js/app.js', 'js')
+    .js('resources/js/super.js', 'js')
+    .vue()
+    .version()
+    .sass('resources/sass/app.scss', 'css');
+}

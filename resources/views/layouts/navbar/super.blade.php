@@ -19,10 +19,13 @@
   </a>
   <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
     <li>
-      <a class="dropdown-item" href="{{ route('admin.whatsapp_clients.index') }}">Instancias</a>
+      <a class="dropdown-item" href="{{ route('admin.batch_messages.index') }}">Mensajes masívos</a>
     </li>
     <li>
-      <a class="dropdown-item" href="{{ route('admin.batch_messages.index') }}">Mensajes masívos</a>
+      <a class="dropdown-item" href="{{ route('admin.whatsapp_instances.index') }}">Instancias</a>
+    </li>
+    <li>
+      <a class="dropdown-item" href="{{ route('admin.whatsapp_clients.index') }}">Proveedores</a>
     </li>
   </ul>
 </li>

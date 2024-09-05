@@ -28,6 +28,7 @@ class WhatsappClientController extends Controller
     $instance_type = $request->instance_type;
     $whatsapp      = new Whatsapp();
     $instance_id   = $whatsapp->getInstanceId();
+    $whatsapp->setWebhook($instance_id, 'https://phenlinea.com/whatsapp/hook');
     $base64        = $whatsapp->getQrCode( $instance_id );
 
     return view('super.whatsappclients.scan', compact(

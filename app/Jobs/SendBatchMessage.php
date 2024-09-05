@@ -5,23 +5,22 @@ namespace App\Jobs;
 use App\BatchMessage;
 use App\Traits\Whatsapp;
 use App\WhatsappClient;
-
+use Exception;
+use Illuminate\Support\Facades\Storage;
 class SendBatchMessage
 {
     public function __invoke()
     {
-        $client   = WhatsappClient::find(2);
+        $client   = WhatsappClient::whereEnabled(1)->first();
         $whatsapp = new Whatsapp( $client );
 
-        $batch = BatchMessage::whereStatus('ready')->firstOrFail();
-        //$validInstance = $whatsapp->validateInstance($client->batch_instance_id, $client->batch_instance_phone);
-        $validInstance = true;
-
-        $batch->update(['status' => $validInstance ? 'processing' : 'failed']);
+        $batch = BatchMessage::whereStatus('ready')->where('created_at', '<', now()->subMinute())->firstOrFail();
+        $instance_id = $batch->admin->whatsapp_instance_id;
+        $batch->update(['status'=>'processing']);
 
         $numbers = explode( ',', $batch->numbers );
         $options = [
-        'instance_id' => $client->batch_instance_id,
+        'instance_id' => $instance_id,
         'number'      => '',
         'message'     => $batch->body,
         'media_url'   => $batch->media_url,
@@ -29,15 +28,19 @@ class SendBatchMessage
         ];
 
         foreach( $numbers as $number ){
-        if($number == '4147912134'){
-            $options['number'] = '584147912134';
-            $whatsapp->send($options);
-            sleep(3);
-            continue;
-        }
-        $options['number'] = '57' . $number;
-        $whatsapp->send($options);
-        sleep(5);
+            try {
+                if($number == '4147912134'){
+                    $options['number'] = '584147912134';
+                    $whatsapp->send($options);
+                    sleep(5);
+                    continue;
+                }
+                $options['number'] = '57' . $number;
+                $whatsapp->send($options);
+                sleep(5);
+            } catch (Exception $e) {
+                Storage::append('whatsapp.errors', now() . ' ' . $instance_id . ' ' . $e->getMessage());
+            }
         }
 
         $batch->update(['status'=>'sent']);

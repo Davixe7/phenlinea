@@ -67,11 +67,11 @@
         onclick="window.confirm('Seguro de eliminar el mensaje') ? document.querySelector('#deleteForm').submit() : ''" class="btn btn-outline-danger me-3">
         Eliminar
       </a>
-      <!-- <a
+      <a
         style="flex: 1 1 auto;"
         href="{{ route('batch-messages.create', ['pending_adviced'=>1]) }}" class="btn btn-primary">
         Validar
-      </a> -->
+      </a>
     </div>
     <form id="deleteForm" action="{{ route('batch-messages.destroy', ['batch_message'=>$message->id]) }}" method="POST">
         @csrf

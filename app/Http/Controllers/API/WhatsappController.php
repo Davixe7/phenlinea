@@ -43,7 +43,7 @@ class WhatsappController extends Controller
     foreach( $extension->valid_whatsapp_phone_numbers as $phone ){
       $options['number'] = '57' . $phone;
       $whatsapp->send($options);
-      sleep(1);
+      sleep(5);
     }
 
     // Mobile App Expects

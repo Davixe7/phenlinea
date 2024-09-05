@@ -11,7 +11,9 @@
     :message="{{ json_encode($message) }}"
   @endif
 
-  :phone="{{ $phone }}">
+  :phone="{{ $phone }}"
+  :access_token="'{{ $access_token }}'"
+  :method="'{{ $method }}'">
 </Whatsapp>
 @endsection
 

@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue';
 
-const props      = defineProps({
+const props = defineProps({
   message: {
     type: Object,
     default:()=>({
@@ -19,7 +19,9 @@ const props      = defineProps({
     type: String,
     default: null
   },
-  phone: ''
+  access_token: '',
+  phone: '',
+  method: ''
 })
 const activeStep = ref(1)
 const steps = ref([
@@ -35,8 +37,10 @@ const message = ref({...props.message})
 watch(message, () => steps.value[2].enabled = message.value.id, {deep:true})
 
 const instance_id = ref(props.instance_id)
+const storing = ref(false)
 
 function storeMessage(file){
+  storing.value = true
   let data = new FormData()
   data.append('title',     message.value.title)
   data.append('body',      message.value.body)
@@ -49,6 +53,7 @@ function storeMessage(file){
     enableStep(3)
   })
   .catch(err => console.log(err.response))
+  .finally(()=>storing.value = false)
 }
 
 function authenticate(data){
@@ -66,6 +71,7 @@ function enableStep(stepNumber){
 }
 
 onMounted(() => {
+  console.log(process.env.MIX_SOCKET_BASE_URL)
   if( props.message.id ){
     enableStep(3)
   }
@@ -107,8 +113,10 @@ onMounted(() => {
       <template v-if="activeStep == 3">
         <Authenticate
           @authenticated="authenticate"
+          :method="method"
           :instance_id="instance_id"
-          :phone="phone">
+          :phone="phone"
+          :access_token="access_token">
         </Authenticate>
       </template>
     </Multipaso>

@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue';
 
-const props       = defineProps(['value'])
+const props       = defineProps(['value', 'storing'])
 const emits       = defineEmits(['input'])
 const messageForm = ref(null)
 const fileInput   = ref(null)
@@ -61,7 +61,8 @@ watch(
         accept="image/png, image/jpeg, application/pdf"
         >
         <button
-          :class="{disabled: !message.validated}"
+          :disabled="!message.validated || storing"
+          :class="{disabled: !message.validated || storing}"
           type="submit"
           class="btn btn-primary"
           style="white-space: nowrap;">

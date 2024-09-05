@@ -31,7 +31,6 @@ class VisitController extends Controller
       $visits = auth()->user()->admin->visits()->orderBy('created_at', 'DESC');
 
       if( $filter ){
-        Storage::append('visitsfilter.log', $filter);
         $visits
         ->where('extension_name', 'like', "%" . $filter . "%")
         ->orWhere('plate', 'like', "%" . $filter . "%");

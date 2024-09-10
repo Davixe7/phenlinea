@@ -24,7 +24,9 @@ class BatchMessageController extends Controller
       'failed'     => 'fallido',
     ];
 
-    return view('super.batch_messages', compact('messages', 'statuses'));
+    $instances = Admin::orderBy('whatsapp_instance_id', 'DESC')->get(['whatsapp_instance_id', 'name', 'id']);
+
+    return view('super.batch_messages', compact('messages', 'statuses', 'instances'));
   }
 
   function instances(){

@@ -83,8 +83,8 @@ class VisitController extends Controller
         "note" 		      => $request->note
       ]);
 
-      if( $picture = $request->file('picture') ){
-        $visitor->addMedia( $picture )->toMediaCollection('picture');
+      if( $request->hasFile('picture') ){
+        $visitor->addMedia( $request->file('picture') )->toMediaCollection('picture');
       }
 
       $visit->addPwd();

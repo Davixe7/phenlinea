@@ -25,6 +25,7 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
     'device_2_serial_number',
     'device_community_id',
     'device_building_id',
+    'device_api_version',
     'email',
     'nit',
     'password',

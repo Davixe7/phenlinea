@@ -19,7 +19,7 @@ class Devices
   function __construct()
   {
     $this->api = new Client([
-      'base_uri' => config('zhyaf.base_url'),
+      'base_uri' => config('zhyaf.v1.base_url'),
       'headers'  => [
         'language' => 'en_ES',
         'timeZone' => 'America/Bogota'
@@ -30,14 +30,17 @@ class Devices
 
   function getAccessToken()
   {
-    return Cache::remember('zhyaf_access_token', 7200, function () {
+    $user = auth()->user()->admin ?: auth()->user();
+    $data = config('zhyaf.' . $user->device_api_version);
+
+    return Cache::remember('zhyaf_access_token_' . $user->device_api_version, 7200, function () use ($data) {
       try {
         $response = $this->api->get('platCompany/extapi/getAccessToken', [
           'multipart' => [
             ['name' => 'timeZone',    'contents'  => 'America/Bogota'],
             ['name' => 'language',    'contents'  => 'es_ES'],
-            ['name' => 'appId',       'contents'     => config('zhyaf.app_id')],
-            ['name' => 'appSecret',   'contents' => config('zhyaf.app_secret')]
+            ['name' => 'appId',       'contents'  => $data['app_id']],
+            ['name' => 'appSecret',   'contents'  => $data['app_secret']]
           ]
         ]);
 
@@ -58,7 +61,8 @@ class Devices
 
     $multipart = [
       ['name' => 'accessToken',      'contents' => $this->getAccessToken()],
-      ['name' => 'extCommunityUuid', 'contents' => $uuid]
+      ['name' => 'extCommunityUuid', 'contents' => $uuid],
+      ['name' => 'lang', 'contents' => 'es/ES'],
     ];
 
     foreach($query as $key => $value){

@@ -62,7 +62,7 @@ class Devices
     $multipart = [
       ['name' => 'accessToken',      'contents' => $this->getAccessToken()],
       ['name' => 'extCommunityUuid', 'contents' => $uuid],
-      ['name' => 'lang', 'contents' => 'es/ES'],
+      ['name' => 'language', 'contents' => 'es_ES'],
     ];
 
     foreach($query as $key => $value){

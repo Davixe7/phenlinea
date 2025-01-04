@@ -120,20 +120,22 @@
 </template>
   
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import Camera from '../../components/Camera.vue';
 
 const props = defineProps(['resident', 'extension'])
 const emit  = defineEmits('reset', 'residentUpdated', 'residentStored')
 
+watch(() => props.resident, (newValue, oldValue) => {
+  if( !newValue.id ) {
+    picture.value = null
+  }
+  resident.value = { ...newValue }
+})
+
 const storeResidentForm = ref(null)
 const picture           = ref(null)
 const fileInput         = ref(null)
-
-watch(() => props.resident, (newValue, oldValue) => {
-  if( !newValue.id ) picture.value = null
-  resident.value = { ...newValue }
-})
 
 const loading     = ref(false)
 const errors      = ref({})

@@ -45,7 +45,10 @@
               <i v-if="resident.disability" class="material-symbols-outlined">done</i>
             </td>
             <td class="d-flex align-items-center justify-content-end">
-              <a href="#" @click.prevent="$emit('residentSelection', resident)" class="me-2">
+              <a href="#" @click.prevent="$emit('residentAuth', resident)" class="me-2">
+                <i class="material-symbols-outlined">key_vertical</i>
+              </a>
+              <a href="#" @click.prevent="$emit('residentEdit', resident)" class="me-2">
                 <i class="material-symbols-outlined">edit</i>
               </a>
               <a href="#" @click.prevent="$emit('residentDeletion', resident)">

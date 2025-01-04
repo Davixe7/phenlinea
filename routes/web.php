@@ -17,6 +17,8 @@ use App\ResidentInvoicePayment;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Traits\Devices;
+use App\Resident;
 
 Route::get('home', 'HomeController@index')->name('home');
 Route::view('/', 'public.landing')->middleware('guest');
@@ -118,6 +120,37 @@ Route::middleware(['auth:admin', 'phoneverified', 'suspended'])->group(function 
   Route::prefix('extensions/{extension}')->name('extensions.')->group(fn () => Route::resource('vehicles', 'VehicleController'));
   Route::get('extensions/import', 'ExtensionController@getImport')->name('extensions.getImport')->middleware('can:import,App\Extension');
   Route::post('extensions/import', 'ExtensionController@import')->name('extensions.import');
+
+  Route::get('residents/{resident}/deviceslist', function(Resident $resident){
+    $api = new Devices();
+    $community = $api->getUnitDevices();
+    $household = $api->getHouseholdDevices($resident);
+    $householdDevices = $household->pluck('devSn');
+    return collect( $community )->map(function($dev) use ($householdDevices) {
+      $dev['auth'] = $householdDevices->contains($dev['devSn']) ? 1 : 0;
+      return $dev;
+    });
+  });
+
+  Route::get('residents/{resident}/devices/add', function(Request $request, Resident $resident){
+    $request->validate(['devSns'=>'required']);
+    $api = new Devices();
+    return $api->addDeviceAuth($request->devSns, $resident->id);
+  });
+
+  Route::get('residents/{resident}/devices/delete', function(Request $request, Resident $resident){
+    $request->validate(['devSns'=>'required']);
+    $api = new Devices();
+    return $api->deleteDeviceAuth($request->devSns, $resident->id);
+  });
+
+  Route::get('devices/accessLogs', function(Request $request){
+    $api = new Devices();
+    return $api->getAccessLogs();
+  });
+
+  Route::view('accesslogs', 'admin.accesslogs')->name('visits.accesslogs');
+  
 });
 
 //Resident routes
@@ -149,4 +182,9 @@ Route::get('/pago/{id}', function(Request $request){
   $payment = ResidentInvoicePayment::find($request->id);
   // return view('pdf.recibo', compact('payment'));
   return Pdf::loadView('pdf.recibo', compact('payment'))->download('recibo-caja.pdf');
+});
+
+Route::get('doors', function(){
+  $devices = new Devices();
+  return implode( ",", $devices->getUnitDevices()->pluck('devSn')->toArray() );
 });

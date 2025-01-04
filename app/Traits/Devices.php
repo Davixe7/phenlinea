@@ -15,9 +15,11 @@ use Illuminate\Support\Str;
 class Devices
 {
   protected $api;
+  protected $user;
 
-  function __construct()
+  function __construct($user = null)
   {
+    $this->user = $user;
     $this->api = new Client([
       'base_uri' => config('zhyaf.v1.base_url'),
       'headers'  => [
@@ -30,10 +32,12 @@ class Devices
 
   function getAccessToken()
   {
-    $user = auth()->user()->admin ?: auth()->user();
-    $data = config('zhyaf.' . $user->device_api_version);
+    if(!$this->user){
+      $this->user = auth()->user()->admin ?: auth()->user();
+    }
+    $data = config('zhyaf.' . $this->user->device_api_version);
 
-    return Cache::remember('zhyaf_access_token_' . $user->device_api_version, 7200, function () use ($data) {
+    return Cache::remember('zhyaf_access_token_' . $this->user->device_api_version, 7200, function () use ($data) {
       try {
         $response = $this->api->get('platCompany/extapi/getAccessToken', [
           'multipart' => [
@@ -343,5 +347,145 @@ class Devices
     catch( Exception $e ){
       throw $e;
     }
+  }
+
+  function getUnitDevices($adminId = null){
+    $query = [
+      'extCommunityUuid' => $adminId ?: auth()->id() 
+    ];
+
+    try {
+      $data = $this->fetchZhyaf('devDevice/extapi/list', $query);
+      Storage::append('visits.log', json_encode($data));
+      if( property_exists($data, 'list') && is_array($data->list) ){
+        $devices = collect( $data->list );
+        return $devices->map(function($dev){
+          return [
+            'devName' => $dev->positionFullName,
+            'devSn' => $dev->devSn,
+          ];
+        });
+      }
+      return ([]);
+    }
+    catch( Exception $e ){
+      throw $e;
+    }
+  }
+
+  function getHouseholdDevices($resident){
+    $query = [
+      'uuid' => $resident->id,
+      'extCommunityUuid' => $resident->admin_id
+    ];
+
+    try {
+      $data = $this->fetchZhyaf('persEmpHousehold/extapi/getAuthorizationDevList', $query);
+      if( $data && is_array($data) ){
+        $devices = collect( $data );
+        return $devices->map(function($dev){
+          return [
+            'devName' => $dev->devName,
+            'devSn' => $dev->devSn,
+          ];
+        });
+      }
+
+      return collect([]);
+    }
+    catch( Exception $e ){
+      throw $e;
+    }
+  }
+
+  function addDeviceAuth($devSn, $residentId){
+    $query = [
+      'extCommunityUuid' => auth()->id(),
+      'uuids'  => $residentId,
+      'devSns' => $devSn
+    ];
+
+    try {
+      $data = $this->fetchZhyaf('persEmpHousehold/extapi/designatedDeviceAuthByDevSn', $query);
+      return $data;
+    }
+    catch( Exception $e ){
+      throw $e;
+    }
+  }
+
+  function deleteDeviceAuth($devSn, $residentId){
+    $query = [
+      'extCommunityUuid' => auth()->id(),
+      'uuids'  => $residentId,
+      'devSns' => $devSn
+    ];
+
+    try {
+      $data = $this->fetchZhyaf('persEmpHousehold/extapi/delEmpInfoByDevSn', $query);
+      return $data;
+    }
+    catch( Exception $e ){
+      throw $e;
+    }
+  }
+
+  function getAccessLogs(){
+    return Cache::remember('accessLogs'.auth()->id(), 300, function(){
+      try {
+        $query = [
+          'extCommunityUuid' => auth()->id(),
+          'pageSize' => request()->has('pageSize') ? request()->pageSize : 1000
+        ];
+    
+        if( request()->has('currPage') ){
+          $query['currPage'] = request()->currPage;
+        }
+
+        $data = $this->fetchZhyaf('normalOpenDoorlog/extapi/list', $query);
+        return $data;
+      }
+      catch( Exception $e ){
+        throw $e;
+      }
+    });
+  }
+
+  function getDoors($adminId = null){
+    $query = [];
+    if( $adminId ){ $query['extCommunityUuid'] = $adminId; }
+    $data = $this->fetchZhyaf('sqDoor/extapi/list', $query);
+    if (property_exists($data, 'list') && is_array($data->list)) {
+      return collect($data->list);
+    }
+    return collect([]);
+  }
+
+  function updateDoor($door, $isCommonDoor = null){
+    $query = [
+      'id'           => $door->id,
+      'isCommonDoor' => !is_null($isCommonDoor) ?: $door->isCommonDoor,
+      'name'         => $door->name,
+    ];
+
+    $this->fetchZhyaf('sqDoor/extapi/update', $query);
+  }
+
+  function syncDoors(){
+    $admins = Admin::whereNotNull('device_community_id')->get();
+
+    $admins->each(function($admin){
+      $doors       = $this->getDoors($admin->id);
+      $residentIds = $admin->residents()->pluck('residents.id')->toArray();
+      $residentIds = implode(",", $residentIds);
+      $devSns      = $this->getUnitDevices($admin->id)->pluck('devSn')->toArray();
+      $devSns      = implode(",", $devSns);
+
+      $doors->each(function($door){
+        //$this->updateDoor($door, 0);
+      });
+      
+      $this->addDeviceAuth($devSns, $residentIds);
+    });
   }
 }

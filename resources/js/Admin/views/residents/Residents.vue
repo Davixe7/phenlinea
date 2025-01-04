@@ -3,7 +3,8 @@
     <extensions-nav :extension="extension" :page="'residents'"/>
     <ResidentsTable
       :residents="localResidents"
-      @residentSelection="selected => {resident = selected; modal.show()}"
+      @residentAuth="selected => {resident = selected; modalAuth.show()}"
+      @residentEdit="selected => {resident = selected; modal.show()}"
       @residentDeletion="deleteResident">
     </ResidentsTable>
 
@@ -22,6 +23,16 @@
       </div>
     </div>
 
+    <div class="modal fade" tabindex="-1" id="modalAuth">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <ResidentAuth
+            :resident="resident"
+            @reset="resetResident()"/>
+        </div>
+      </div>
+    </div>
+
     <button
       @click="()=>{resetResident(); modal.show()}"
       class="btn btn-primary fab">
@@ -35,6 +46,7 @@ import "vue-toastification/dist/index.css";
 import Vue from 'vue'
 import ResidentsForm from './ResidentsForm.vue'
 import ResidentsTable from './ResidentsTable.vue'
+import ResidentAuth from './ResidentAuth.vue'
 import ExtensionsNav from './../extensions/ExtensionsNav.vue'
 import { onMounted, ref, watch, computed } from 'vue'
 import { createToastInterface } from "vue-toastification";
@@ -44,6 +56,7 @@ watch(() => props.residents, (newVal, oldVal) => localResidents.value = [...newV
 
 var toast             = null;
 const modal           = ref(null)
+const modalAuth       = ref(null)
 const loading         = ref(false)
 const errors          = ref({})
 const localResidents  = ref([])
@@ -96,6 +109,7 @@ function resetResident() {
 
 onMounted(() => {
   modal.value          = new bootstrap.Modal(document.getElementById('modal'))
+  modalAuth.value      = new bootstrap.Modal(document.getElementById('modalAuth'))
   localResidents.value = [...props.residents]
   toast                = createToastInterface({ eventBus: new Vue() })
 })

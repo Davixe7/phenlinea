@@ -140,7 +140,7 @@ class ResidentController extends Controller
     $resident->email         = $request->email;
     $resident->age           = $request->age;
     $resident->dni           = $request->dni;
-    $resident->is_owner      = $request->is_owner;
+    $resident->is_owner      = $request->is_owner ?: false;
     $resident->is_resident   = $request->is_resident;
     $resident->is_authorized = $request->is_authorized;
     $resident->disability    = $request->disability;

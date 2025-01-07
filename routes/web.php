@@ -150,6 +150,11 @@ Route::middleware(['auth:admin', 'phoneverified', 'suspended'])->group(function 
   });
 
   Route::view('accesslogs', 'admin.accesslogs')->name('visits.accesslogs');
+
+  Route::get('doors', function(){
+    $devices = new Devices();
+    $devices->syncDoors();
+  });
   
 });
 
@@ -182,9 +187,4 @@ Route::get('/pago/{id}', function(Request $request){
   $payment = ResidentInvoicePayment::find($request->id);
   // return view('pdf.recibo', compact('payment'));
   return Pdf::loadView('pdf.recibo', compact('payment'))->download('recibo-caja.pdf');
-});
-
-Route::get('doors', function(){
-  $devices = new Devices();
-  return implode( ",", $devices->getUnitDevices()->pluck('devSn')->toArray() );
 });

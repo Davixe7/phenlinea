@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class Devices
 {
@@ -61,11 +62,9 @@ class Devices
   }
 
   function fetchZhyaf($endpoint, $query){
-    $uuid = auth()->user()->admin_id ?: auth()->id();
-
     $multipart = [
       ['name' => 'accessToken',      'contents' => $this->getAccessToken()],
-      ['name' => 'extCommunityUuid', 'contents' => $uuid],
+      ['name' => 'extCommunityUuid', 'contents' => $this->user->id],
       ['name' => 'language', 'contents' => 'es_ES'],
     ];
 
@@ -83,7 +82,7 @@ class Devices
       }
 
       if( $code != 0 ){
-        throw new Exception($body->msg, $code);
+        throw new Exception($body->msg . " " . $this->user->name, $code);
       }
 
       return property_exists($body, 'data') ? $body->data : $body->msg;
@@ -349,14 +348,10 @@ class Devices
     }
   }
 
-  function getUnitDevices($adminId = null){
-    $query = [
-      'extCommunityUuid' => $adminId ?: auth()->id() 
-    ];
-
+  function getUnitDevices(){
     try {
-      $data = $this->fetchZhyaf('devDevice/extapi/list', $query);
-      Storage::append('visits.log', json_encode($data));
+      $data = $this->fetchZhyaf('devDevice/extapi/list', []);
+      
       if( property_exists($data, 'list') && is_array($data->list) ){
         $devices = collect( $data->list );
         return $devices->map(function($dev){
@@ -400,7 +395,6 @@ class Devices
 
   function addDeviceAuth($devSn, $residentId){
     $query = [
-      'extCommunityUuid' => auth()->id(),
       'uuids'  => $residentId,
       'devSns' => $devSn
     ];
@@ -461,31 +455,48 @@ class Devices
     return collect([]);
   }
 
-  function updateDoor($door, $isCommonDoor = null){
+  function updateDoor($door, $isCommonDoor = null, $adminId){
     $query = [
-      'id'           => $door->id,
-      'isCommonDoor' => !is_null($isCommonDoor) ?: $door->isCommonDoor,
-      'name'         => $door->name,
+      'extCommunityUuid' => $adminId,
+      'id'               => $door->id,
+      'positionType'     => 0,
+      'isCommonDoor'     => !is_null($isCommonDoor) ? $isCommonDoor : $door->isCommonDoor,
+      'name'             => $door->name,
     ];
 
     $this->fetchZhyaf('sqDoor/extapi/update', $query);
   }
 
   function syncDoors(){
-    $admins = Admin::whereNotNull('device_community_id')->get();
+    $admins = Admin::whereNotNull('device_community_id')
+            ->whereNotNull('device_building_id')
+            ->where('device_api_version', 'v1')->get();
 
     $admins->each(function($admin){
-      $doors       = $this->getDoors($admin->id);
+      $this->user  = $admin;
+      Storage::append('authorization.log', "$admin->device_api_version $admin->name");
+
+      $this
+      ->getDoors($admin->id)
+      ->each(function($door)use($admin){
+        $this->updateDoor($door, '0', $admin->id);
+      });
+
       $residentIds = $admin->residents()->pluck('residents.id')->toArray();
-      $residentIds = implode(",", $residentIds);
       $devSns      = $this->getUnitDevices($admin->id)->pluck('devSn')->toArray();
       $devSns      = implode(",", $devSns);
-
-      $doors->each(function($door){
-        //$this->updateDoor($door, 0);
-      });
       
-      $this->addDeviceAuth($devSns, $residentIds);
+      if( count($residentIds) <= 999 ){
+        Storage::append('authorization.log', "> add " . count($residentIds) . " to " . $devSns);
+        $this->addDeviceAuth($devSns, implode(',', $residentIds));
+      }
+      else {
+        $resIdsChunks = array_chunk($residentIds, 990);
+        foreach ($resIdsChunks as $chunk) {
+          Storage::append('authorization.log', "> add " . count($chunk) . " to " . $devSns);
+          $this->addDeviceAuth($devSns, implode(',', $chunk));
+        }
+      }
     });
   }
 }

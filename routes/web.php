@@ -55,7 +55,6 @@ Route::name('admin.')->prefix('admin')->middleware('auth:web')->group(function (
 
   Route::put('whatsapp_instances/{admin}', 'Admin\BatchMessageController@updateInstance')->name('whatsapp_instances.update');
   Route::get('whatsapp_instances', 'Admin\BatchMessageController@instances')->name('whatsapp_instances.index');
-  
 
   Route::get('whatsapp_clients', 'Admin\WhatsappClientController@index')->name('whatsapp_clients.index');
   Route::get('whatsapp_clients/{whatsapp_client}/scan', 'Admin\WhatsappClientController@scan')->name('whatsapp_clients.scan');
@@ -92,16 +91,25 @@ Route::name('admin.')->prefix('admin')->middleware('auth:web')->group(function (
 
 //Main application routes
 Route::middleware(['auth:admin', 'phoneverified', 'suspended'])->group(function () {
-  Route::get('extensions/export', 'ExportController@exportCensus');
+  Route::get('user', fn() => auth()->user());
+
+  Route::get('devices', function(){
+    $devices = new Devices();
+    return $devices->getUnitDevices()->pluck('devSn')->toArray();
+  });
 
   Route::resource('extensions', 'ExtensionController');
 
   Route::prefix('extensions/{extension}')->name('extensions.')->group(function(){
     Route::resource('residents', 'ResidentController');
     Route::resource('vehicles', App\Http\Controllers\VehicleController::class);
-    Route::get('invoices', 'ResidentInvoiceController@index');
+    Route::resource('invoices', 'ResidentInvoiceController@index')->only(['index']);
     Route::get('balance', 'ResidentInvoiceController@balance')->name('balance');
   });
+
+  Route::get('extensions/export', 'ExportController@exportCensus');
+  Route::get('extensions/import', 'ExtensionController@getImport')->name('extensions.getImport')->middleware('can:import,App\Extension');
+  Route::post('extensions/import', 'ExtensionController@import')->name('extensions.import');
 
   Route::resource('novelties', 'NoveltyController');
   Route::resource('batch-messages', BatchMessageController::class);
@@ -117,45 +125,16 @@ Route::middleware(['auth:admin', 'phoneverified', 'suspended'])->group(function 
   Route::post('whatsapp/authenticate', 'WhatsappController@authenticate');
   Route::get('whatsapp/logout', 'WhatsappController@logout');
 
-  Route::prefix('extensions/{extension}')->name('extensions.')->group(fn () => Route::resource('vehicles', 'VehicleController'));
-  Route::get('extensions/import', 'ExtensionController@getImport')->name('extensions.getImport')->middleware('can:import,App\Extension');
-  Route::post('extensions/import', 'ExtensionController@import')->name('extensions.import');
-
-  Route::get('residents/{resident}/deviceslist', function(Resident $resident){
-    $api = new Devices();
-    $community = $api->getUnitDevices();
-    $household = $api->getHouseholdDevices($resident);
-    $householdDevices = $household->pluck('devSn');
-    return collect( $community )->map(function($dev) use ($householdDevices) {
-      $dev['auth'] = $householdDevices->contains($dev['devSn']) ? 1 : 0;
-      return $dev;
-    });
-  });
-
-  Route::get('residents/{resident}/devices/add', function(Request $request, Resident $resident){
-    $request->validate(['devSns'=>'required']);
-    $api = new Devices();
-    return $api->addDeviceAuth($request->devSns, $resident->id);
-  });
-
-  Route::get('residents/{resident}/devices/delete', function(Request $request, Resident $resident){
-    $request->validate(['devSns'=>'required']);
-    $api = new Devices();
-    return $api->deleteDeviceAuth($request->devSns, $resident->id);
-  });
+  Route::get('residents/{resident}/deviceslist', [App\Http\Controllers\ResidentDeviceController::class, 'index']);
+  Route::get('residents/{resident}/devices/add', [App\Http\Controllers\ResidentDeviceController::class, 'store']);
+  Route::get('residents/{resident}/devices/delete', [App\Http\Controllers\ResidentDeviceController::class, 'destroy']);
 
   Route::get('devices/accessLogs', function(Request $request){
     $api = new Devices();
     return $api->getAccessLogs();
   });
 
-  Route::view('accesslogs', 'admin.accesslogs')->name('visits.accesslogs');
-
-  Route::get('doors', function(){
-    $devices = new Devices();
-    $devices->syncDoors();
-  });
-  
+  Route::view('accesslogs', 'admin.accesslogs')->name('visits.accesslogs');  
 });
 
 //Resident routes

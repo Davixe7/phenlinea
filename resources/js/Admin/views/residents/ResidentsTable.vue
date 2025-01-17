@@ -45,7 +45,7 @@
               <i v-if="resident.disability" class="material-symbols-outlined">done</i>
             </td>
             <td class="d-flex align-items-center justify-content-end">
-              <a href="#" @click.prevent="$emit('residentAuth', resident)" class="me-2">
+              <a v-if="user.device_community_id" href="#" @click.prevent="$emit('residentAuth', resident)" class="me-2">
                 <i class="material-symbols-outlined">key_vertical</i>
               </a>
               <a href="#" @click.prevent="$emit('residentEdit', resident)" class="me-2">
@@ -67,6 +67,14 @@
 </template>
   
 <script setup>
+import axios from 'axios';
+import { ref } from 'vue';
+
 const props = defineProps(['residents'])
+const user = ref({})
+
+axios.get('user', function(response){
+  user.value = response.data.data;
+});
 </script>
 

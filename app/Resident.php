@@ -55,6 +55,10 @@ class Resident extends Model implements HasMedia
     $this->addMediaCollection('picture')->singleFile();
   }
 
+  public function getAdminAttribute(){
+    return $this->extension->admin;
+  }
+
   public function getTagsAttribute(){
     return $this
     ->vehicles()

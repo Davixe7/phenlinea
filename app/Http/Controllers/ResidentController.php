@@ -81,21 +81,23 @@ class ResidentController extends Controller
       $resident->addMedia( $picture )->toMediaCollection('picture');
       $picturePath = $resident->getFirstMediaPath('picture');
     }
-
     
-    if( auth()->user()->device_building_id ){
-      $devices = new Devices();
-      try {
-        $devices->addResident( $resident, $picturePath );
-      }
-      catch(Exception $e){
-        $resident->delete();
-        abort(422, 'Error al sincronizar con plataforma de dispositivos');
-      }
+    if( !auth()->user()->device_building_id ){
+      return new ResidentResource( $resident );
     }
-    return new ResidentResource( $resident );
-  }
 
+    try {
+      $devices = new Devices();
+      $devices->addResident( $resident, $picturePath );
+      $devices->grantAccessToAllDoors($resident);
+      return new ResidentResource( $resident );
+    }
+    catch(Exception $e){
+      $resident->delete();
+      abort(422, 'Error al sincronizar con plataforma de dispositivos');
+    }
+  }
+  
   /**
   * Display the specified resource.
   *

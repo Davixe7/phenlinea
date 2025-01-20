@@ -94,7 +94,7 @@ class ResidentController extends Controller
     }
     catch(Exception $e){
       $resident->delete();
-      abort(422, 'Error al sincronizar con plataforma de dispositivos');
+      abort(422, 'Error al sincronizar con plataforma de dispositivos' . $e->getMessage());
     }
   }
   

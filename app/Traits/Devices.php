@@ -225,7 +225,7 @@ class Devices
   {
     $devSns = $this->getUnitDevices($resident->extension->admin_id)->pluck('devSn')->toArray();
     $devSns = implode(",", $devSns);
-    $this->addDeviceAuth($resident->id, $devSns);
+    $this->addDeviceAuth($resident, $devSns);
   }
 
   function deleteDeviceAuth($resident, $devSn)

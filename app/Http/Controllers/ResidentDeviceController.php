@@ -15,6 +15,10 @@ class ResidentDeviceController extends Controller
      */
     public function index(Request $request, Resident $resident)
     {
+        if( !auth()->user()->device_community_id ){
+            return [];
+        }
+
         $api = new Devices();
         $communityDevices = $api->getUnitDevices();
         $householdDevices = $api->getHouseholdDevices($resident);

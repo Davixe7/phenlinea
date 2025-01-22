@@ -98,6 +98,8 @@ Route::middleware(['auth:admin', 'phoneverified', 'suspended'])->group(function 
     return $devices->getUnitDevices()->pluck('devSn')->toArray();
   });
 
+  Route::get('extensions/export', 'ExportController@exportCensus');
+
   Route::resource('extensions', 'ExtensionController');
 
   Route::prefix('extensions/{extension}')->name('extensions.')->group(function(){
@@ -107,7 +109,6 @@ Route::middleware(['auth:admin', 'phoneverified', 'suspended'])->group(function 
     Route::get('balance', 'ResidentInvoiceController@balance')->name('balance');
   });
 
-  Route::get('extensions/export', 'ExportController@exportCensus');
   Route::get('extensions/import', 'ExtensionController@getImport')->name('extensions.getImport')->middleware('can:import,App\Extension');
   Route::post('extensions/import', 'ExtensionController@import')->name('extensions.import');
 

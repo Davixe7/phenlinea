@@ -32,6 +32,13 @@ class Visit extends Model implements HasMedia
     'checkout'   => 'datetime:Y-m-d H:i:s',
   ];
 
+  public function registerMediaCollections(): void
+  {
+    $this
+    ->addMediaCollection('qrcode')
+    ->singleFile();
+  }
+
   public function extension(){
     return $this->belongsTo('App\Extension')->withDefault(['name'=>'ninguna']);
   }

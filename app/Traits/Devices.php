@@ -264,6 +264,7 @@ class Devices
       $qrcode   = QrCode::format('png')->size(270)->generate($tempCode);
       $visit->addMediaFromBase64(base64_encode($qrcode))->usingFileName(Str::random() . '.png')->toMediaCollection('qrcode');
       $visit->update(['password' => $tempPwd]);
+      Storage::append('zhyaf.error.log', $visit->getFirstMediaPath('qrcode'));
     } catch (Exception $e) {
       throw $e;
     }
@@ -280,11 +281,21 @@ class Devices
 
     try {
       $data = $this->fetchZhyaf('accVisitorTempPwd/extapi/add', $query);
-      Storage::append('visits.log', json_encode($data));
-      if (property_exists($data, 'qrCode')) {
-        $visit->addMediaFromBase64($data->qrCode)->usingFileName(Str::random() . '.png')->toMediaCollection('qrcode');
-      }
-      $visit->update(['password' => $data->tempPwd]);
+      $tempCode = property_exists($data, 'tempCode') ? $data->tempCode : '';
+      $tempPwd  = property_exists($data, 'tempPwd') ? $data->tempPwd : '';
+      $mediaFileName = Str::random() . '.png';
+
+      $visit->update(['password' => $tempPwd]);
+
+      $qrCode = property_exists($data, 'qrCode')
+        ? $data->qrCode
+        : QrCode::format('png')->size(270)->generate($tempCode);
+
+      $visit
+      ->addMediaFromBase64(base64_encode($qrCode))
+      ->usingFileName($mediaFileName)
+      ->toMediaCollection('qrcode');
+
       return $data;
     } catch (Exception $e) {
       throw $e;

@@ -62,6 +62,22 @@ class Whatsapp
     return $base64;
   }
 
+  public function getPairingCode($phone)
+  {
+    $access_token = $this->provider->access_token;
+    $query = ['query' => compact('access_token', 'phone')];
+    try {
+      $response    = $this->api->get('pairing_code', $query);
+      $body        = json_decode($response->getBody());
+      $code        = $body;
+    } catch (GuzzleException $e) {
+      Storage::append('whatsapp.errors', now() . 'ERROR: ' . $phone . ' ' . $e->getMessage());
+      return null;
+    }
+
+    return $code;
+  }
+
   public function setWebhook($instance_id, $webhook_url)
   {
     $access_token = $this->provider->access_token;

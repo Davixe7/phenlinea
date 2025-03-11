@@ -20,18 +20,30 @@ class WhatsappClientController extends Controller
   }
 
   public function scan(Request $request, WhatsappClient $whatsapp_client){
+    $whatsapp      = new Whatsapp();
+
     $labels = [
       'delivery_instance_id' => 'Encomiendas',
       'batch_instance_id'    => 'Masívos',
       'comunity_instance_id' => 'Comunidad',
     ];
+
+    $base64        = null;
+    $pairing_code  = null;
     $instance_type = $request->instance_type;
-    $whatsapp      = new Whatsapp();
     $instance_id   = $whatsapp->getInstanceId();
     $whatsapp->setWebhook($instance_id, 'https://phenlinea.com/whatsapp/hook');
-    $base64        = $whatsapp->getQrCode( $instance_id );
+    
+    if( $request->scanMethod == 'pairingCode' ){
+      $data = $whatsapp->getPairingCode( '57' . $whatsapp_client->batch_instance_phone );
+      $pairing_code = $data->pairingCode;
+      $instance_id  = $data->instance_id;
+    }else {
+      $base64       = $whatsapp->getQrCode( $instance_id );
+    }
 
     return view('super.whatsappclients.scan', compact(
+      'pairing_code',
       'whatsapp_client',
       'instance_id',
       'base64',

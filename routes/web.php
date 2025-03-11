@@ -12,13 +12,24 @@
 */
 
 use App\Http\Controllers\BatchMessageController;
-use App\Http\Resources\Visit as VisitResource;
 use App\ResidentInvoicePayment;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Traits\Devices;
-use App\Resident;
+use App\Extension;
+
+Route::get('apartments/{extension}/sync', function (Extension $extension) {
+  try {
+    $api = new Devices($extension->admin);
+    return $extension->residents;
+    $extension->residents->each(function ($resident) use ($api) {
+      $api->addResident($resident, $resident->getFirstMediaPath('picture'));
+    });
+  } catch (Exception $e) {
+    $e->getMessage();
+  }
+});
 
 Route::get('home', 'HomeController@index')->name('home');
 Route::view('/', 'public.landing')->middleware('guest');
@@ -93,7 +104,7 @@ Route::name('admin.')->prefix('admin')->middleware('auth:web')->group(function (
 Route::middleware(['auth:admin', 'phoneverified', 'suspended'])->group(function () {
   Route::get('user', fn() => auth()->user());
 
-  Route::get('devices', function(){
+  Route::get('devices', function () {
     $devices = new Devices();
     return $devices->getUnitDevices()->pluck('devSn')->toArray();
   });
@@ -102,7 +113,7 @@ Route::middleware(['auth:admin', 'phoneverified', 'suspended'])->group(function 
 
   Route::resource('extensions', 'ExtensionController');
 
-  Route::prefix('extensions/{extension}')->name('extensions.')->group(function(){
+  Route::prefix('extensions/{extension}')->name('extensions.')->group(function () {
     Route::resource('residents', 'ResidentController');
     Route::resource('vehicles', App\Http\Controllers\VehicleController::class);
     Route::resource('invoices', 'ResidentInvoiceController@index')->only(['index']);
@@ -130,12 +141,12 @@ Route::middleware(['auth:admin', 'phoneverified', 'suspended'])->group(function 
   Route::get('residents/{resident}/devices/add', [App\Http\Controllers\ResidentDeviceController::class, 'store']);
   Route::get('residents/{resident}/devices/delete', [App\Http\Controllers\ResidentDeviceController::class, 'destroy']);
 
-  Route::get('devices/accessLogs', function(Request $request){
+  Route::get('devices/accessLogs', function (Request $request) {
     $api = new Devices();
     return $api->getAccessLogs();
   });
 
-  Route::view('accesslogs', 'admin.accesslogs')->name('visits.accesslogs');  
+  Route::view('accesslogs', 'admin.accesslogs')->name('visits.accesslogs');
 });
 
 //Resident routes
@@ -150,21 +161,23 @@ Route::middleware(['auth:admin,extension', 'phoneverified', 'suspended'])->group
 });
 
 Route::view('politica-de-privacidad', 'public.policy');
-Route::get('apk', fn () => response()->download(public_path('app-release.apk'), 'app-release.apk', ['Content-Type' => 'application/vnd.android.package-archive']));
+Route::get('apk', fn() => response()->download(public_path('app-release.apk'), 'app-release.apk', ['Content-Type' => 'application/vnd.android.package-archive']));
 
 Route::get('test', function () {
   $visits = App\Visit::select(['plate', 'extension_name'])->groupBy('plate')->get();
-  $visits = $visits->map(fn ($v) => "$v->plate $v->extension_name visitante")->toArray();
+  $visits = $visits->map(fn($v) => "$v->plate $v->extension_name visitante")->toArray();
   $plates = App\Vehicle::with('extension')->get();
-  $plates = $plates->map(fn ($v) => "$v->plate $v->extension->name residente")->toArray();
+  $plates = $plates->map(fn($v) => "$v->plate $v->extension->name residente")->toArray();
   return array_merge($visits, $plates);
 });
 
 Route::view('consultar-facturas', 'public.resident-invoices.query')->name('public.resident-invoices.query');
 Route::post('consultar-facturas', [App\Http\Controllers\Public\ResidentInvoiceController::class, 'balance'])->name('public.resident-invoices.balance');
 Route::get('descargar-factura/{resident_invoice}', [App\Http\Controllers\ResidentInvoiceController::class, 'download'])->name('resident-invoices.download');
-Route::get('/pago/{id}', function(Request $request){
+Route::get('/pago/{id}', function (Request $request) {
   $payment = ResidentInvoicePayment::find($request->id);
   // return view('pdf.recibo', compact('payment'));
   return Pdf::loadView('pdf.recibo', compact('payment'))->download('recibo-caja.pdf');
 });
+
+Route::view('politicas-y-terminos', 'public.politicas', ['title' => 'Terminos y Condiciones']);

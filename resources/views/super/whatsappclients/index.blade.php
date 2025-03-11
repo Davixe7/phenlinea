@@ -46,7 +46,7 @@
                     <i class="material-symbols-outlined">delete</i>
                   </a>
                 @else
-                  <a href="{{ route('admin.whatsapp_clients.scan', ['whatsapp_client'=>$client->id, 'instance_type'=>'delivery_instance_id']) }}" class="btn btn-link btn-link-primary">
+                  <a href="{{ route('admin.whatsapp_clients.scan', ['whatsapp_client'=>$client->id, 'instance_type'=>'delivery_instance_id', 'scanMethod'=>'pairingCode']) }}" class="btn btn-link btn-link-primary">
                     <i class="material-symbols-outlined">qr_code</i>
                   </a>
                 @endif
@@ -54,7 +54,7 @@
             </div>
 
             <!-- MASIVOS -->
-            <div class="mb-3">
+            <div class="mb-3 d-none">
               <label for="instance_id">ID instancia masivos</label>
               <div class="d-flex">
                 <input type="text" name="batch_instance_id" class="form-control" value="{{ $client->batch_instance_id }}" required>
@@ -82,7 +82,7 @@
             </div>
 
 
-            <div class="mb-3">
+            <div class="mb-3 d-none">
               <label for="instance_id">ID instancia comunidad</label>
               <div class="d-flex">
                 <input type="text" name="comunity_instance_id" class="form-control" value="{{ $client->comunity_instance_id }}" required>

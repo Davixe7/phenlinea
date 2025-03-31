@@ -72,7 +72,6 @@ class ResidentController extends Controller
       'is_authorized'   => $request->is_authorized,
       'disability'      => $request->disability,
       'card'            => $request->card,
-      'device_synced'   => false
     ]);
 
     $picturePath = null;

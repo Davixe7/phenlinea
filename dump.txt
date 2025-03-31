@@ -1,0 +1,11 @@
+mysqldump -u root -p
+-t
+--ignore-table=phenlinea.sessions
+--ignore-table=phenlinea.visits
+--ignore-table=phenlinea.visitors
+--ignore-table=phenlinea.migrations
+--ignore-table=phenlinea.resident_invoices
+--ignore-table=phenlinea.resident_invoice_items
+--ignore-table=phenlinea.resident_invoice_payments
+--ignore-table=phenlinea.resident_invoice_item_resident_invoice_payment
+phenlinea > phenlinea_dump.sql

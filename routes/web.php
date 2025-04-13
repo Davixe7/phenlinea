@@ -18,6 +18,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Traits\Devices;
 use App\Extension;
+use App\Notifications\DeliveryWANotification;
+
+Route::get('extensions/{extension}/meta', function(Request $request, Extension $extension){
+  $extension->notify( new DeliveryWANotification($extension) );
+});
 
 Route::get('apartments/{extension}/sync', function (Extension $extension) {
   try {

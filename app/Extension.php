@@ -3,12 +3,14 @@
 namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notification;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Notifications\Notifiable;
 
 class Extension extends Authenticatable implements HasMedia
 {
-  use InteractsWithMedia;
+  use InteractsWithMedia, Notifiable;
 
   protected $guarded = ['id'];
 
@@ -26,6 +28,10 @@ class Extension extends Authenticatable implements HasMedia
   protected $appends = [
     // 'parking_numbers_str'
   ];
+
+  public function routeNotificationForMeta(Notification $notification): array|string {
+    return $this->phone_1;
+  }
 
 	public function registerMediaCollections(): void
 	{

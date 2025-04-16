@@ -1,9 +1,7 @@
 <?php
 namespace App\Services;
 
-use App\Extension;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
 
 class MetaNotificationService {

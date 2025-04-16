@@ -35,10 +35,10 @@ class Extension extends Authenticatable implements HasMedia
     /* if( $this->admin_id == 1 ){
       return '584147912134';
     } */
-
+   $phones = array_values($this->valid_whatsapp_phone_numbers);
     try {
-      $phones = $this->valid_whatsapp_phone_numbers;
-      return (count( $phones ) >= 1) ? '57' . $phones[0] : null;
+      $phone = end($phones);
+      return $phone ? '57' . $phone : null;
     }
     catch( Exception $e ){
       Log::error($this->id . ' ' . $e->getMessage());
@@ -168,6 +168,7 @@ class Extension extends Authenticatable implements HasMedia
     return collect([$this->phone_1, $this->phone_2, $this->phone_3, $this->phone_4])
       ->reject(fn ($phone) => !$phone || $phone[0] != '3')
       ->take($phonesPerExtension)
+      ->values()
       ->toArray();
   }
 

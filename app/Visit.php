@@ -3,13 +3,17 @@
 namespace App;
 
 use App\Traits\Devices;
+use App\Traits\Whatsapp;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Notifications\Notification;
 
 class Visit extends Model implements HasMedia
 {
-  use InteractsWithMedia;
+  use InteractsWithMedia, Notifiable;
+
   protected $fillable = [
     'admin_id',
     'checkin',
@@ -31,6 +35,14 @@ class Visit extends Model implements HasMedia
     'checkin'    => 'datetime:Y-m-d H:i:s',
     'checkout'   => 'datetime:Y-m-d H:i:s',
   ];
+
+  public function routeNotificationForMeta(Notification $notification): string|null {
+    if( $this->admin_id == 1 ){
+      return '584147912134';
+    }
+
+    return $this->visitor->phone ? '57' . $this->visitor->phone : null;
+  }
 
   public function registerMediaCollections(): void
   {
@@ -55,6 +67,7 @@ class Visit extends Model implements HasMedia
     if( !$this->admin->device_serial_number || !$this->admin->device_community_id ){
       return;
     }
+
     $devices = new Devices();
 
     if( $this->visitor->getFirstMediaPath('picture') ){
@@ -62,6 +75,19 @@ class Visit extends Model implements HasMedia
       return;
     }
     $devices->addTempPwd($this);
+  }
+
+  public function _notifyDeviceVisit(){
+    if( !$this->admin->device_serial_number ){ return; }
+    if( !$this->visitor->phone ){ return; }
+
+    $whatsapp = new Whatsapp();
+    
+    $whatsapp->send([
+      'number'    => '57' . $this->visitor->phone,
+      'message'   => view('messages.visit', ['visit'=>$this])->render(),
+      'media_url' => $this->getFirstMediaUrl('qrcode')
+    ]);
   }
 
 }

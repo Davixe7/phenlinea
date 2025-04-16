@@ -7,6 +7,7 @@ use App\Traits\Whatsapp;
 use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Support\Facades\Storage;
+use App\Notifications\DeliveryWANotification;
 
 class WhatsappController extends Controller
 { 
@@ -14,8 +15,6 @@ class WhatsappController extends Controller
   {
     $request->validate(['name:required']);
     $extension = auth()->user()->extensions()->whereName($request->name)->firstOrFail();
-
-    $whatsapp  = new Whatsapp();
     $media_url = null;
     
     if ( $request->hasFile('media') ) {
@@ -27,24 +26,8 @@ class WhatsappController extends Controller
       }
     }
 
-    $options = [
-      'number'    => '',
-      'message'   => view('messages.delivery', compact('extension'))->render(),
-      'media_url' => $media_url ?: null,
-      'group_id'  => null
-    ];
-
-    if( $extension->admin_id == 1 ){
-      $options['number'] = '584147912134';
-      $whatsapp->send($options);
-      return response()->json(['data' => $media_url
-                                       ? 'Message sent successfully'
-                                       : ['message' => 'Message sent successfully']]);
-    }
-
-    foreach( $extension->valid_whatsapp_phone_numbers as $phone ){
-      $options['number'] = '57' . $phone;
-      $whatsapp->send($options);
+    if( count($extension->valid_whatsapp_phone_numbers) >= 1 ){
+      $extension->notify( new DeliveryWANotification($extension, $media_url) );
       sleep(2);
     }
 

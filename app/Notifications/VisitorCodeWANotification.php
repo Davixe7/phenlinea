@@ -3,18 +3,16 @@
 namespace App\Notifications;
 
 use App\Channels\MetaNotificationChannel;
-use App\Extension;
+use App\Visit;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use NotifiableViaWhatsapp;
 
-class DeliveryWANotification extends Notification
+class VisitorCodeWANotification extends Notification
 {
     use Queueable;
 
-    protected $extension;
+    protected $visit;
     protected $media_url;
 
     /**
@@ -22,10 +20,10 @@ class DeliveryWANotification extends Notification
      *
      * @return void
      */
-    public function __construct(Extension $extension, $media_url = null)
+    public function __construct(Visit $visit)
     {
-        $this->media_url = $media_url;
-        $this->extension = $extension;
+        $this->visit = $visit;
+        $this->media_url = $visit->getFirstMediaUrl('qrcode');
     }
 
     /**
@@ -40,29 +38,27 @@ class DeliveryWANotification extends Notification
     }
 
     public function toMeta($notifiable){
-        $template_name = $this->media_url ? 'encomienda_multimedia' : 'encomienda_recibida';
+        $template_name = 'visitante_codigo';
 
-        $header = $this->media_url
-        ? ['type' => 'header', 'parameters' => [['type'  => 'image', 'image' => ['link' => $this->media_url]]]]
-        : null;
+        $header = ['type' => 'header', 'parameters' => [['type'  => 'image', 'image' => ['link' => $this->media_url]]]];
 
         $body = [
             'type' => 'body',
             'parameters' => [
                 [
                     'type' => 'text',
-                    'parameter_name' => 'apto',
-                    'text' => $notifiable->name,
+                    'parameter_name' => ' unidad ',
+                    'text' => $notifiable->admin->name,
                 ],
                 [
                     'type' => 'text',
-                    'parameter_name' => 'unidad',
-                    'text' => $notifiable->admin->name,
+                    'parameter_name' => ' pwd ',
+                    'text' => $notifiable->password,
                 ],
             ]
         ];
 
-        $components = array_filter([$header, $body]);
+        $components = [$header, $body];
     
         return compact('template_name', 'components');
     }

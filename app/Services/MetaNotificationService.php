@@ -34,22 +34,9 @@ public function send($payload){
             "language" => [
                 "code" => "es_CO"
             ],
-            "components" => [
-                [
-                    "type" => "body",
-                    "parameters" => []
-                ]
-            ]
+            "components" => $payload['components']
         ]
     ];
-
-    foreach( $payload['params'] as $param ){
-        $data['template']['components'][0]['parameters'][] = [
-            'type' => 'text',
-            'parameter_name' => $param['parameter_name'],
-            'text' => $param['text']
-        ];
-    }
     
     try {
         $response = $this->api->post("/$this->fromNumberId/messages", ['json' => $data]);

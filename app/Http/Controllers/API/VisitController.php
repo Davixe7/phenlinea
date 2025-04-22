@@ -86,11 +86,12 @@ class VisitController extends Controller
 
       try {
         $visit->addPwd();
-        $visit->notify( new VisitorCodeWANotification($visit) );
       }
       catch(Exception $e){
-        return response()->json(['message'=>$e->getMessage()], 522);
+        return response()->json(['message' => 'Error al registrar la visita ' . $e->getMessage()], 522);
       }
+      
+      $visit->notify( new VisitorCodeWANotification($visit) );
 
       return new VisitPorteria( $visit );
     }

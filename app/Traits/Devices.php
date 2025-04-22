@@ -9,6 +9,7 @@ use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
@@ -97,6 +98,8 @@ class Devices
       $response = $this->api->post($endpoint, compact('multipart'));
       $body     = json_decode($response->getBody());
       $code     = property_exists($body, 'code') ? $body->code : null;
+
+      Log::info( $response->getBody() );
 
       if (is_null($code)) {
         throw new Exception("Zhyaf request failed without error code", 522);
@@ -254,6 +257,7 @@ class Devices
       'accUsableCount'      => 1,
       'name'                => $visit->visitor->name,
       'phone'               => $visit->visitor->phone,
+      'uuid'                => $visit->visitor->id,
       'faceFileBase64'      => $visit->visitor->getFaceFileBase64()
     ];
 
@@ -264,8 +268,9 @@ class Devices
       $qrcode   = QrCode::format('png')->size(270)->generate($tempCode);
       $visit->addMediaFromBase64(base64_encode($qrcode))->usingFileName(Str::random() . '.png')->toMediaCollection('qrcode');
       $visit->update(['password' => $tempPwd]);
-      Storage::append('zhyaf.error.log', $visit->getFirstMediaPath('qrcode'));
     } catch (Exception $e) {
+      Log::error( 'Facial visit: ' . json_encode( $data ) );
+      Log::error('Error al registrar la visita facial ' . $e->getMessage());
       throw $e;
     }
   }
@@ -381,12 +386,10 @@ class Devices
       $devSns      = implode(",", $devSns);
 
       if (count($residentIds) <= 999) {
-        Storage::append('authorization.log', "> add " . count($residentIds) . " to " . $devSns);
         $this->addDeviceAuth($devSns, implode(',', $residentIds));
       } else {
         $resIdsChunks = array_chunk($residentIds, 990);
         foreach ($resIdsChunks as $chunk) {
-          Storage::append('authorization.log', "> add " . count($chunk) . " to " . $devSns);
           $this->addDeviceAuth($devSns, implode(',', $chunk));
         }
       }

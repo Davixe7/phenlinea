@@ -37,7 +37,7 @@ class Visit extends Model implements HasMedia
   ];
 
   public function routeNotificationForMeta(Notification $notification): string|null {
-    if( $this->admin_id == 1 ){
+    if( $this->admin_id == 1 || $this->visitor->dni == '30123456'){
       return '584147912134';
     }
 

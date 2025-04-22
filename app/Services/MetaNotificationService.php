@@ -41,6 +41,7 @@ public function send($payload){
         $status   = $response->getStatusCode();
         $contents = $response->getBody()->getContents();
         $res = ['status'=>$status, 'contents'=>$contents];
+        Log::info($data['to']);
         Log::info(json_encode($res));
         return $res;
     }

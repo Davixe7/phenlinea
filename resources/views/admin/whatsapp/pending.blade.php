@@ -69,8 +69,8 @@
       </a>
       <a
         style="flex: 1 1 auto;"
-        href="{{ route('batch-messages.create', ['pending_adviced'=>1]) }}" class="btn btn-primary">
-        Validar
+        href="{{ route('batch-messages.index', ['pending_adviced'=>1]) }}" class="btn btn-primary">
+        Esperar
       </a>
     </div>
     <form id="deleteForm" action="{{ route('batch-messages.destroy', ['batch_message'=>$message->id]) }}" method="POST">

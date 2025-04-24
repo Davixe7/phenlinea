@@ -63,6 +63,8 @@ Route::post('porterias/logout', 'Auth\Porteria\LoginController@logout')->name('p
 
 //Admin routes
 Route::name('admin.')->prefix('admin')->middleware('auth:web')->group(function () {
+  Route::get('batch_messages/create', [App\Http\Controllers\Admin\BatchMessageController::class, 'create'])->name('batch_messages.create');
+  Route::post('batch_messages', [App\Http\Controllers\Admin\BatchMessageController::class, 'store'])->name('batch_messages.store');
   Route::delete('whatsapp_messages/{batch_message}', 'Admin\BatchMessageController@destroy')->name('batch_messages.delete');
   Route::get('whatsapp_messages', 'Admin\BatchMessageController@index')->name('batch_messages.index');
   Route::get('whatsapp_messages/{batch_message}', 'Admin\BatchMessageController@show')->name('batch_messages.show');

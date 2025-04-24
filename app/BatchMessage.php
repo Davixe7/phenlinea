@@ -21,4 +21,8 @@ class BatchMessage extends Model implements HasMedia
     public function registerMediaCollections(): void {
       $this->addMediaCollection('attachment')->singleFile();
     }
+
+    public function receivers(){
+      return $this->belongsToMany(Extension::class);
+    }
 }

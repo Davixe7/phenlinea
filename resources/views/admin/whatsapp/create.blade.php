@@ -3,17 +3,9 @@
 <Whatsapp
   :extensions="{{ json_encode($extensions) }}"
 
-  @if($instance_id)
-    :instance_id="'{{ $instance_id }}'"
-  @endif
-
   @if( $message )
     :message="{{ json_encode($message) }}"
-  @endif
-
-  :phone="{{ $phone }}"
-  :access_token="'{{ $access_token }}'"
-  :method="'{{ $method }}'">
+  @endif>
 </Whatsapp>
 @endsection
 

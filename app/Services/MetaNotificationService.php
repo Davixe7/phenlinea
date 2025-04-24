@@ -3,6 +3,7 @@ namespace App\Services;
 
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class MetaNotificationService {
 
@@ -37,16 +38,20 @@ public function send($payload){
     ];
     
     try {
+        if( array_key_exists('from_number_id', $payload) ){
+            $this->fromNumberId = $payload['from_number_id'];
+        }
+        
         $response = $this->api->post("/$this->fromNumberId/messages", ['json' => $data]);
         $status   = $response->getStatusCode();
         $contents = $response->getBody()->getContents();
         $res = ['status'=>$status, 'contents'=>$contents];
-        Log::info($data['to']);
         Log::info(json_encode($res));
         return $res;
     }
     catch (\Exception $e) {
-        Log::error($e->getMessage());
+        Storage::append('meta.log', $data['to']);
+        Storage::append('meta.log', $e->getMessage());
     }
 }
 

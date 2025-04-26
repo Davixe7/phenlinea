@@ -14,7 +14,14 @@ const props = defineProps({
   extensions: {
     type: Array,
     default: ()=>[]
-  }
+  },
+  instance_id: {
+    type: String,
+    default: null
+  },
+  access_token: '',
+  phone: '',
+  method: ''
 })
 const activeStep = ref(1)
 const steps = ref([
@@ -29,6 +36,7 @@ watch(recepients, () => steps.value[1].enabled = recepients.value.length)
 const message = ref({...props.message})
 watch(message, () => steps.value[2].enabled = message.value.id, {deep:true})
 
+const instance_id = ref(props.instance_id)
 const storing = ref(false)
 
 function storeMessage(file){
@@ -48,6 +56,12 @@ function storeMessage(file){
   .finally(()=>storing.value = false)
 }
 
+function authenticate(data){
+  axios.post(`/batch-messages/authenticate`, data)
+  .then(response => instance_id.value = data.instance_id)
+  .catch(err => console.log(err.response))
+}
+
 function enableStep(stepNumber){
   steps.value = steps.value.map((step,i) => {
     step.enabled = (i+1 == stepNumber ) ? true : false
@@ -59,7 +73,7 @@ function enableStep(stepNumber){
 onMounted(() => {
   console.log(process.env.MIX_SOCKET_BASE_URL)
   if( props.message.id ){
-    enableStep(2)
+    enableStep(3)
   }
 })
 </script>
@@ -97,8 +111,13 @@ onMounted(() => {
         </div>
       </template>
       <template v-if="activeStep == 3">
-        <Confirm>
-        </Confirm>
+        <Authenticate
+          @authenticated="authenticate"
+          :method="method"
+          :instance_id="instance_id"
+          :phone="phone"
+          :access_token="access_token">
+        </Authenticate>
       </template>
     </Multipaso>
   </div>

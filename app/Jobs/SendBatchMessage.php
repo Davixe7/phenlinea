@@ -7,39 +7,22 @@ use App\Traits\Whatsapp;
 use App\WhatsappClient;
 use Exception;
 use Illuminate\Support\Facades\Storage;
+use App\Notifications\BatchMessageNotification;
+
 class SendBatchMessage
 {
     public function __invoke()
     {
-        $client   = WhatsappClient::whereEnabled(1)->first();
-        $whatsapp = new Whatsapp( $client );
-
         $batch = BatchMessage::whereStatus('ready')->where('created_at', '<', now()->subMinute())->firstOrFail();
-        $instance_id = $batch->admin->whatsapp_instance_id;
         $batch->update(['status'=>'processing']);
+        $extensions = $batch->receivers()->get(['id', 'name', 'admin_id', 'phone_1', 'phone_2', 'phone_3', 'phone_4']);
 
-        $numbers = explode( ',', $batch->numbers );
-        $options = [
-        'instance_id' => $instance_id,
-        'number'      => '',
-        'message'     => $batch->body,
-        'media_url'   => $batch->media_url,
-        'group_id'    => null
-        ];
-
-        foreach( $numbers as $number ){
+        foreach( $extensions as $extension){
             try {
-                if($number == '4147912134'){
-                    $options['number'] = '584147912134';
-                    $whatsapp->send($options);
-                    sleep(5);
-                    continue;
-                }
-                $options['number'] = '57' . $number;
-                $whatsapp->send($options);
+                $extension->notify( new BatchMessageNotification($batch->title, $batch->body) );
                 sleep(5);
             } catch (Exception $e) {
-                Storage::append('whatsapp.errors', now() . ' ' . $instance_id . ' ' . $e->getMessage());
+                Log::error( $e );
             }
         }
 

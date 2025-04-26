@@ -53,5 +53,42 @@ class BatchMessageController extends Controller
     $admin->update(['whatsapp_instance_id'=>$request->whatsapp_instance_id]);
     return redirect()->route('admin.batch_messages.index')->with(['message'=>"Instancia actualizada con éxito"]);
   }
+
+  function create(Request $request){
+    $admins = [];
+    $admin = null;
+    $extensions = [];
+
+    if( $request->filled('admin_id') ){
+      $admin = Admin::with(['extensions'=>function($query){
+        $query->select(['admin_id', 'id', 'name']);
+      }])->findOrFail( $request->admin_id );
+
+      $extensions = $admin->extensions;
+      return view('super.batch_messages.create', compact('admins', 'admin', 'extensions'));
+    }
+
+    $admins = Admin::select(['id', 'name'])->get();
+    return view('super.batch_messages.create', compact('admins', 'admin', 'extensions'));
+  }
+
+  function store(Request $request){
+    $data = $request->validate([
+      'admin_id' => 'required|exists:admins,id',
+      'content' => 'required',
+      'receivers' => 'required',
+    ]);
+
+    $data['title'] = 'prueba';
+    $data['body'] = $data['content'];
+
+    unset( $data['content'] );
+    unset( $data['receivers'] );
+
+    $batchMessage = BatchMessage::create($data);
+    $batchMessage->receivers()->attach($request->receivers);
+
+    return redirect()->route('admin.batch_messages.create')->with(['message'=>"Creado con exito"]);
+  }
 }
 

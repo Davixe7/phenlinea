@@ -11,10 +11,12 @@ use Illuminate\Contracts\Auth\CanResetPassword;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use GuzzleHttp\Client;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword, HasMedia
 {
   use Notifiable;
+  use HasFactory;
   use InteractsWithMedia;
 
   protected $fillable = [

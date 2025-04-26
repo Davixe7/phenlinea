@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::post('/admin/login', 'Auth\LoginController@login');
+Route::post('/admin/login', 'Admin\Auth\LoginController@login');
 
 Route::get('visitors', 'API\VisitorController@index');
 Route::post('visitors', 'API\VisitorController@store');
@@ -95,3 +95,10 @@ Route::put('extensions/{extension}/resetpassword', 'API\ExtensionController@rese
 Route::post('extensions/{extension}/sendpassword', 'API\ExtensionController@sendPasswordSms');
 
 Route::post('/pqrs', 'PetitionController@store');
+
+Route::middleware('auth:sanctum')->prefix('/v2')->name('api.')->group(function(){
+  Route::apiResource('admins', App\Http\Controllers\Admin\v2\AdminController::class);
+  Route::apiResource('porterias', App\Http\Controllers\Admin\v2\PorteriaController::class);
+  Route::apiResource('invoices', App\Http\Controllers\Admin\v2\InvoiceController::class);
+  Route::post('invoices/validate', [App\Http\Controllers\Admin\v2\InvoiceController::class, 'validateFile']);
+});

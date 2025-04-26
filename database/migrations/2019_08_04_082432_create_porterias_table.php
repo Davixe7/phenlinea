@@ -21,7 +21,7 @@ class CreatePorteriasTable extends Migration
       $table->string('name');
       $table->string('email')->unique();
       $table->string('password');
-      $table->integer('admin_id');
+      $table->foreignId('admin_id');
       
       $table->string('api_token', 60)->nullable()->default(null);
     });

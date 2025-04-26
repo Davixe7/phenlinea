@@ -4,9 +4,11 @@ namespace App;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Invoice extends Model
 {
+    use HasFactory;
     protected $fillable = ['number','nit','total','date', 'status', 'paid_at'];
 
     public function admin(){

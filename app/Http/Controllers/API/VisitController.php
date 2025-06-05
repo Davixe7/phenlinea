@@ -12,6 +12,7 @@ use App\Notifications\VisitorCodeWANotification;
 use App\Traits\Devices;
 use App\Traits\Uploads;
 use Exception;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class VisitController extends Controller
@@ -91,7 +92,12 @@ class VisitController extends Controller
         return response()->json(['message' => 'Error al registrar la visita ' . $e->getMessage()], 522);
       }
       
-      $visit->notify( new VisitorCodeWANotification($visit) );
+      try {
+        $visit->notify( new VisitorCodeWANotification($visit) );
+      }
+      catch(Exception $e){
+        Log::error($e->getMessage());
+      }
 
       return new VisitPorteria( $visit );
     }

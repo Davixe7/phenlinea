@@ -4,8 +4,6 @@ namespace App\Notifications;
 
 use App\Channels\MetaNotificationChannel;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class BatchMessageNotification extends Notification
@@ -64,7 +62,7 @@ class BatchMessageNotification extends Notification
             ]
         ];
 
-        $components = array_filter([$header, $body]);
+        $components = array_values(array_filter([$header, $body]));
     
         return compact('from_number_id', 'template_name', 'components');
     }

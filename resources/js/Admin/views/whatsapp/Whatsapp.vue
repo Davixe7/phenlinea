@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref, watch } from 'vue';
 
-const props      = defineProps({
+const props = defineProps({
   message: {
     type: Object,
     default:()=>({
@@ -14,12 +14,7 @@ const props      = defineProps({
   extensions: {
     type: Array,
     default: ()=>[]
-  },
-  instance_id: {
-    type: String,
-    default: null
-  },
-  phone: ''
+  }
 })
 const activeStep = ref(1)
 const steps = ref([
@@ -34,9 +29,10 @@ watch(recepients, () => steps.value[1].enabled = recepients.value.length)
 const message = ref({...props.message})
 watch(message, () => steps.value[2].enabled = message.value.id, {deep:true})
 
-const instance_id = ref(props.instance_id)
+const storing = ref(false)
 
 function storeMessage(file){
+  storing.value = true
   let data = new FormData()
   data.append('title',     message.value.title)
   data.append('body',      message.value.body)
@@ -46,26 +42,24 @@ function storeMessage(file){
   axios.post('/batch-messages', data)
   .then(response => {
     message.value.id = response.data.data.id
-    steps.value[0].enabled = false
-    steps.value[1].enabled = false
-    steps.value[2].enabled = true
-    activeStep.value = 3
+    enableStep(3)
   })
   .catch(err => console.log(err.response))
+  .finally(()=>storing.value = false)
 }
 
-function authenticate(data){
-  axios.post(`/batch-messages/authenticate`, data)
-  .then(response => instance_id.value = data.instance_id)
-  .catch(err => console.log(err.response))
+function enableStep(stepNumber){
+  steps.value = steps.value.map((step,i) => {
+    step.enabled = (i+1 == stepNumber ) ? true : false
+    return step;
+  })
+  activeStep.value = stepNumber
 }
 
 onMounted(() => {
+  console.log(process.env.MIX_SOCKET_BASE_URL)
   if( props.message.id ){
-    steps.value[0].enabled = false
-    steps.value[1].enabled = false
-    steps.value[2].enabled = true
-    activeStep.value = 3
+    enableStep(2)
   }
 })
 </script>
@@ -103,11 +97,8 @@ onMounted(() => {
         </div>
       </template>
       <template v-if="activeStep == 3">
-        <Authenticate
-          @authenticated="authenticate"
-          :instance_id="instance_id"
-          :phone="phone">
-        </Authenticate>
+        <Confirm>
+        </Confirm>
       </template>
     </Multipaso>
   </div>

@@ -13,7 +13,7 @@ class VisitController extends Controller
      */
     public function index()
     {
-      $visits = auth()->user()->visits()->orderBy('created_at', 'DESC')->with('visitor')->get();
+      $visits = auth()->user()->visits()->orderBy('created_at', 'DESC')->limit(1000)->with('visitor')->get();
       return view('admin.visits', ['visits' => $visits]);
     }
 }

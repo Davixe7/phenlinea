@@ -14,10 +14,12 @@ use Illuminate\Support\Str;
 class BatchMessageController extends Controller
 {
   protected $whatsapp;
+  protected $client;
 
   public function __construct()
   {
-    $this->whatsapp = new Whatsapp(WhatsappClient::find(1));
+    $this->client   = WhatsappClient::find(1);
+    $this->whatsapp = new Whatsapp($this->client);
   }
 
   public function index(){
@@ -33,21 +35,21 @@ class BatchMessageController extends Controller
   }
   
   public function create(Request $request){
-    $instance_id = auth()->user()->whatsapp_instance_id;
-    if( $instance_id && !$this->whatsapp->validateInstance($instance_id, auth()->user()->phone)){
-      $this->whatsapp->logout($instance_id);
-      auth()->user()->update(['whatsapp_instance_id'=>null]);
-    }
+    $extensions    = auth()->user()->extensions()->get([
+      'admin_id',
+      'extensions.id',
+      'extensions.name',
+      'phone_1',
+      'owner_phone'
+    ]);
 
-    $message = auth()->user()->batch_messages()->whereIn('status', ['pending', 'failed'])->latest()->first();
-    if( $message && !$request->filled('pending_adviced') ){
+    $message = BatchMessage::whereAdminId( auth()->id() )->whereStatus( 'pending' )->first();
+
+    if( $message ){
       return view('admin.whatsapp.pending', compact('message'));
     }
 
-    $extensions  = auth()->user()->extensions()->get(['admin_id', 'extensions.id', 'extensions.name', 'phone_1', 'owner_phone']);
-    $instance_id = auth()->user()->whatsapp_instance_id ?: null;
-    $phone       = auth()->user()->phone;
-    return view('admin.whatsapp.create', compact('extensions', 'instance_id', 'phone', 'message'));
+    return view('admin.whatsapp.create', compact('extensions', 'message'));
   }
 
   public function store(Request $request)
@@ -58,36 +60,17 @@ class BatchMessageController extends Controller
       'title'     => 'required'
     ]);
 
-    $aptos  = Extension::whereIn('id', $request->receivers)->get(['id', 'owner_phone', 'phone_1', 'phone_2']);
-
-    $phones = $request->owners_only
-              ? $aptos->pluck('owner_phone')
-              : $aptos->pluck('phone_1')->merge($aptos->pluck('phone_2'));
-
-    $phones = $phones
-              ->filter(fn ($phone) => ($phone && ($phone[0] == '3')))
-              ->toArray();
-
-    if (!count($phones)) abort(422, 'Not valid phones were found');
-
     $batch = BatchMessage::create([
       'admin_id'     => auth()->id(),
-      'numbers'      => implode(',', $phones),
       'title'        => $request->title,
-      'body'         => $this->formatMessage($request->body),
+      'body'         => $request->body,
       'media_url'    => $this->saveMediaUrl($request),
-      'status'       => auth()->user()->hasValidInstance() ? 'ready' : 'pending'
+      'status'       => 'pending'
     ]);
 
-    return response()->json(['data' => $batch]);
-  }
+    $batch->receivers()->attach($request->receivers);
 
-  public function formatMessage($body){
-    $admin_name = auth()->user()->name;
-    $message = "*Unidad: {$admin_name}*\n\n";
-    $message = $message . "{$body}\n\n";
-    $message = $message . "Servicio prestado por PHenlinea.com";
-    return $message;
+    return response()->json(['data' => $batch]);
   }
 
   public function saveMediaUrl($request){
@@ -102,39 +85,8 @@ class BatchMessageController extends Controller
     return $media_url;
   }
 
-  public function authenticate(Request $request){
-    auth()->user()->update(['whatsapp_instance_id' => $request->instance_id]);
-    $message = auth()->user()->batch_messages()->whereStatus('pending')->latest()->first();
-    $message->update(['status'=>'ready']);
-    return response()->json(['data'=>'success']);
-  }
-
   public function destroy(BatchMessage $batch_message){
     $batch_message->delete();
     return to_route('batch-messages.index')->with(['message'=>'Mensaje anulado con éxito']);
-  }
-
-  public function hook(Request $request)
-  {
-    $data = json_encode($request->all());
-    $data = json_decode($data, true);
-
-    Storage::append('whatsapp_hook.log', json_encode($data));
-
-    if ($data['event'] == 'ready') {
-      $phone = substr($data['phone'], 2);
-
-      Admin::where('phone', $phone)->update([
-        'whatsapp_status'      => 'online',
-        'whatsapp_instance_id' => $data['instance_id']
-      ]);
-    }
-
-    if ($data->event == 'logout') {
-      Admin::where('instance_id', $data['instance_id'])->update([
-        'whatsapp_status'      => 'offline',
-        'whatsapp_instance_id' => null
-      ]);
-    }
   }
 }

@@ -8,8 +8,10 @@ use App\Visitor;
 use Illuminate\Http\Request;
 use App\Http\Resources\VisitPorteria;
 use App\Http\Controllers\Controller;
+use App\Notifications\VisitorCodeWANotification;
 use App\Traits\Devices;
 use App\Traits\Uploads;
+use Exception;
 use Illuminate\Support\Facades\Storage;
 
 class VisitController extends Controller
@@ -31,7 +33,6 @@ class VisitController extends Controller
       $visits = auth()->user()->admin->visits()->orderBy('created_at', 'DESC');
 
       if( $filter ){
-        Storage::append('visitsfilter.log', $filter);
         $visits
         ->where('extension_name', 'like', "%" . $filter . "%")
         ->orWhere('plate', 'like', "%" . $filter . "%");
@@ -60,22 +61,21 @@ class VisitController extends Controller
         'dni' => 'required'
       ]);
 
+      $visitorData = $request->only(["type","company","arl","eps","dni","name","phone"]);
+
       $visitor = Visitor::updateOrcreate(
-      ["id" => $request->visitor_id],
-      [
-        "type"         => $request->type,
-        "company"      => $request->company,
-        "arl"          => $request->arl,
-        "eps"          => $request->eps,
-        "dni"          => $request->dni,
-        "name"         => $request->name,
-        "phone"        => $request->phone,
-      ]);
+        ["id" => $request->visitor_id],
+        $visitorData
+      );
+
+      if( $request->hasFile('picture') ){
+        $visitor->addMedia( $request->file('picture') )->toMediaCollection('picture');
+      }
 
       $visit = Visit::create([
         "admin_id"     => auth()->user()->admin_id,
         "extension_name" => $request->extension_name,
-        "visitor_id"    => $visitor ? $visitor->id : $request->visitor_id,
+        "visitor_id"    => $visitor->id,
         "checkin"       => now(),
         "start_date"    => now(),
         "end_date"      => now()->addHours( auth()->user()->admin->visits_lifespan ?: 24 ),
@@ -84,13 +84,15 @@ class VisitController extends Controller
         "note" 		      => $request->note
       ]);
 
-      if( $picture = $request->file('picture') ){
-        $visitor->addMedia( $picture )->toMediaCollection('picture');
+      try {
+        $visit->addPwd();
       }
+      catch(Exception $e){
+        return response()->json(['message' => 'Error al registrar la visita ' . $e->getMessage()], 522);
+      }
+      
+      $visit->notify( new VisitorCodeWANotification($visit) );
 
-      $visit->addPwd();
-
-      VisitCreatedEvent::dispatch( $visit );
       return new VisitPorteria( $visit );
     }
 

@@ -24,7 +24,7 @@ class ZhyafController extends Controller
   }
 
   function exportRooms(Admin $admin){
-    $devices = new Devices();
+    $devices = new Devices($admin);
     $devices->exportRooms($admin);
     return 'success';
   }

@@ -2,13 +2,17 @@
 
 namespace App;
 
+use Exception;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notification;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Log;
 
 class Extension extends Authenticatable implements HasMedia
 {
-  use InteractsWithMedia;
+  use InteractsWithMedia, Notifiable;
 
   protected $guarded = ['id'];
 
@@ -26,6 +30,21 @@ class Extension extends Authenticatable implements HasMedia
   protected $appends = [
     // 'parking_numbers_str'
   ];
+
+  public function routeNotificationForMeta(Notification $notification): array|string|null {
+    /* if( $this->admin_id == 1 ){
+      return '584147912134';
+    } */
+   $phones = array_values($this->valid_whatsapp_phone_numbers);
+    try {
+      $phone = end($phones);
+      return $phone ? '57' . $phone : null;
+    }
+    catch( Exception $e ){
+      Log::error($this->id . ' ' . $e->getMessage());
+      return null;
+    }
+  }
 
 	public function registerMediaCollections(): void
 	{
@@ -145,9 +164,11 @@ class Extension extends Authenticatable implements HasMedia
 
   public function getValidWhatsappPhoneNumbersAttribute()
   {
+    $phonesPerExtension = $this->admin_id == 81 ? 1 : 2;
     return collect([$this->phone_1, $this->phone_2, $this->phone_3, $this->phone_4])
       ->reject(fn ($phone) => !$phone || $phone[0] != '3')
-      ->take(2)
+      ->take($phonesPerExtension)
+      ->values()
       ->toArray();
   }
 

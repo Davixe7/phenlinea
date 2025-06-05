@@ -17,6 +17,12 @@
 </style>
 @endpush
 @section('content')
+
+@if(false)
+<div style="height: calc(100vh - 100px); display: flex; align-items: center; justify-content: center; font-size: 16px;">
+En mantenimiento
+</div>
+@else
 <div class="table-responsive" style="max-width: 600px; margin: 0 auto;">
   <h1>Historial de mensajes</h1>
   <table class="table">
@@ -44,4 +50,5 @@
     <i class="material-symbols-outlined">add</i>
   </a>
 </div>
+@endif
 @endsection

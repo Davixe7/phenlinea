@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\BatchMessage;
+use App\Jobs\SendBatchMessage;
 use App\Traits\Whatsapp;
 use App\WhatsappClient;
 use Illuminate\Console\Scheduling\Schedule;
@@ -27,29 +28,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->call(function(){
-          $whatsapp = new Whatsapp( WhatsappClient::findOrFail(1) );
-
-          $batch = BatchMessage::whereStatus('ready')->firstOrFail();
-          $ready = $batch->admin->hasValidInstance();
-
-          $batch->update(['status' => $ready ? 'processing' : 'failed' ]);
-
-          $numbers = explode( ',', $batch->numbers );
-          $options = [
-            'instance_id' => $batch->admin->whatsapp_instance_id,
-            'number'      => '',
-            'message'     => $batch->body,
-            'media_url'   => $batch->media_url,
-            'group_id'    => null
-          ];
-
-          foreach( $numbers as $number ){
-            $options['number'] = '57' . $number;
-            $whatsapp->send($options);
-            sleep(1);
-          }
-        })->everyMinute();
+        $schedule->call(new SendBatchMessage)->everyMinute();
     }
 
     /**

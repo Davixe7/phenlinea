@@ -11,7 +11,16 @@
 </style>
 @endsection
 @section('content')
+
 <div class="container">
+<ul class="nav nav-pills nav-justified">
+  <li class="nav-item">
+    <a class="nav-link text-center active" href="#">Porteria</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link text-center" href="{{ route('visits.accesslogs') }}">Registros de apertura</a>
+  </li>
+</ul>
   <div class="table-responsive">
     <table class="table">
       <thead>

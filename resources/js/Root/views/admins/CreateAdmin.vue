@@ -1,6 +1,13 @@
 <template>
   <div id="create-admin" v-if="admin">
     <div class="form-group">
+      <label for="device_api_version">Usuario Zhyaf</label>
+      <select class="form-control" id="device_api_version" v-model="admin.device_api_version">
+        <option value="v1">IETECNO</option>
+        <option value="v2">PHENLINEA</option>
+      </select>
+    </div>
+    <div class="form-group">
       <label for="name">ID de la comunidad</label>
       <input type="tel" class="form-control" id="device_community_id" v-model="admin.device_community_id">
     </div>

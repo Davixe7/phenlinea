@@ -16,10 +16,10 @@ class PhoneVerified
      */
     public function handle($request, Closure $next)
     {
-        if( auth()->user() instanceOf MustVerifyEmail &&
-            auth()->user()->phone_verification) {
-            return redirect()->route('confirmphone');
-        }
+        //if( auth()->user() instanceOf MustVerifyEmail &&
+        //    auth()->user()->phone_verification) {
+        //    return redirect()->route('confirmphone');
+        //}
         return $next($request);
     }
 }

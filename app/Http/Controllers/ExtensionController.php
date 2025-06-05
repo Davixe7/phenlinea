@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Admin;
 use Illuminate\Http\Request;
 use App\Extension;
 use App\Http\Requests\StoreExtension as StoreExtensionRequest;
@@ -53,18 +54,19 @@ class ExtensionController extends Controller
       $data = array_merge( $data, ['admin_id'=>auth()->id()] );
       $extension = Extension::create($data);
 
-      if( auth()->user()->device_community_id && auth()->user()->device_building_id ){
-        try {
-          $devices = new Devices();
-          $devices->addRoom($extension);
-        }
-        catch(Exception $e){
-          Storage::append('zhyaf.error.log', $e->getMessage() . " Borrando extension");
-          $extension->delete();
-        }
+      if( !auth()->user()->device_community_id ){
+        return response()->json(['data'=>new CensusResource( $extension )]);
       }
 
-      return response()->json(['data'=>new CensusResource( $extension )]);
+      try {
+        $devices = new Devices();
+        $devices->addRoom($extension);
+        return response()->json(['data'=>new CensusResource( $extension )]);
+      }
+      catch(Exception $e){
+        $extension->delete();
+        abort(500, 'No se pudo sincronizar el registro con Zhyaf');
+      }
     }
 
     /**

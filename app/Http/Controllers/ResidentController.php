@@ -72,7 +72,6 @@ class ResidentController extends Controller
       'is_authorized'   => $request->is_authorized,
       'disability'      => $request->disability,
       'card'            => $request->card,
-      'device_synced'   => false
     ]);
 
     $picturePath = null;
@@ -81,21 +80,23 @@ class ResidentController extends Controller
       $resident->addMedia( $picture )->toMediaCollection('picture');
       $picturePath = $resident->getFirstMediaPath('picture');
     }
-
     
-    if( auth()->user()->device_building_id ){
-      $devices = new Devices();
-      try {
-        $devices->addResident( $resident, $picturePath );
-      }
-      catch(Exception $e){
-        $resident->delete();
-        abort(422, 'Error al sincronizar con plataforma de dispositivos');
-      }
+    if( !auth()->user()->device_building_id ){
+      return new ResidentResource( $resident );
     }
-    return new ResidentResource( $resident );
-  }
 
+    try {
+      $devices = new Devices();
+      $devices->addResident( $resident, $picturePath );
+      $devices->grantAccessToAllDoors($resident);
+      return new ResidentResource( $resident );
+    }
+    catch(Exception $e){
+      $resident->delete();
+      abort(422, 'Error al sincronizar con plataforma de dispositivos' . $e->getMessage());
+    }
+  }
+  
   /**
   * Display the specified resource.
   *
@@ -140,7 +141,7 @@ class ResidentController extends Controller
     $resident->email         = $request->email;
     $resident->age           = $request->age;
     $resident->dni           = $request->dni;
-    $resident->is_owner      = $request->is_owner;
+    $resident->is_owner      = $request->is_owner ?: false;
     $resident->is_resident   = $request->is_resident;
     $resident->is_authorized = $request->is_authorized;
     $resident->disability    = $request->disability;

@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue';
 
-const props       = defineProps(['value'])
+const props       = defineProps(['value', 'storing'])
 const emits       = defineEmits(['input'])
 const messageForm = ref(null)
 const fileInput   = ref(null)
@@ -37,13 +37,13 @@ watch(
         class="form-control"
         placeholder="Asunto"
         v-model="message.title"
-        minlength="10"
+        minlength="3"
         required
         >
     </div>
     <div class="mb-3" style="flex: 1 1 auto;">
       <textarea
-        minlength="10"
+        minlength="3"
         rows="4"
         class="form-control"
         v-model="message.body"
@@ -61,11 +61,12 @@ watch(
         accept="image/png, image/jpeg, application/pdf"
         >
         <button
-          :class="{disabled: !message.validated}"
+          :disabled="!message.validated || storing"
+          :class="{disabled: !message.validated || storing}"
           type="submit"
           class="btn btn-primary"
           style="white-space: nowrap;">
-          Guardar mensaje
+          Enviar mensaje
         </button>
     </div>
   </form>

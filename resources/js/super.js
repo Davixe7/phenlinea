@@ -12,6 +12,7 @@ import Users from './Root/views/users/Users.vue'
 import Admins from './Root/views/admins/Admins.vue'
 import Porterias from './Root/views/porterias/Porterias.vue'
 import Upload from './Root/views/invoices/Upload.vue'
+import whatsappinstances from './Root/views/whatsapp/whatsappinstances.vue'
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -25,6 +26,7 @@ const app = new Vue({
     Users,
     Admins,
     Porterias,
-    Upload
+    Upload,
+    whatsappinstances
   }
 })

@@ -12,12 +12,29 @@
 */
 
 use App\Http\Controllers\BatchMessageController;
-use App\Http\Resources\Visit as VisitResource;
 use App\ResidentInvoicePayment;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Rap2hpoutre\FastExcel\FastExcel;
+use App\Traits\Devices;
+use App\Extension;
+use App\Notifications\DeliveryWANotification;
+
+Route::get('extensions/{extension}/meta', function(Request $request, Extension $extension){
+  $extension->notify( new DeliveryWANotification($extension) );
+});
+
+Route::get('apartments/{extension}/sync', function (Extension $extension) {
+  try {
+    $api = new Devices($extension->admin);
+    return $extension->residents;
+    $extension->residents->each(function ($resident) use ($api) {
+      $api->addResident($resident, $resident->getFirstMediaPath('picture'));
+    });
+  } catch (Exception $e) {
+    $e->getMessage();
+  }
+});
 
 Route::get('home', 'HomeController@index')->name('home');
 Route::view('/', 'public.landing')->middleware('guest');
@@ -29,7 +46,7 @@ Route::put('pqrs/{petition}', 'PetitionController@update')->name('pqrs.update');
 Route::put('pqrs/{petition}/markAsRead', 'PetitionController@markAsRead')->name('pqrs.markasread');
 Route::post('pqrs', 'PetitionController@store')->name('pqrs.store');
 Route::get('/unidades/{admin}/pqrs', 'PetitionController@create')->name('pqrs.create');
-Route::post('whatsapp/hook', 'BatchMessageController@hook')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
+Route::post('whatsapp/hook', 'BatchMessageController@hook')->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])->name('whatsapp.hook');
 
 // AUTH ROUTES
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('admins.login');
@@ -46,7 +63,17 @@ Route::post('porterias/logout', 'Auth\Porteria\LoginController@logout')->name('p
 
 //Admin routes
 Route::name('admin.')->prefix('admin')->middleware('auth:web')->group(function () {
+  Route::get('batch_messages/create', [App\Http\Controllers\Admin\BatchMessageController::class, 'create'])->name('batch_messages.create');
+  Route::post('batch_messages', [App\Http\Controllers\Admin\BatchMessageController::class, 'store'])->name('batch_messages.store');
+  Route::delete('whatsapp_messages/{batch_message}', 'Admin\BatchMessageController@destroy')->name('batch_messages.delete');
   Route::get('whatsapp_messages', 'Admin\BatchMessageController@index')->name('batch_messages.index');
+  Route::get('whatsapp_messages/{batch_message}', 'Admin\BatchMessageController@show')->name('batch_messages.show');
+
+  Route::delete('whatsapp_instances/{admin}', 'Admin\BatchMessageController@clearInstance')->name('whatsapp_instances.clear_instance');
+
+  Route::put('whatsapp_instances/{admin}', 'Admin\BatchMessageController@updateInstance')->name('whatsapp_instances.update');
+  Route::get('whatsapp_instances', 'Admin\BatchMessageController@instances')->name('whatsapp_instances.index');
+
   Route::get('whatsapp_clients', 'Admin\WhatsappClientController@index')->name('whatsapp_clients.index');
   Route::get('whatsapp_clients/{whatsapp_client}/scan', 'Admin\WhatsappClientController@scan')->name('whatsapp_clients.scan');
   Route::put('whatsapp_clients/{whatsapp_client}', 'Admin\WhatsappClientController@update')->name('whatsapp_clients.update');
@@ -82,16 +109,26 @@ Route::name('admin.')->prefix('admin')->middleware('auth:web')->group(function (
 
 //Main application routes
 Route::middleware(['auth:admin', 'phoneverified', 'suspended'])->group(function () {
+  Route::get('user', fn() => auth()->user());
+
+  Route::get('devices', function () {
+    $devices = new Devices();
+    return $devices->getUnitDevices()->pluck('devSn')->toArray();
+  });
+
   Route::get('extensions/export', 'ExportController@exportCensus');
 
   Route::resource('extensions', 'ExtensionController');
 
-  Route::prefix('extensions/{extension}')->name('extensions.')->group(function(){
+  Route::prefix('extensions/{extension}')->name('extensions.')->group(function () {
     Route::resource('residents', 'ResidentController');
     Route::resource('vehicles', App\Http\Controllers\VehicleController::class);
-    Route::get('invoices', 'ResidentInvoiceController@index');
+    Route::resource('invoices', 'ResidentInvoiceController@index')->only(['index']);
     Route::get('balance', 'ResidentInvoiceController@balance')->name('balance');
   });
+
+  Route::get('extensions/import', 'ExtensionController@getImport')->name('extensions.getImport')->middleware('can:import,App\Extension');
+  Route::post('extensions/import', 'ExtensionController@import')->name('extensions.import');
 
   Route::resource('novelties', 'NoveltyController');
   Route::resource('batch-messages', BatchMessageController::class);
@@ -102,10 +139,21 @@ Route::middleware(['auth:admin', 'phoneverified', 'suspended'])->group(function 
   Route::resource('vehicles', App\Http\Controllers\VehicleController::class);
 
   Route::post('batch-messages/authenticate', 'BatchMessageController@authenticate');
+  Route::get('whatsapp/create_instance', 'WhatsappController@getInstanceId');
+  Route::get('whatsapp/get_qrcode', 'WhatsappController@getQrCode');
+  Route::post('whatsapp/authenticate', 'WhatsappController@authenticate');
+  Route::get('whatsapp/logout', 'WhatsappController@logout');
 
-  Route::prefix('extensions/{extension}')->name('extensions.')->group(fn () => Route::resource('vehicles', 'VehicleController'));
-  Route::get('extensions/import', 'ExtensionController@getImport')->name('extensions.getImport')->middleware('can:import,App\Extension');
-  Route::post('extensions/import', 'ExtensionController@import')->name('extensions.import');
+  Route::get('residents/{resident}/deviceslist', [App\Http\Controllers\ResidentDeviceController::class, 'index']);
+  Route::get('residents/{resident}/devices/add', [App\Http\Controllers\ResidentDeviceController::class, 'store']);
+  Route::get('residents/{resident}/devices/delete', [App\Http\Controllers\ResidentDeviceController::class, 'destroy']);
+
+  Route::get('devices/accessLogs', function (Request $request) {
+    $api = new Devices();
+    return $api->getAccessLogs();
+  });
+
+  Route::view('accesslogs', 'admin.accesslogs')->name('visits.accesslogs');
 });
 
 //Resident routes
@@ -120,21 +168,23 @@ Route::middleware(['auth:admin,extension', 'phoneverified', 'suspended'])->group
 });
 
 Route::view('politica-de-privacidad', 'public.policy');
-Route::get('apk', fn () => response()->download(public_path('app-release.apk'), 'app-release.apk', ['Content-Type' => 'application/vnd.android.package-archive']));
+Route::get('apk', fn() => response()->download(public_path('app-release.apk'), 'app-release.apk', ['Content-Type' => 'application/vnd.android.package-archive']));
 
 Route::get('test', function () {
   $visits = App\Visit::select(['plate', 'extension_name'])->groupBy('plate')->get();
-  $visits = $visits->map(fn ($v) => "$v->plate $v->extension_name visitante")->toArray();
+  $visits = $visits->map(fn($v) => "$v->plate $v->extension_name visitante")->toArray();
   $plates = App\Vehicle::with('extension')->get();
-  $plates = $plates->map(fn ($v) => "$v->plate $v->extension->name residente")->toArray();
+  $plates = $plates->map(fn($v) => "$v->plate $v->extension->name residente")->toArray();
   return array_merge($visits, $plates);
 });
 
 Route::view('consultar-facturas', 'public.resident-invoices.query')->name('public.resident-invoices.query');
 Route::post('consultar-facturas', [App\Http\Controllers\Public\ResidentInvoiceController::class, 'balance'])->name('public.resident-invoices.balance');
 Route::get('descargar-factura/{resident_invoice}', [App\Http\Controllers\ResidentInvoiceController::class, 'download'])->name('resident-invoices.download');
-Route::get('/pago/{id}', function(Request $request){
+Route::get('/pago/{id}', function (Request $request) {
   $payment = ResidentInvoicePayment::find($request->id);
   // return view('pdf.recibo', compact('payment'));
   return Pdf::loadView('pdf.recibo', compact('payment'))->download('recibo-caja.pdf');
 });
+
+Route::view('politicas-y-terminos', 'public.politicas', ['title' => 'Terminos y Condiciones']);

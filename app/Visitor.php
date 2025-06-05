@@ -6,6 +6,10 @@ use App\Traits\Devices;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Spatie\Image\Enums\Fit;
+use Spatie\MediaLibrary\MediaCollections\FileAdderFactory;
+use Spatie\MediaLibrary\MediaCollections\Jobs\PerformConversions;
 
 class Visitor extends Model implements HasMedia
 {
@@ -29,6 +33,15 @@ class Visitor extends Model implements HasMedia
     ->singleFile();
   }
 
+  public function registerMediaConversions(?Media $media = null): void
+  {
+      $this->addMediaConversion('thumb')
+            ->width(500)
+            ->height(500)
+            ->crop('crop-center', 500, 500)
+            ->performOnCollections('picture');
+  }
+
   public function extension()
   {
     return $this->belongsTo('App\Extension');
@@ -44,12 +57,16 @@ class Visitor extends Model implements HasMedia
   }
 
   public function getFaceFileBase64(){
-    $path    = $this->getFirstMediaPath('picture');
-    if( !file_exists($path) ){
-      return null;
+    $path = $this->getFirstMediaPath('picture');
+    if( !file_exists($path) ){ return null; }
+
+    $thumb_path = $this->getFirstMediaPath('picture', 'thumb');
+    if( !file_exists($thumb_path) ){
+      $this->addMedia( $this->getFirstMediaPath('picture') )->toMediaCollection('picture');
     }
-    $type    = pathinfo($path, PATHINFO_EXTENSION);
-    $data    = file_get_contents($path);
+    
+    $type    = pathinfo($thumb_path, PATHINFO_EXTENSION);
+    $data    = file_get_contents($thumb_path);
     return 'data:application/' . $type . ';base64,' . base64_encode($data);
   }
 }

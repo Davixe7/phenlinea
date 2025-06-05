@@ -40,9 +40,10 @@ public function send($payload){
     try {
         if( array_key_exists('from_number_id', $payload) ){
             $this->fromNumberId = $payload['from_number_id'];
+            Log::info('FROM NUMBER ID OVERRIDEN: ' . $this->fromNumberId);
         }
         
-        $response = $this->api->post("/$this->fromNumberId/messages", ['json' => $data]);
+        $response = $this->api->post("$this->fromNumberId/messages", ['json' => $data]);
         $status   = $response->getStatusCode();
         $contents = $response->getBody()->getContents();
         $res = ['status'=>$status, 'contents'=>$contents];
@@ -50,8 +51,7 @@ public function send($payload){
         return $res;
     }
     catch (\Exception $e) {
-        Storage::append('meta.log', $data['to']);
-        Storage::append('meta.log', $e->getMessage());
+        Log::error($e->getMessage());
     }
 }
 

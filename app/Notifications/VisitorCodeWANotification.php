@@ -38,7 +38,7 @@ class VisitorCodeWANotification extends Notification
     }
 
     public function toMeta($notifiable){
-        $template_name = 'visitante_codigo';
+        $template_name = 'ingreso_autorizado';
 
         $header = ['type' => 'header', 'parameters' => [['type'  => 'image', 'image' => ['link' => $this->media_url]]]];
 
@@ -47,12 +47,12 @@ class VisitorCodeWANotification extends Notification
             'parameters' => [
                 [
                     'type' => 'text',
-                    'parameter_name' => ' unidad ',
+                    'parameter_name' => 'unidad',
                     'text' => $notifiable->admin->name,
                 ],
                 [
                     'type' => 'text',
-                    'parameter_name' => ' pwd ',
+                    'parameter_name' => 'codigo_ingreso',
                     'text' => $notifiable->password,
                 ],
             ]
@@ -61,32 +61,5 @@ class VisitorCodeWANotification extends Notification
         $components = [$header, $body];
     
         return compact('template_name', 'components');
-    }
-
-    /**
-     * Get the mail representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
-     */
-    public function toMail($notifiable)
-    {
-        return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
-    }
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
-    public function toArray($notifiable)
-    {
-        return [
-            //
-        ];
     }
 }

@@ -65,7 +65,7 @@ class BatchMessageController extends Controller
       'title'        => $request->title,
       'body'         => $request->body,
       'media_url'    => $this->saveMediaUrl($request),
-      'status'       => 'pending'
+      'status'       => 'ready'
     ]);
 
     $batch->receivers()->attach($request->receivers);

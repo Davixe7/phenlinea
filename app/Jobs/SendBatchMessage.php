@@ -3,11 +3,10 @@
 namespace App\Jobs;
 
 use App\BatchMessage;
-use App\Traits\Whatsapp;
-use App\WhatsappClient;
 use Exception;
-use Illuminate\Support\Facades\Storage;
 use App\Notifications\BatchMessageNotification;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class SendBatchMessage
 {
@@ -15,14 +14,15 @@ class SendBatchMessage
     {
         $batch = BatchMessage::whereStatus('ready')->where('created_at', '<', now()->subMinute())->firstOrFail();
         $batch->update(['status'=>'processing']);
-        $extensions = $batch->receivers()->get(['id', 'name', 'admin_id', 'phone_1', 'phone_2', 'phone_3', 'phone_4']);
+        $extensions = $batch->receivers;
 
         foreach( $extensions as $extension){
             try {
+                Log::info('Enviando mensaje masivo');
                 $extension->notify( new BatchMessageNotification($batch->title, $batch->body) );
                 sleep(5);
             } catch (Exception $e) {
-                Log::error( $e );
+                Storage::append('meta.log', $e->getMessage());
             }
         }
 

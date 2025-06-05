@@ -24,8 +24,8 @@ class ResidentDeviceController extends Controller
         $householdDevices = $api->getHouseholdDevices($resident);
         $householdDevSns  = $householdDevices->pluck('devSn');
         return collect( $communityDevices )->map(function($dev) use ($householdDevSns) {
-        $dev['auth'] = $householdDevSns->contains($dev['devSn']) ? 1 : 0;
-        return $dev;
+            $dev['auth'] = $householdDevSns->contains($dev['devSn']) ? 1 : 0;
+            return $dev;
         });
     }
 

@@ -19,6 +19,14 @@ use Illuminate\Support\Facades\Route;
 use App\Traits\Devices;
 use App\Extension;
 use App\Notifications\DeliveryWANotification;
+use Rap2hpoutre\FastExcel\FastExcel;
+
+Route::get('codes', function(){
+  $data = App\Extension::whereAdminId(68)->where('observation', '!=', null)->get(['admin_id', 'name', 'observation']);
+  $path = storage_path('app/public/extensions.xlsx'); // Ruta para guardar el archivo
+  (new FastExcel($data))->export($path);
+  return $path;
+});
 
 Route::get('extensions/{extension}/meta', function(Request $request, Extension $extension){
   $extension->notify( new DeliveryWANotification($extension) );

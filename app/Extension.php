@@ -31,19 +31,14 @@ class Extension extends Authenticatable implements HasMedia
     // 'parking_numbers_str'
   ];
 
-  public function routeNotificationForMeta(Notification $notification): array|string|null {
-    /* if( $this->admin_id == 1 ){
-      return '584147912134';
-    } */
-   $phones = array_values($this->valid_whatsapp_phone_numbers);
-    try {
-      $phone = end($phones);
-      return $phone ? '57' . $phone : null;
-    }
-    catch( Exception $e ){
-      Log::error($this->id . ' ' . $e->getMessage());
-      return null;
-    }
+  public function routeNotificationForMeta(Notification $notification = null): array|string|null {
+    $phones = array_values($this->valid_whatsapp_phone_numbers);
+    $phones = array_map(function($p){
+      if( $p == '4147912134' ) return '584147912134';
+      return '57' . $p;
+    }, $phones);
+
+    return $phones;
   }
 
 	public function registerMediaCollections(): void
@@ -164,12 +159,12 @@ class Extension extends Authenticatable implements HasMedia
 
   public function getValidWhatsappPhoneNumbersAttribute()
   {
-    $phonesPerExtension = $this->admin_id == 81 ? 1 : 2;
+    $phonesPerExtension = 2;
     return collect([$this->phone_1, $this->phone_2, $this->phone_3, $this->phone_4])
-      ->reject(fn ($phone) => !$phone || $phone[0] != '3')
+      ->reject(fn ($phone) => !$phone || ($phone[0] != '3' && $phone !== '4147912134'))
       ->take($phonesPerExtension)
       ->values()
-      ->toArray();
+      ->all();
   }
 
   public function scopeName($query, $name)

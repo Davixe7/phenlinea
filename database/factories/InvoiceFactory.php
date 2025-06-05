@@ -5,7 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Admin>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Invoice>
  */
 class InvoiceFactory extends Factory
 {
@@ -17,12 +17,10 @@ class InvoiceFactory extends Factory
     public function definition()
     {
         return [
-            'number' => 'A' . fake()->numberBetween(5000,6000),
-            'nit'    => fake()->numerify('##########'),
-            'date'   => now()->startOfMonth(),
-            'total'  => 135000,
-            'status' => 'pendiente',
-            'paid_at' => null
+            'number' => fake()->randomNumber(9),
+            'nit'    => fake()->randomNumber(9),
+            'date'   => now()->startOfMonth()->format('Y-m-d'),
+            'total'  => 165000
         ];
     }
 }

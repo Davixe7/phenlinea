@@ -1,8 +1,12 @@
 <?php
 
-use App\Invoice;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\API\v2\Admin\PorteriaController;
+use App\Http\Controllers\API\v2\Admin\AdminController;
+use App\Http\Controllers\API\v2\Admin\BatchMessageController;
+use App\Http\Controllers\API\v2\Admin\InvoiceController;
+use App\Http\Controllers\API\v2\Admin\WhatsappClientController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -13,7 +17,23 @@ use Illuminate\Support\Facades\Auth;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::post('/admin/login', 'Admin\Auth\LoginController@login');
+Route::prefix('v2/admin')->group(function(){
+
+  Route::post('/login', 'Admin\Auth\LoginController@login');
+
+  Route::apiResource('admins', AdminController::class);
+  Route::apiResource('porterias', PorteriaController::class);
+  Route::apiResource('invoices', InvoiceController::class);
+  Route::apiResource('batch_messages', BatchMessageController::class)->only(['index']);
+  
+  Route::apiResource('whatsapp_clients', WhatsappClientController::class);
+  Route::get('whatsapp_clients/{whatsapp_client}/scan', [WhatsappClientController::class, 'scan']);
+  Route::get('whatsapp_instances', [BatchMessageController::class, 'instances']);
+  Route::post('whatsapp_instances/{admin}', [BatchMessageController::class, 'updateInstance']);
+  
+});
+
+Route::post('/admin/login', 'Auth\LoginController@login');
 
 Route::get('visitors', 'API\VisitorController@index');
 Route::post('visitors', 'API\VisitorController@store');

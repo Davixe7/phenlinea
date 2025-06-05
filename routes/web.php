@@ -17,24 +17,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Traits\Devices;
-use App\Extension;
-use App\Notifications\DeliveryWANotification;
-
-Route::get('extensions/{extension}/meta', function(Request $request, Extension $extension){
-  $extension->notify( new DeliveryWANotification($extension) );
-});
-
-Route::get('apartments/{extension}/sync', function (Extension $extension) {
-  try {
-    $api = new Devices($extension->admin);
-    return $extension->residents;
-    $extension->residents->each(function ($resident) use ($api) {
-      $api->addResident($resident, $resident->getFirstMediaPath('picture'));
-    });
-  } catch (Exception $e) {
-    $e->getMessage();
-  }
-});
+use App\Resident;
 
 Route::get('home', 'HomeController@index')->name('home');
 Route::view('/', 'public.landing')->middleware('guest');
@@ -111,12 +94,19 @@ Route::name('admin.')->prefix('admin')->middleware('auth:web')->group(function (
 Route::middleware(['auth:admin', 'phoneverified', 'suspended'])->group(function () {
   Route::get('user', fn() => auth()->user());
 
+<<<<<<< HEAD
   Route::get('devices', function () {
     $devices = new Devices();
     return $devices->getUnitDevices()->pluck('devSn')->toArray();
   });
 
   Route::get('extensions/export', 'ExportController@exportCensus');
+=======
+  Route::get('devices', function(){
+    $devices = new Devices();
+    return $devices->getUnitDevices()->pluck('devSn')->toArray();
+  });
+>>>>>>> d2d2bc42f9a9624816c6ff8d8f4a66df0f0cab5e
 
   Route::resource('extensions', 'ExtensionController');
 
@@ -127,6 +117,10 @@ Route::middleware(['auth:admin', 'phoneverified', 'suspended'])->group(function 
     Route::get('balance', 'ResidentInvoiceController@balance')->name('balance');
   });
 
+<<<<<<< HEAD
+=======
+  Route::get('extensions/export', 'ExportController@exportCensus');
+>>>>>>> d2d2bc42f9a9624816c6ff8d8f4a66df0f0cab5e
   Route::get('extensions/import', 'ExtensionController@getImport')->name('extensions.getImport')->middleware('can:import,App\Extension');
   Route::post('extensions/import', 'ExtensionController@import')->name('extensions.import');
 
@@ -148,12 +142,20 @@ Route::middleware(['auth:admin', 'phoneverified', 'suspended'])->group(function 
   Route::get('residents/{resident}/devices/add', [App\Http\Controllers\ResidentDeviceController::class, 'store']);
   Route::get('residents/{resident}/devices/delete', [App\Http\Controllers\ResidentDeviceController::class, 'destroy']);
 
+<<<<<<< HEAD
   Route::get('devices/accessLogs', function (Request $request) {
+=======
+  Route::get('devices/accessLogs', function(Request $request){
+>>>>>>> d2d2bc42f9a9624816c6ff8d8f4a66df0f0cab5e
     $api = new Devices();
     return $api->getAccessLogs();
   });
 
+<<<<<<< HEAD
   Route::view('accesslogs', 'admin.accesslogs')->name('visits.accesslogs');
+=======
+  Route::view('accesslogs', 'admin.accesslogs')->name('visits.accesslogs');  
+>>>>>>> d2d2bc42f9a9624816c6ff8d8f4a66df0f0cab5e
 });
 
 //Resident routes

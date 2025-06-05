@@ -16,15 +16,37 @@ class AdminFactory extends Factory
      */
     public function definition()
     {
+        $name  = fake()->company;
+        $email = str_replace(' ', '', $name);
+        $email = str_replace(',', '', $email);
+        $email = strtolower(str_replace('-', '', $email)) . '@phenlinea.com';
+
         return [
-            'email' => fake()->unique()->safeEmail,
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-            'contact_email' => fake()->optional()->safeEmail,
-            'name' => fake()->name,
-            'nit' => fake()->unique()->numerify('##########'),
-            'phone' => fake()->phoneNumber,
-            'address' => fake()->address,
-            'status' => fake()->randomElement([0, 1]),
+            'email' => $email,
+            'password' => '123456',
+            'contact_email' => $email,
+            'name' => $name,
+            'nit' => fake()->numberBetween(1000000000,9999999999),
+
+            'phone'   => '3210000000',
+            'phone_2' => '',
+            'phone_3' => '',
+            'phone_4' => '',
+            'address' => fake()->streetAddress,
+            'status'  => 1,
+            'api_token' => '',
+            'email_verified_at' => '2024-01-01 00:00:00',
+            'phone_verification'=> '',
+
+            'whatsapp_instance_id' => '',
+            'whatsapp_status'      => 'offline',
+            'whatsapp_group_id'    => '',
+            'whatsapp_group_url'   => '',
+
+            'device_serial_number'   => '',
+            'device_2_serial_number' => '',
+            'device_community_id'    => '',
+            'device_building_id'     => '',
         ];
     }
 }

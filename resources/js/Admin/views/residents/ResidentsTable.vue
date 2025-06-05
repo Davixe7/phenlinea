@@ -45,10 +45,14 @@
               <i v-if="resident.disability" class="material-symbols-outlined">done</i>
             </td>
             <td class="d-flex align-items-center justify-content-end">
+<<<<<<< HEAD
               <a
                 v-if="user.device_community_id"
                 href="#"
                 @click.prevent="$emit('residentAuth', resident)" class="me-2">
+=======
+              <a v-if="user.device_community_id" href="#" @click.prevent="$emit('residentAuth', resident)" class="me-2">
+>>>>>>> d2d2bc42f9a9624816c6ff8d8f4a66df0f0cab5e
                 <i class="material-symbols-outlined">key_vertical</i>
               </a>
               <a href="#" @click.prevent="$emit('residentEdit', resident)" class="me-2">
@@ -71,16 +75,26 @@
   
 <script setup>
 import axios from 'axios';
+<<<<<<< HEAD
 import { ref, onMounted } from 'vue';
+=======
+import { ref } from 'vue';
+>>>>>>> d2d2bc42f9a9624816c6ff8d8f4a66df0f0cab5e
 
 const props = defineProps(['residents'])
 const user = ref({})
 
+<<<<<<< HEAD
 onMounted(()=>{
   axios.get('/user').then(response=>{
     user.value = response.data;
     console.log('La respuesta es:' + response.data)
   });
 })
+=======
+axios.get('user', function(response){
+  user.value = response.data.data;
+});
+>>>>>>> d2d2bc42f9a9624816c6ff8d8f4a66df0f0cab5e
 </script>
 

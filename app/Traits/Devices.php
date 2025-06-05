@@ -269,8 +269,6 @@ class Devices
       $visit->addMediaFromBase64(base64_encode($qrcode))->usingFileName(Str::random() . '.png')->toMediaCollection('qrcode');
       $visit->update(['password' => $tempPwd]);
     } catch (Exception $e) {
-      Log::error( 'Facial visit: ' . json_encode( $data ) );
-      Log::error('Error al registrar la visita facial ' . $e->getMessage());
       throw $e;
     }
   }
@@ -386,10 +384,12 @@ class Devices
       $devSns      = implode(",", $devSns);
 
       if (count($residentIds) <= 999) {
+        Storage::append('authorization.log', "> add " . count($residentIds) . " to " . $devSns);
         $this->addDeviceAuth($devSns, implode(',', $residentIds));
       } else {
         $resIdsChunks = array_chunk($residentIds, 990);
         foreach ($resIdsChunks as $chunk) {
+          Storage::append('authorization.log', "> add " . count($chunk) . " to " . $devSns);
           $this->addDeviceAuth($devSns, implode(',', $chunk));
         }
       }

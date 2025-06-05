@@ -13,6 +13,8 @@ class BatchMessage extends Model implements HasMedia
     use InteractsWithMedia;
 
     protected $guarded = ['id'];
+    
+    protected $casts = [ 'created_at' => 'datetime:Y-m-d H:i:s' ];
 
     public function admin(){
       return $this->belongsTo(Admin::class);

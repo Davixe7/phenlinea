@@ -1,5 +1,6 @@
 <?php
 
+use Database\Seeders\AdminsTableSeeder;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -38,7 +39,7 @@ class DatabaseSeeder extends Seeder
       'name'     => 'Admin',
       'email'    => 'admin@phenlinea.com',
       'password' => bcrypt('123456'),
-      'address'  => 'Undefined',
+      'address'  => 'Example Address',
       'nit'      => '1234567890',
       'phone'    => '584147912134'
     ]);
@@ -47,6 +48,10 @@ class DatabaseSeeder extends Seeder
       'name'     => 'Root',
       'email'    => 'root@phenlinea.com',
       'password' => bcrypt('123456'),
+    ]);
+
+    $this->call([
+      AdminsTableSeeder::class
     ]);
 
     // DB::unprepared(file_get_contents(storage_path('app/ddbb.sql')));

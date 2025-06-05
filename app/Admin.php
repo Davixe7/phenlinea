@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Traits\Whatsapp;
+use Database\Factories\AdminFactory;
 use Exception;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -18,6 +19,7 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
   use Notifiable;
   use HasFactory;
   use InteractsWithMedia;
+  use HasFactory;
 
   protected $fillable = [
     'name',
@@ -48,6 +50,10 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
   protected $casts = [
     'solvencia'   => 'string',
   ];
+
+  protected static function newFactory(){
+    return AdminFactory::new();
+  }
 
   public function registerMediaCollections(): void
   {

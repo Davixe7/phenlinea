@@ -4,6 +4,7 @@ namespace App;
 
 use App\Traits\Devices;
 use App\Traits\Whatsapp;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -12,7 +13,7 @@ use Illuminate\Notifications\Notification;
 
 class Visit extends Model implements HasMedia
 {
-  use InteractsWithMedia, Notifiable;
+  use InteractsWithMedia, Notifiable, HasFactory;
 
   protected $fillable = [
     'admin_id',

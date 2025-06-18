@@ -11,42 +11,18 @@ use Illuminate\Contracts\Auth\CanResetPassword;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use GuzzleHttp\Client;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword, HasMedia
 {
   use Notifiable;
   use InteractsWithMedia;
+  use HasFactory;
 
-  protected $fillable = [
-    'name',
-    'address',
-    'contact_email',
-    'device_serial_number',
-    'device_2_serial_number',
-    'device_community_id',
-    'device_building_id',
-    'device_api_version',
-    'device_enabled',
-    'email',
-    'nit',
-    'password',
-    'phone',
-    'phone_2',
-    'phone_verification',
-    'status',
-    'visits_lifespan',
-    'whatsapp_instance_id',
-    'whatsapp_status',
-    'whatsapp_group_id',
-    'whatsapp_group_url'
-  ];
+  protected $guarded = [];
 
-  protected $hidden  = ['password', 'created_at', 'updated_at'];
+  protected $hidden  = ['created_at', 'updated_at', 'password'];
   protected $without = ['extensions'];
-  protected $appends = ['solvencia'];
-  protected $casts = [
-    'solvencia'   => 'string',
-  ];
 
   public function registerMediaCollections(): void
   {
@@ -185,5 +161,9 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
     $whatsapp = new Whatsapp( WhatsappClient::find(1) );
     try { return $whatsapp->validateInstance($this->whatsapp_instance_id, $this->phone);}
     catch(Exception $e){ return false; }
+  }
+
+  public function vehicles(){
+    return $this->hasManyThrough(Vehicle::class, Extension::class);
   }
 }

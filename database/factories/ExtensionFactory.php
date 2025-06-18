@@ -1,22 +1,21 @@
 <?php
 
-/* @var $factory \Illuminate\Database\Eloquent\Factory */
+namespace Database\Factories;
 
-use App\Extension;
-use Faker\Generator as Faker;
-
-$factory->define(Extension::class, function (Faker $faker) {
-    $password = Str::random(12);
-    $name = $faker->numberBetween(0,1000);
+use Illuminate\Database\Eloquent\Factories\Factory;
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Extension>
+ */
+class ExtensionFactory extends Factory {
+  public function definition(){
+    $name = fake()->numberBetween(0,1000);
     return [
-      'admin_id'   => 1,
-      'email'      => 1 . $name . '@phenlinea.com',
+      'admin_id' => 1,
       'name'     => $name,
-      'phone_1'  => '0321789' . $faker->numberBetween(100,999),
-      'phone_2'  => '0321789' . $faker->numberBetween(100,999),
+      'phone_1'  => "3" . fake()->numerify('########'),
+      'phone_2'  => "3" . fake()->numerify('########'),
       
-      '_email'      => 1 . $name . '@phenlinea.com',
-      '_password'   => $password,
-      'password'    => bcrypt( $password )
+      'email'     => $name . '@phenlinea.com',
     ];
-});
+  }
+}

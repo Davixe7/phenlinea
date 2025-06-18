@@ -2,18 +2,15 @@
 
 namespace App;
 
-use App\Traits\Devices;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use Spatie\Image\Enums\Fit;
-use Spatie\MediaLibrary\MediaCollections\FileAdderFactory;
-use Spatie\MediaLibrary\MediaCollections\Jobs\PerformConversions;
 
 class Visitor extends Model implements HasMedia
 {
-  use InteractsWithMedia;
+  use InteractsWithMedia, HasFactory;
   
   protected $fillable = [
     'extension_id',

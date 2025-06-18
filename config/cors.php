@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
 
-    'allowed_origins' => ['http://localhost:8080', 'http://localhost:9000', 'http://localhost:3000', '*.phenlinea.com'],
+    'allowed_origins' => ['http://localhost:8080', 'http://localhost:9000', 'http://localhost:3000', '*.phenlinea.com', 'http://192.168.0.246:9001', 'https://192.168.0.246:9001'],
 
     'allowed_origins_patterns' => [],
 

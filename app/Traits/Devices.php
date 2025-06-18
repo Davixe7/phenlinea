@@ -250,11 +250,12 @@ class Devices
   //Visits
   function addFacialTempPwd(Visit $visit)
   {
+    $usableCount = $visit->admin_id == 426 ? 2 : 1;
     $query  = [
       'devSns'              => 'V' . $visit->admin->device_serial_number,
       'accStartdatetime'    => $visit->start_date,
       'accEnddatetime'      => $visit->end_date,
-      'accUsableCount'      => 1,
+      'accUsableCount'      => $usableCount,
       'name'                => $visit->visitor->name,
       'phone'               => $visit->visitor->phone,
       'uuid'                => $visit->visitor->id,
@@ -277,11 +278,12 @@ class Devices
 
   function addTempPwd(Visit $visit)
   {
+    $usableCount = $visit->admin_id == 426 ? 2 : 1;
     $query = [
       'devSns'      => 'V' . $visit->admin->device_serial_number,
       'startDate'   => $visit->start_date,
       'endDate'     => $visit->end_date,
-      'usableCount' => 1,
+      'usableCount' => $usableCount,
     ];
 
     try {

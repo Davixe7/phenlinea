@@ -1,13 +1,12 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\API\v2;
 
 use App\Admin;
 use App\User;
 use App\Visit;
 use App\Visitor;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class PlatesApiTest extends TestCase

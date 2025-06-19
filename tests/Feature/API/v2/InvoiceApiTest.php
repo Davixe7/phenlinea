@@ -1,16 +1,13 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\API\v2;
 
 use App\Admin;
 use App\Invoice;
 use App\User;
-use Database\Factories\InvoiceFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Rap2hpoutre\FastExcel\FastExcel;
 use Tests\TestCase;
 

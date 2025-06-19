@@ -1,12 +1,10 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\API\v2;
 
 use App\Admin;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class AdminApiTest extends TestCase
@@ -61,7 +59,6 @@ class AdminApiTest extends TestCase
         unset($data['api_token']);
 
         $user = User::factory(1)->createOne();
-        echo "Bearer $user->api_token";
         $response = $this
         ->withHeader("Authorization",  "Bearer $user->api_token")
         ->putJson("/api/v2/admins/{$admin->id}", $data);

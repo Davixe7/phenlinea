@@ -35,10 +35,10 @@ class AdminController extends Controller
             'phone'    => 'required|digits:10',
             'email'    => 'required|unique:admins',
             'password' => 'required|min:8',
+            'phone_2'  => 'nullable',
+            'phone_3'  => 'nullable',
+            'phone_4'  => 'nullable',
             'contact_email' => 'nullable',
-            'phone_2' => 'nullable',
-            'phone_3' => 'nullable',
-            'phone_4' => 'nullable',
             'device_serial_number' => 'nullable',
             'device_2_serial_number' => 'nullable',
             'device_community_id' => 'nullable',
@@ -71,20 +71,20 @@ class AdminController extends Controller
     public function update(Request $request, Admin $admin)
     {
         $data = $request->validate([
-            'name'     => 'required',
-            'nit'      => 'required|digits:10',
-            'address'  => 'required',
-            'phone'    => 'required|digits:10',
-            'email'    => "sometimes|email|unique:admins,email,{$admin->id}",
-            'password' => 'nullable|min:8',
-            'contact_email' => 'nullable',
-            'phone_2' => 'nullable',
-            'phone_3' => 'nullable',
-            'phone_4' => 'nullable',
-            'device_serial_number' => 'nullable',
+            'name'                   => 'sometimes|string|min:6',
+            'nit'                    => 'sometimes|digits:10',
+            'address'                => 'sometimes|string|min:6',
+            'phone'                  => 'sometimes|digits:10',
+            'email'                  => "sometimes|email|unique:admins,email,{$admin->id}",
+            'password'               => 'sometimes|string|min:8',
+            'phone_2'                => 'nullable',
+            'phone_3'                => 'nullable',
+            'phone_4'                => 'nullable',
+            'contact_email'          => 'nullable',
+            'device_serial_number'   => 'nullable',
             'device_2_serial_number' => 'nullable',
-            'device_community_id' => 'nullable',
-            'device_building_id' => 'nullable',
+            'device_community_id'    => 'nullable',
+            'device_building_id'     => 'nullable',
         ]);
 
         if( $request->filled('password') ){
@@ -103,6 +103,7 @@ class AdminController extends Controller
      */
     public function destroy(Admin $admin)
     {
-        //
+        $admin->delete();
+        return response()->json([], 204);
     }
 }

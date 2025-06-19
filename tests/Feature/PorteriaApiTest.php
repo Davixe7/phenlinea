@@ -6,31 +6,43 @@ use App\Admin;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Porteria;
+use App\User;
 
 class PorteriaApiTest extends TestCase
 {
+    use RefreshDatabase;
+
     /** @test */
     public function it_can_create_a_porteria()
     {
+        $admin = Admin::factory()->createOne();
         $data = [
             'name' => 'Portería Central',
             'email' => 'porteria@example.com',
             'password' => bcrypt('password'),
-            'admin_id' => Admin::first()->id,
+            'admin_id' => $admin->id,
         ];
 
-        $response = $this->postJson('/api/v2/porterias', $data);
+        $user = User::factory(1)->createOne();
+        $response = $this
+        ->withHeader("Authorization",  "Bearer $user->api_token")
+        ->postJson('/api/v2/porterias', $data);
 
-        $response->assertStatus(201)
-                 ->assertJsonFragment(['email' => 'porteria@example.com']);
+        $response
+        ->assertStatus(201)
+        ->assertJsonFragment(['email' => 'porteria@example.com']);
     }
 
     /** @test */
     public function it_can_fetch_porterias_list()
     {
+        Admin::factory()->createOne();
         Porteria::factory()->count(5)->create();
 
-        $response = $this->getJson('/api/v2/porterias');
+        $user = User::factory(1)->createOne();
+        $response = $this
+        ->withHeader("Authorization",  "Bearer $user->api_token")
+        ->getJson('/api/v2/porterias');
 
         $response
         ->assertStatus(200)
@@ -42,10 +54,14 @@ class PorteriaApiTest extends TestCase
     /** @test */
     public function it_can_update_a_porteria()
     {
+        Admin::factory()->createOne();
         $porteria = Porteria::factory()->create();
         $data = ['name' => 'Portería Actualizada'];
 
-        $response = $this->putJson("/api/v2/porterias/{$porteria->id}", $data);
+        $user = User::factory(1)->createOne();
+        $response = $this
+        ->withHeader("Authorization",  "Bearer $user->api_token")
+        ->putJson("/api/v2/porterias/{$porteria->id}", $data);
 
         $response
         ->assertStatus(200)
@@ -55,9 +71,13 @@ class PorteriaApiTest extends TestCase
     /** @test */
     public function it_can_delete_a_porteria()
     {
+        Admin::factory()->createOne();
         $porteria = Porteria::factory()->create();
 
-        $response = $this->deleteJson("/api/v2/porterias/{$porteria->id}");
+        $user = User::factory(1)->createOne();
+        $response = $this
+        ->withHeader("Authorization",  "Bearer $user->api_token")
+        ->deleteJson("/api/v2/porterias/{$porteria->id}");
 
         $response->assertStatus(204);
         $this->assertDatabaseMissing('porterias', ['id' => $porteria->id]);

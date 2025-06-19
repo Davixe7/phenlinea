@@ -3,12 +3,16 @@
 namespace Tests\Feature;
 
 use App\Admin;
+use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class AdminApiTest extends TestCase
 {
+    use RefreshDatabase;
+
     /** @test */
     public function it_can_create_an_admin()
     {
@@ -23,7 +27,10 @@ class AdminApiTest extends TestCase
             'status' => 1
         ];
 
-        $response = $this->postJson('/api/v2/admins', $data);
+        $user = User::factory(1)->createOne();
+        $response = $this
+        ->withHeader("Authorization",  "Bearer $user->api_token")
+        ->postJson('/api/v2/admins', $data);
 
         $response->assertStatus(201)->assertJsonFragment([
             'email' => 'admin@example.com',
@@ -36,7 +43,10 @@ class AdminApiTest extends TestCase
     {
         Admin::factory()->count(5)->create();
 
-        $response = $this->getJson('/api/v2/admins');
+        $user = User::factory(1)->createOne();
+        $response = $this
+        ->withHeader("Authorization",  "Bearer $user->api_token")
+        ->getJson('/api/v2/admins');
 
         $response->assertStatus(200)->assertJsonStructure([
             'data' => ['*' => ['id', 'email', 'name', 'phone']]
@@ -48,8 +58,13 @@ class AdminApiTest extends TestCase
     {
         $admin = Admin::factory()->create();
         $data = array_merge($admin->toArray(), ['name' => 'Updated Name']);
+        unset($data['api_token']);
 
-        $response = $this->putJson("/api/v2/admins/{$admin->id}", $data);
+        $user = User::factory(1)->createOne();
+        echo "Bearer $user->api_token";
+        $response = $this
+        ->withHeader("Authorization",  "Bearer $user->api_token")
+        ->putJson("/api/v2/admins/{$admin->id}", $data);
 
         $response->assertStatus(200)->assertJsonFragment([
             'name' => 'Updated Name',

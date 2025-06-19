@@ -65,7 +65,7 @@ class InvoiceController extends Controller
       'status'         => $request->status,
       'payment_method' => 'super'
     ]);
-    $invoice->paid_at = $invoice->paid_at->format('Y-m-d H:i:s');
+    $invoice->paid_at = $invoice->paid_at ? $invoice->paid_at->format('Y-m-d H:i:s') : null;
     return response()->json(['data' => $invoice->load('admin')]);
   }
 }

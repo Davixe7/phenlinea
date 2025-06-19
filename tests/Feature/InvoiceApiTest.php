@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Admin;
 use App\Invoice;
+use App\User;
 use Database\Factories\InvoiceFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -15,20 +16,26 @@ use Tests\TestCase;
 
 class InvoiceApiTest extends TestCase
 {
+    use RefreshDatabase;
+
     /* use RefreshDatabase; */
 
     /** @test */
     public function can_fetch_all_invoices()
     {
         Admin::factory(100)->has(Invoice::factory(1))->create();
-        $response = $this->get('/api/v2/invoices');
+
+        $user = User::factory(1)->createOne();
+        $response = $this
+        ->withHeader("Authorization",  "Bearer $user->api_token")
+        ->get('/api/v2/invoices');
 
         $response
-            ->assertStatus(200)
-            ->assertJsonCount(100, 'data')
-            ->assertJsonStructure([
-                'data' => ['*' => ['number', 'date', 'nit', 'total', 'status', 'paid_at']]
-            ]);
+        ->assertStatus(200)
+        ->assertJsonCount(100, 'data')
+        ->assertJsonStructure([
+            'data' => ['*' => ['number', 'date', 'nit', 'total', 'status', 'paid_at']]
+        ]);
     }
 
     /** @test */
@@ -59,7 +66,10 @@ class InvoiceApiTest extends TestCase
         );
 
         // Hacer la petición de subida
-        $response = $this->postJson('/api/v2/invoices', [
+        $user = User::factory(1)->createOne();
+        $response = $this
+        ->withHeader("Authorization",  "Bearer $user->api_token")
+        ->postJson('/api/v2/invoices', [
             'file' => $file,
             'month' => now()->month,
             'year' => now()->year,
@@ -72,8 +82,12 @@ class InvoiceApiTest extends TestCase
 
     /** @test */
     function can_update_invoice(){
-        $newInvoice = (Invoice::factory()->create())->first();
-        $response = $this->putJson("/api/v2/invoices/{$newInvoice->id}");
+        $newInvoice = Invoice::factory()->createOne();
+        
+        $user = User::factory(1)->createOne();
+        $response = $this
+        ->withHeader("Authorization",  "Bearer $user->api_token")
+        ->putJson("/api/v2/invoices/{$newInvoice->id}");
 
         $response
         ->assertStatus(200);

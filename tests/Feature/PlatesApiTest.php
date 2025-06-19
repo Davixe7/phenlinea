@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Admin;
+use App\User;
 use App\Visit;
 use App\Visitor;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -11,6 +12,8 @@ use Tests\TestCase;
 
 class PlatesApiTest extends TestCase
 {
+    use RefreshDatabase;
+
     /**
      * A basic feature test example.
      *
@@ -26,7 +29,9 @@ class PlatesApiTest extends TestCase
         ->create())
         ->first();
 
-        $response = $this->getJson('/api/plates', [
+        $user = User::factory(1)->createOne(['email'=>'root@phenlinea.com', 'password'=>bcrypt(123456), 'name'=>'Root']);
+        $response = $this
+        ->withHeader("Authorization",  "Bearer $user->api_token")->getJson('/api/plates', [
             'Authorization' => "Bearer $admin->api_token"
         ]);
 

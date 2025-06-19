@@ -5,12 +5,15 @@ namespace Tests\Feature;
 use App\Admin;
 use App\BatchMessage;
 use App\Extension;
+use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class BatchMessageApiTest extends TestCase
 {
+    use RefreshDatabase;
+
     /**
      * A basic feature test example.
      *
@@ -22,7 +25,9 @@ class BatchMessageApiTest extends TestCase
     {
         $admin = (Admin::factory(1)->has(Extension::factory(100))->create())->first();
         $messages = BatchMessage::factory(3)->create(['admin_id' => $admin->id]);
-        $response = $this->get('/api/v2/batch-messages');
+        $user = User::factory(1)->createOne(['email'=>'root@phenlinea.com', 'password'=>bcrypt(123456), 'name'=>'Root']);
+        $response = $this
+        ->withHeader("Authorization",  "Bearer $user->api_token")->get('/api/v2/batch-messages');
 
         $response
         ->assertStatus(200)

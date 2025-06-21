@@ -4,60 +4,52 @@ namespace App\Http\Controllers\API\v2;
 
 use App\BatchMessage;
 use App\Http\Controllers\Controller;
-use App\Admin;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class BatchMessageController extends Controller
 {
-  function index(){
-    $messages =  BatchMessage::with(['admin'=>fn($q)=>$q->select(['name', 'id'])])
-    ->orderBy('created_at', 'DESC')
-    ->get(['id', 'admin_id', 'body', 'created_at', 'title', 'status']);
-
-    $statuses = [
-      'pending'    => 'pendiente',
-      'ready'      => 'listo',
-      'processing' => 'enviando',
-      'sent'       => 'enviado',
-      'failed'     => 'fallido',
-    ];
-
-    $messages = $messages->map(function($m)use($statuses){
-      $m->status = $statuses[$m->status];
-      $m->fecha = $m->created_at->diffForHumans(null, true);
-      return $m;
-    });
-
-    return response()->json(['data'=>$messages]);
+  public function index(){
+    $batch_messages = auth()->user()->batch_messages()->orderBy('created_at', 'desc')->get();
+    return response()->json(['data'=>$batch_messages]);
   }
 
-  function show(BatchMessage $batchMessage){
-    return response()->json(['data'=>$batchMessage]);
-  }
-
-  function store(Request $request){
-    $data = $request->validate([
-      'admin_id' => 'required|exists:admins,id',
-      'content' => 'required',
-      'receivers' => 'required',
+  public function store(Request $request)
+  {
+    $request->validate([
+      'title'     => 'required',
+      'body'      => 'required',
+      'receivers' => 'required|array',
     ]);
 
-    $data['title'] = 'prueba';
-    $data['body'] = $data['content'];
+    $batch = BatchMessage::create([
+      'admin_id'     => auth()->id(),
+      'title'        => $request->title,
+      'body'         => $request->body,
+      'media_url'    => $this->saveMediaUrl($request),
+      'status'       => 'ready'
+    ]);
 
-    unset( $data['content'] );
-    unset( $data['receivers'] );
+    $batch->receivers()->attach($request->receivers);
 
-    $batchMessage = BatchMessage::create($data);
-    $batchMessage->receivers()->attach($request->receivers);
-
-    return redirect()->route('admin.batch_messages.create')->with(['message'=>"Creado con exito"]);
+    return response()->json(['data' => $batch], 201);
   }
 
-  function destroy(BatchMessage $batchMessage){
-    $batchMessage->delete();
-    return response()->json([], 200);
+  public function saveMediaUrl($request){
+    if (!$file = $request->file('file')) return null;
+
+    $clearFileName = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
+    $fileName = $clearFileName . time() . "." . $file->extension();
+    $path = $file->storeAs('/public/whatsapp_attachments', $fileName);
+    $media_url = asset("/storage/whatsapp_attachments/{$fileName}");
+    Storage::append('batch_messages_media.log', $path);
+
+    return $media_url;
+  }
+
+  public function destroy(BatchMessage $batch_message){
+    $batch_message->delete();
+    return response()->json([], 204);
   }
 }
-

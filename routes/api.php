@@ -1,16 +1,19 @@
 <?php
 
-use App\BatchMessage;
-use App\Http\Controllers\API\v2\AdminController;
-use App\Http\Controllers\API\v2\BatchMessageController;
-use App\Http\Controllers\API\v2\InvoiceController;
-use App\Http\Controllers\API\v2\PorteriaController;
+use App\Http\Controllers\API\v2\ExtensionController;
+use App\Http\Controllers\API\v2\ResidentController;
+use App\Http\Controllers\API\v2\admin\AdminController;
+use App\Http\Controllers\API\v2\admin\BatchMessageController;
+use App\Http\Controllers\API\v2\admin\InvoiceController;
+use App\Http\Controllers\API\v2\admin\PorteriaController;
+use App\Http\Controllers\API\v2\BatchMessageController as V2BatchMessageController;
+use App\Http\Controllers\API\v2\InvoiceController as V2InvoiceController;
+use App\Http\Controllers\API\v2\NoveltyController;
+use App\Http\Controllers\API\v2\PetitionController;
+use App\Http\Controllers\API\v2\VehicleController;
+use App\Http\Controllers\API\v2\VisitController;
 use App\Http\Controllers\Auth\API\LoginController;
-use App\Invoice;
 use App\Services\PlatesService;
-use App\Services\PlatesServices;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -26,11 +29,22 @@ Route::middleware('auth')->get('user', fn ()=>auth()->user());
 
 Route::prefix('v2')->group(function(){
   Route::post('login', [LoginController::class, 'login']);
+  Route::post('admin-login', [LoginController::class, 'adminLogin']);
   Route::group(['middleware'=>['auth:api']], function(){
     Route::apiResource('admins', AdminController::class);
     Route::apiResource('porterias', PorteriaController::class);
     Route::apiResource('invoices', InvoiceController::class);
     Route::apiResource('batch-messages', BatchMessageController::class);
+  });
+  Route::group(['middleware'=>['auth:api-admin']], function(){
+    Route::apiResource('extensions', ExtensionController::class);
+    Route::apiResource('residents', ResidentController::class);
+    Route::apiResource('vehicles', VehicleController::class);
+    Route::apiResource('visits', VisitController::class)->only(['index']);
+    Route::apiResource('batch_messages', V2BatchMessageController::class);
+    Route::apiResource('novelties', NoveltyController::class);
+    Route::apiResource('petitions', PetitionController::class);
+    Route::apiResource('invoices', V2InvoiceController::class);
   });
 });
 

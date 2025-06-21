@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Vehicle extends Model
 {
+  use HasFactory;
+  
   protected $fillable = [
     'extension_id',
     'resident_id',
@@ -23,5 +25,12 @@ class Vehicle extends Model
 
   public function resident(){
     return $this->belongsTo(Resident::class);
+  }
+
+  public function scopeFilterExtension($query, $extension_id){
+    if(!$extension_id){
+      return $query;
+    }
+    return $query->whereExtensionId($extension_id);
   }
 }

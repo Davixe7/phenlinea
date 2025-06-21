@@ -24,6 +24,10 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
   protected $hidden  = ['created_at', 'updated_at', 'password'];
   protected $without = ['extensions'];
 
+  public function getZhyafEnabledAttribute(){
+    return false;
+  }
+
   public function registerMediaCollections(): void
   {
     $this->addMediaCollection('whatsapp_qr')->singleFile();

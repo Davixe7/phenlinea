@@ -2,19 +2,17 @@
 
 namespace App;
 
-use Exception;
+use App\Traits\HasZhyafRoom;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notification;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Log;
 
 class Extension extends Authenticatable implements HasMedia
 {
-  use HasFactory;
-  use InteractsWithMedia, Notifiable;
+  use HasFactory, InteractsWithMedia, Notifiable, HasZhyafRoom;
 
   protected $guarded = ['id'];
 

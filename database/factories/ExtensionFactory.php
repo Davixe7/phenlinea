@@ -12,9 +12,8 @@ class ExtensionFactory extends Factory {
     return [
       'admin_id' => 1,
       'name'     => $name,
-      'phone_1'  => "3" . fake()->numerify('########'),
+      'phone_1'  => fake()->numberBetween(1,3) . fake()->numerify('########'),
       'phone_2'  => "3" . fake()->numerify('########'),
-      
       'email'     => $name . '@phenlinea.com',
     ];
   }

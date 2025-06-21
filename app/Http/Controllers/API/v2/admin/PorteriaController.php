@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\v2;
+namespace App\Http\Controllers\API\v2\admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Porteria as ResourcesPorteria;

@@ -38,6 +38,7 @@ class ExtensionController extends Controller
       'owner_phone'       => 'nullable',
       'email'             => 'nullable|email',
       'emergency_contact' => 'nullable',
+      'observation'       => 'nullable|string',
 
       'pets_count'        => 'nullable|numeric',
       'deposit'           => 'nullable',
@@ -89,6 +90,7 @@ class ExtensionController extends Controller
       'owner_phone'       => 'nullable',
       'email'             => 'nullable|email',
       'emergency_contact' => 'nullable',
+      'observation'       => 'nullable|string',
 
       'pets_count'        => 'nullable|numeric',
       'deposit'           => 'nullable',

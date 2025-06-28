@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 class BatchMessageController extends Controller
 {
   public function index(){
-    $batch_messages = auth()->user()->batch_messages()->orderBy('created_at', 'desc')->get();
+    $batch_messages = auth()->user()->batch_messages()->withCount('receivers')->orderBy('created_at', 'desc')->get();
     return response()->json(['data'=>$batch_messages]);
   }
 

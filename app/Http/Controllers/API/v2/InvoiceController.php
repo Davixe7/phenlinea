@@ -12,9 +12,9 @@ class InvoiceController extends Controller
     {
       $invoices = auth()->user()->invoices()->with('admin')->orderBy('created_at', 'DESC')->get();
       $invoices = $invoices->map(function($i){
-          $i->status = $i->status == 'pendiente' && $i->date < now()->startOfMonth()
-          ? 'vencido'
-          : 'pendiente';
+          $i->status = $i->paid_at
+          ? 'pagado'
+          : (($i->date < now()->startOfMonth()) ? 'vencido' : 'pendiente');
           return $i;
       });
       return response()->json(['data'=>$invoices]);

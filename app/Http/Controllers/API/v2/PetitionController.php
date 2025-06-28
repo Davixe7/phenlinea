@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API\v2;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Petition as PetitionResource;
+use App\Http\Resources\PetitionResource;
 use App\Petition;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -87,9 +87,10 @@ class PetitionController extends Controller
       'name'         => $request->name        ?: $petition->name,
       'description'  => $request->description ?: $petition->description,
       'phone'        => $request->phone       ?: $petition->phone,
-      'status'       => $request->answer      ? 'replied' : $petition->status,
+      'status'       => $request->answer      ? 'replied' : ($request->read_at ? 'read' : $request->status),
       'answer'       => $request->answer,
-      'replied_at'   => $request->answer ? now() : $petition->replied_at
+      'replied_at'   => $request->answer ? now() : $petition->replied_at,
+      'read_at'      => $request->read_at ? now() : $petition->read_at,
     ]);
 
     if ($files = $request->file('pictures')) {

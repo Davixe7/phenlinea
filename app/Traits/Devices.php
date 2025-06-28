@@ -30,7 +30,7 @@ class Devices
     $this->api = new Client([
       'base_uri' => config('zhyaf.v1.base_url'),
       'headers'  => [
-        'language' => 'en_ES',
+        'language' => 'es_ES',
         'timeZone' => 'America/Bogota'
       ]
     ]);

@@ -89,7 +89,7 @@ class ResidentController extends Controller
   public function update(Request $request, Resident $resident)
   {
     $data = $request->validate([
-      'card'          => 'sometimes|unique:residents,card',
+      'card'          => "sometimes|unique:residents,card,$resident->id",
       'name'          => 'required|string',
       'age'           => 'sometimes|numeric',
       'dni'           => 'sometimes|string',

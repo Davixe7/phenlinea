@@ -85,6 +85,10 @@ class VisitController extends Controller
         "note" 		      => $request->note
       ]);
 
+      if(!auth()->user()->admin->device_enabled){
+        return new VisitPorteria( $visit );
+      }
+
       try {
         $visit->addPwd();
       }

@@ -99,7 +99,7 @@ class Devices
       $body     = json_decode($response->getBody());
       $code     = property_exists($body, 'code') ? $body->code : null;
 
-      Log::info( $response->getBody() );
+      Log::info( 'Zhyaf' . $response->getBody() );
 
       if (is_null($code)) {
         throw new Exception("Zhyaf request failed without error code", 522);

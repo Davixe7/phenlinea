@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Novelty as NoveltyResource;
 use App\Novelty;
+use PhpParser\Node\Expr\Instanceof_;
 
 class NoveltyController extends Controller
 {
@@ -74,10 +75,10 @@ class NoveltyController extends Controller
   {
     $data = $request->validate([
       'description' => 'sometimes|string',
-      'read'        => 'sometimes'
+      'read_at'     => 'sometimes'
     ]);
     
-    $novelty->update(array_merge($data, ['read' => $request->read ?: $novelty->read_at]));
+    $novelty->update(array_merge($data, ['read_at' => $request->read_at ?: $novelty->read_at]));
 
     return new NoveltyResource( $novelty );
   }

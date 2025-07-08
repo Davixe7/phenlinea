@@ -37,6 +37,7 @@ Route::prefix('v2')->group(function(){
     Route::apiResource('batch-messages', BatchMessageController::class);
   });
   Route::group(['middleware'=>['auth:api-admin']], function(){
+    Route::get('user', fn()=>auth()->user());
     Route::apiResource('extensions', ExtensionController::class);
     Route::apiResource('residents', ResidentController::class);
     Route::apiResource('vehicles', VehicleController::class);

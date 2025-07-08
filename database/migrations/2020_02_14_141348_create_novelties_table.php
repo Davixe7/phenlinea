@@ -15,7 +15,7 @@ class CreateNoveltiesTable extends Migration
   {
     Schema::create('novelties', function (Blueprint $table) {
       $table->bigIncrements('id');
-      $table->boolean('read')->default(0);
+      $table->dateTime('read_at')->nullable();
       $table->text('description');
       $table->unsignedBigInteger('porteria_id');
       $table->timestamps();

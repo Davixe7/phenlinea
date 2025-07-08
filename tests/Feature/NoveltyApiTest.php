@@ -41,7 +41,7 @@ class NoveltyApiTest extends TestCase
         ->createOne();
 
         $novelty = Novelty::first();
-        $data = ['read' => 1];
+        $data = ['read_at' => now()];
 
         $response = $this
         ->withHeader('Authorization', "Bearer {$admin->api_token}")

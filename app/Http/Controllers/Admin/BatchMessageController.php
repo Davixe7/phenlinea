@@ -10,9 +10,7 @@ use Illuminate\Http\Request;
 class BatchMessageController extends Controller
 {
   function index(){
-    $messages =  BatchMessage::with(['admin'=>function($query){
-      $query->select(['name', 'id', 'phone', 'whatsapp_instance_id']);
-    }])
+    $messages =  BatchMessage::with(['admin'=>function($q){$q->select(['name', 'id', 'phone']);}])
     ->orderBy('created_at', 'DESC')
     ->get(['id', 'title', 'created_at', 'status', 'admin_id']);
 
@@ -24,9 +22,7 @@ class BatchMessageController extends Controller
       'failed'     => 'fallido',
     ];
 
-    $instances = Admin::orderBy('whatsapp_instance_id', 'DESC')->get(['whatsapp_instance_id', 'name', 'id']);
-
-    return view('super.batch_messages', compact('messages', 'statuses', 'instances'));
+    return view('super.batch_messages', compact('messages', 'statuses'));
   }
 
   function instances(){

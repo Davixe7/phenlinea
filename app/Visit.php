@@ -64,7 +64,7 @@ class Visit extends Model implements HasMedia
   }
 
   public function addPwd(){
-    if( !$this->admin->device_serial_number || !$this->admin->device_community_id ){
+    if( !$this->admin->device_enabled ){
       return;
     }
 

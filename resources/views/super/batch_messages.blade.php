@@ -46,51 +46,6 @@
       </tbody>
     </table>
   </div>
-
-  <h5 class="my-3">Instancias activas</h5>
-  <div class="table-responsive mb-4">
-    <table class="table">
-      <thead>
-        <th>Admin</th>
-        <th>ID</th>
-        <th>Acciones</th>
-      </thead>
-      <tbody>
-        @foreach( $instances as $instance )
-        <tr>
-          <td>{{ $instance->name }}</td>
-          <td>
-            <form action="{{ route('admin.whatsapp_instances.update', ['admin'=>$instance->id]) }}" method="POST">
-              @csrf
-              @method('PUT')
-              <input type="tel" name="whatsapp_instance_id" value="{{ $instance->whatsapp_instance_id }}">
-              <button
-                onclick="window.confirm('Seguro que desea actualizar la instancia?') ? event.target.parentNode.submit() : '', false"
-                class="btn"
-                type="button">
-                <i class="material-symbols-outlined" style="pointer-events: none;">refresh</i>
-              </button>
-            </form>
-          </td>
-          <td>
-          <form
-              action="{{ route('admin.whatsapp_instances.clear_instance', ['admin'=>$instance->id]) }}"
-              method="post">
-              @csrf
-              @method('DELETE')
-              <button
-                onclick="window.confirm('Seguro que desea desvincular la instancia?') ? event.target.parentNode.submit() : '', false"
-                class="btn"
-                type="button">
-                <i class="material-symbols-outlined" style="pointer-events: none;">delete</i>
-              </button>
-            </form>
-          </td>
-        </tr>
-        @endforeach
-      </tbody>
-    </table>
-  </div>
 </div>
 @endsection
 

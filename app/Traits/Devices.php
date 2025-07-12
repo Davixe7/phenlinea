@@ -305,6 +305,7 @@ class Devices
 
       return $data;
     } catch (Exception $e) {
+      Log::info('visit');
       throw $e;
     }
   }

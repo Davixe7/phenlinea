@@ -368,6 +368,13 @@ class Devices
     $this->fetchZhyaf('sqDoor/extapi/update', $query);
   }
 
+  function grantAccessToAllDoors($resident)
+  {
+    $devSns = $this->getUnitDevices($resident->extension->admin_id)->pluck('devSn')->toArray();
+    $devSns = implode(",", $devSns);
+    $this->addDeviceAuth($resident, $devSns);
+  }
+
   //Root
   function syncDoors()
   {

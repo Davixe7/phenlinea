@@ -36,6 +36,7 @@ class CreateAdminsTable extends Migration
       $table->string('whatsapp_group_id')->nullable();
       $table->string('whatsapp_group_url')->nullable();
       
+      $table->integer('visits_lifespan')->nullable();
       $table->string('device_serial_number')->nullable();
       $table->string('device_2_serial_number')->nullable();
       $table->string('device_community_id')->nullable();

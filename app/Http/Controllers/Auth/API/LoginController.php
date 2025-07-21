@@ -56,11 +56,11 @@ class LoginController extends Controller
   {
     $credentials = $request->validate(['email' => 'required','password' => 'required']);
 
-    if (! $token = Auth::guard('api-porteria')->attempt($credentials)) {
+    if (! $token = Auth::guard('porteria')->attempt($credentials)) {
       return response()->json(['error' => 'Unauthorized'], 401);
     }
 
-    $user = Auth::guard('api-porteria')->user();
+    $user = Auth::guard('porteria')->user();
     $user->forceFill(['api_token' => $token]);
 
     return response()->json([

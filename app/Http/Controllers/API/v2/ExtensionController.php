@@ -6,6 +6,7 @@ use App\Extension;
 use App\Http\Resources\Extension as ExtensionResource;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ApartmentsResource;
 use Exception;
 
 class ExtensionController extends Controller
@@ -19,9 +20,9 @@ class ExtensionController extends Controller
   {
     $extensions = auth()->user()->extensions()
       ->phone($request->phone)
-      ->name($request->name)->get();
+      ->name($request->name)->get(['id', 'admin_id', 'name', 'phone_1', 'phone_2', 'observation', 'deposit']);
 
-    return ExtensionResource::collection($extensions);
+    return ApartmentsResource::collection($extensions);
   }
 
   /**

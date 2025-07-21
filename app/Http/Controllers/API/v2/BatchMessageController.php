@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\v2;
 
 use App\BatchMessage;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\BatchMessageResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -12,7 +13,7 @@ class BatchMessageController extends Controller
 {
   public function index(){
     $batch_messages = auth()->user()->batch_messages()->withCount('receivers')->orderBy('created_at', 'desc')->get();
-    return response()->json(['data'=>$batch_messages]);
+    return BatchMessageResource::collection($batch_messages);
   }
 
   public function store(Request $request)

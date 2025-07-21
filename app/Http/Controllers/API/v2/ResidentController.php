@@ -19,8 +19,11 @@ class ResidentController extends Controller
 
   public function index(Request $request)
   {
-    $residents = Resident::all();
-    return ResidentResource::collection($residents);
+    $residents = $request->filled('extension_id')
+      ? Resident::whereExtensionId($request->extension_id)->get()
+      : $request->filled('extension_id');
+
+      return ResidentResource::collection( $residents );
   }
 
   /**

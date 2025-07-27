@@ -15,4 +15,8 @@ class Delivery extends Model implements HasMedia
     public function extension(){
         return $this->belongsTo(Extension::class);
     }
+
+	public function apartment(){
+return $this->belongsTo(Extension::class, 'extension_id');
+}
 }

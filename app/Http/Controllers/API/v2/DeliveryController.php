@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\v2;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Resources\DeliveryResource;
 
 class DeliveryController extends Controller
 {
@@ -18,7 +19,7 @@ class DeliveryController extends Controller
             'apartment' => function($q){$q->select(['id', 'name']);},
             'media'
         ]);
-        return response()->json(['data' => $deliveries]);
+        return DeliveryResource::collection($deliveries);
     }
 
     /**

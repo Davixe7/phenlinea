@@ -19,7 +19,21 @@ use Illuminate\Support\Facades\Route;
 use App\Traits\Devices;
 use App\Extension;
 use App\Notifications\DeliveryWANotification;
+use Illuminate\Support\Facades\DB;
 use Rap2hpoutre\FastExcel\FastExcel;
+
+Route::get('historial', function(){
+  $a = App\Admin::find(426);
+  $e = $a->extensions()->pluck('id');
+  $d = DB::table('media')
+  ->where('model_type', 'App\Extension')
+  ->where('collection_name', 'deliveries')
+  ->whereBetween('created_at', ['2025-07-17 00:00:00', '2025-07-17 23:59:00'])
+  //->whereBetween('id', $e)
+  //->orderBy('created_at')
+  ->get();
+  return $d;
+});
 
 Route::get('codes', function(){
   $data = App\Extension::whereAdminId(68)->where('observation', '!=', null)->get(['admin_id', 'name', 'observation']);
@@ -162,6 +176,10 @@ Route::middleware(['auth:admin', 'phoneverified', 'suspended'])->group(function 
   });
 
   Route::view('accesslogs', 'admin.accesslogs')->name('visits.accesslogs');
+  Route::get('encomiendas', function(){
+    $deliveries = auth()->user()->deliveries;
+    return view('admin.deliveries', compact('deliveries'));
+  })->name('deliveries.index');
 });
 
 //Resident routes

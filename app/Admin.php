@@ -35,6 +35,10 @@ class Admin extends Authenticatable implements MustVerifyEmail, CanResetPassword
     $this->addMediaCollection('picture')->singleFile();
   }
 
+  public function deliveries(){
+    return $this->hasManyThrough(Delivery::class, Extension::class);
+  }
+
   public function invoices()
   {
     return $this->hasMany('App\Invoice', 'nit', 'nit');

@@ -12,6 +12,7 @@ use App\Http\Controllers\API\v2\NoveltyController;
 use App\Http\Controllers\API\v2\PetitionController;
 use App\Http\Controllers\API\v2\VehicleController;
 use App\Http\Controllers\API\v2\VisitController;
+use App\Http\Controllers\API\v2\DeliveryController;
 use App\Http\Controllers\Auth\API\LoginController;
 use App\Services\PlatesService;
 /*
@@ -46,6 +47,12 @@ Route::prefix('v2')->group(function(){
     Route::apiResource('novelties', NoveltyController::class);
     Route::apiResource('petitions', PetitionController::class);
     Route::apiResource('invoices', V2InvoiceController::class);
+Route::get('deliveries', function(){
+$d = auth()->user()->deliveries();
+return response()->json(['data'=>$d]);
+});
+
+    Route::get('apartments/{extension}/residents', [ResidentController::class, 'index']);
   });
 });
 

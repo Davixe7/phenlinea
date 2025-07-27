@@ -125,6 +125,10 @@ class Extension extends Authenticatable implements HasMedia
     return $this->belongsTo(Resident::class, 'resident_id_4', 'id')->withDefault(['name' => 'Desconocido']);;
   }
 
+  public function deliveries(){
+    return $this->hasMany(Delivery::class);
+  }
+
   public function getAdultsAttribute()
   {
     $adults = $this->residents()->where('age', '>=', 18)->count();

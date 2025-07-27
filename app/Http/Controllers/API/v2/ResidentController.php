@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\v2;
 
+use App\Extension;
 use App\Resident;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Resident as ResidentResource;
@@ -17,13 +18,10 @@ class ResidentController extends Controller
    * @return \Illuminate\Http\Response
    */
 
-  public function index(Request $request)
+  public function index(Request $request, Extension $extension)
   {
-    $residents = $request->filled('extension_id')
-      ? Resident::whereExtensionId($request->extension_id)->get()
-      : $request->filled('extension_id');
-
-      return ResidentResource::collection( $residents );
+    $residents = $extension->residents;
+    return ResidentResource::collection( $residents );
   }
 
   /**

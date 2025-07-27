@@ -98,13 +98,13 @@
       </div>
 
       <div class="col-sm-6 col-lg-3">
-        <a href="#">
+        <a href="{{ route('deliveries.index') }}">
           <div class="menu-option">
             <div class="brandnew-tag">
               Nuevo
             </div>
             <div class="menu-option__icon">
-              <img src="{{ asset('img/iconos/comunidad.png') }}" alt="">
+              <img src="{{ asset('img/iconos/delivery.png') }}" alt="">
             </div>
           </div>
         </a>

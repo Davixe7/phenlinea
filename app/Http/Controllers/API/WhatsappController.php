@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Traits\Whatsapp;
+use App\Delivery;
 use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Support\Facades\Storage;
@@ -16,11 +16,13 @@ class WhatsappController extends Controller
     $request->validate(['name:required']);
     $extension = auth()->user()->extensions()->whereName($request->name)->firstOrFail();
     $media_url = null;
+
+    $delivery = $extension->deliveries()->create();
     
     if ( $request->hasFile('media') ) {
       try {
-        $extension->addMedia( $request->file('media') )->toMediaCollection('deliveries');
-        $media_url = $extension->getMedia('deliveries')->last()->getUrl(); 
+        $delivery->addMedia( $request->file('media') )->toMediaCollection('picture');
+        $media_url = $delivery->getMedia('picture')->last()->getUrl(); 
       } catch(Exception $e){
         Storage::append('deliveries.log', now() . ' ' . $e->getMessage() . ' ' . json_encode($request->all()) );
       }

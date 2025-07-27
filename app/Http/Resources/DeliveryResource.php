@@ -14,9 +14,12 @@ class DeliveryResource extends JsonResource
      */
     public function toArray($request)
     {
+        $media = $this->getFirstMedia('picture');
+
         $data = parent::toArray($request);
         return array_merge($data, [
-            'picture' => $this->getFirstMediaUrl(),
+            'original' => $media?->getUrl('original'),
+            'thumb' => $media?->getUrl('thumb'),
         ]);
     }
 }

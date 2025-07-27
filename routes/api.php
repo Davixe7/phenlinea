@@ -47,7 +47,7 @@ Route::prefix('v2')->group(function(){
     Route::apiResource('novelties', NoveltyController::class);
     Route::apiResource('petitions', PetitionController::class);
     Route::apiResource('invoices', V2InvoiceController::class);
-    Route::get('deliveries', DeliveryController::class);
+    Route::apiResource('deliveries', DeliveryController::class);
 
     Route::get('apartments/{extension}/residents', [ResidentController::class, 'index']);
   });

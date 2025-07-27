@@ -14,7 +14,10 @@ class DeliveryController extends Controller
      */
     public function index()
     {
-        $deliveries = auth()->user()->deliveries;
+        $deliveries = auth()->user()->deliveries()->with([
+            'apartment' => function($q){$q->select(['id', 'name']);},
+            'media'
+        ]);
         return response()->json(['data' => $deliveries]);
     }
 

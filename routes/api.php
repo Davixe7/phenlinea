@@ -47,10 +47,7 @@ Route::prefix('v2')->group(function(){
     Route::apiResource('novelties', NoveltyController::class);
     Route::apiResource('petitions', PetitionController::class);
     Route::apiResource('invoices', V2InvoiceController::class);
-Route::get('deliveries', function(){
-$d = auth()->user()->deliveries();
-return response()->json(['data'=>$d]);
-});
+    Route::get('deliveries', DeliveryController::class);
 
     Route::get('apartments/{extension}/residents', [ResidentController::class, 'index']);
   });

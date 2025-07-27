@@ -18,7 +18,7 @@ class DeliveryController extends Controller
         $deliveries = auth()->user()->deliveries()->with([
             'apartment' => function($q){$q->select(['id', 'name']);},
             'media'
-        ]);
+        ])->get();
         return DeliveryResource::collection($deliveries);
     }
 

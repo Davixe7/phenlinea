@@ -246,18 +246,19 @@ class Devices
   }
 
   //Visits
-  function addFacialTempPwd(Visit $visit)
+  function addFacialTempPwd(Visit $visit, $base64 = null)
   {
     $usableCount = $visit->admin_id == 426 ? 2 : 1;
+    $devSns = $visit->admin_id == 426 ? '4284517926,4289723185,4280287354,4280324765' : 'V' . $visit->admin->device_serial_number;
     $query  = [
-      'devSns'              => 'V' . $visit->admin->device_serial_number,
+      'devSns'              => $devSns,
       'accStartdatetime'    => $visit->start_date,
       'accEnddatetime'      => $visit->end_date,
       'accUsableCount'      => $usableCount,
       'name'                => $visit->visitor->name,
       'phone'               => $visit->visitor->phone,
       'uuid'                => $visit->visitor->id,
-      'faceFileBase64'      => $visit->visitor->getFaceFileBase64()
+      'faceFileBase64'      => $base64 ?: $visit->visitor->getFaceFileBase64() 
     ];
 
     try {
@@ -277,8 +278,9 @@ class Devices
   function addTempPwd(Visit $visit)
   {
     $usableCount = $visit->admin_id == 426 ? 2 : 1;
+    $devSns = $visit->admin_id == 426 ? '4284517926,4289723185,4280287354,4280324765' : 'V' . $visit->admin->device_serial_number;
     $query = [
-      'devSns'      => 'V' . $visit->admin->device_serial_number,
+      'devSns'      => $devSns,
       'startDate'   => $visit->start_date,
       'endDate'     => $visit->end_date,
       'usableCount' => $usableCount,

@@ -67,6 +67,8 @@ Route::group(['middleware' => 'auth:porteria,api-admin'], function () {
   Route::apiResource('visitors', 'API\VisitorController')->except(['index', 'store']);
   Route::get('extensions/{extension}/visitors', 'API\VisitorController@extensionVisitors');
 
+  Route::get('apartments/{apartment_name}/authorized', [ResidentController::class, 'authorized']);
+
   Route::apiResource('posts', 'API\PostController');
   Route::apiResource('reminders', 'API\ReminderController');
   Route::apiResource('bills', 'API\BillController');

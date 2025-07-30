@@ -53,7 +53,7 @@ class Visitor extends Model implements HasMedia
     return $this->hasMany(Visit::class);
   }
 
-  public function getFaceFileBase64(){
+  public function getFaceFileBase64(){    
     $path = $this->getFirstMediaPath('picture');
     if( !file_exists($path) ){ return null; }
 

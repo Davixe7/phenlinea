@@ -2,6 +2,7 @@
 /public/hot
 /public/storage
 /public/info
+/storage/media-library/
 /storage/logs/
 /storage/*.key
 /vendor

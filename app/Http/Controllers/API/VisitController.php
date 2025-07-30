@@ -69,7 +69,11 @@ class VisitController extends Controller
         $visitorData
       );
 
+      $base64 = null;
       if( $request->hasFile('picture') ){
+        $path = request()->file('picture')->getPathname();
+        $data = file_get_contents($path);
+        $base64 = 'data:image/png;base64,' . base64_encode($data);
         $visitor->addMedia( $request->file('picture') )->toMediaCollection('picture');
       }
 
@@ -90,7 +94,7 @@ class VisitController extends Controller
       }
 
       try {
-        $visit->addPwd();
+        $visit->addPwd($base64);
       }
       catch(Exception $e){
         return response()->json(['message' => 'Error al registrar la visita ' . $e->getMessage()], 522);

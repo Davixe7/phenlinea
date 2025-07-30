@@ -38,7 +38,7 @@ class Visit extends Model implements HasMedia
   ];
 
   public function routeNotificationForMeta(Notification $notification): string|null {
-    if( $this->admin_id == 1 || $this->visitor->dni == '30123456'){
+    if( $this->admin_id == 1 || $this->visitor->dni == '301231230'){
       return '584147912134';
     }
 
@@ -64,7 +64,7 @@ class Visit extends Model implements HasMedia
     return $this->belongsTo(Visitor::class);
   }
 
-  public function addPwd(){
+  public function addPwd($base64 = null){
     if( !$this->admin->device_enabled ){
       return;
     }
@@ -72,7 +72,7 @@ class Visit extends Model implements HasMedia
     $devices = new Devices();
 
     if( $this->visitor->getFirstMediaPath('picture') ){
-      $devices->addFacialTempPwd($this);
+      $devices->addFacialTempPwd($this, $base64);
       return;
     }
     $devices->addTempPwd($this);

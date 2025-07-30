@@ -24,6 +24,17 @@ class ResidentController extends Controller
     return ResidentResource::collection( $residents );
   }
 
+  public function authorized($apartment_name){
+    $apartment = auth()->user()
+    ->extensions()
+    ->whereName($apartment_name)
+    ->with('residents')
+    ->firstOrFail();
+
+    $data = $apartment->residents()->where('is_authorized', 1)->get();
+    return response()->json(compact('data'));
+  }
+
   /**
    * Store a newly created resource in storage.
    *

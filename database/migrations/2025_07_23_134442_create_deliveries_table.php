@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->foreignId('extension_id');
+            $table->dateTime('pickup_at')->nullable();
+            $table->string('pickup_by')->nullable();
         });
     }
 

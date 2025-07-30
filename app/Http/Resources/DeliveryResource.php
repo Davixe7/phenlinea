@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class DeliveryResource extends JsonResource
@@ -20,6 +21,7 @@ class DeliveryResource extends JsonResource
         return array_merge($data, [
             'original' => $media?->getUrl('original'),
             'thumb' => $media?->getUrl('thumb'),
+            'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:i:s')
         ]);
     }
 }

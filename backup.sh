@@ -12,15 +12,19 @@ OPCIONES=()
 
 # Tablas a ignorar
 IGNORE_TABLES=(
+  "extension_push_notification_log"
   "sessions"
   "visits"
   "visitors"
   "migrations"
+  "media"
+  "password_resets"
+  "personal_access_tokens"
+  "push_notification_logs"
   "resident_invoices"
   "resident_invoice_items"
   "resident_invoice_payments"
   "resident_invoice_item_resident_invoice_payment"
-  "media"
 )
 
 # Construir opciones de --ignore-table

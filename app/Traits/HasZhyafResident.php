@@ -23,7 +23,7 @@ trait HasZhyafResident
 
     public function shouldSync()
     {
-        return $this->admin->zhyaf_enabled;
+        return $this->admin->device_enabled;
     }
 
     public function zhyafCreate($picturePath = null)
@@ -76,6 +76,7 @@ trait HasZhyafResident
             $devSns = $zhyaf->getUnitDevices($this->extension->admin_id)->pluck('devSn')->toArray();
             $devSns = implode(",", $devSns);
             $zhyaf->addDeviceAuth($this, $devSns);
+            return true;
         }
         catch (Exception $e) {
             Log::error($e->getMessage());

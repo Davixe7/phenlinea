@@ -78,17 +78,4 @@ class Visit extends Model implements HasMedia
     $devices->addTempPwd($this);
   }
 
-  public function _notifyDeviceVisit(){
-    if( !$this->admin->device_serial_number ){ return; }
-    if( !$this->visitor->phone ){ return; }
-
-    $whatsapp = new Whatsapp();
-    
-    $whatsapp->send([
-      'number'    => '57' . $this->visitor->phone,
-      'message'   => view('messages.visit', ['visit'=>$this])->render(),
-      'media_url' => $this->getFirstMediaUrl('qrcode')
-    ]);
-  }
-
 }

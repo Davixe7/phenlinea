@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Events\VisitCreatedEvent;
 use App\Visit;
 use App\Visitor;
 use Illuminate\Http\Request;
@@ -70,8 +69,8 @@ class VisitController extends Controller
       );
 
       $base64 = null;
-      if( $request->hasFile('picture') ){
-        $path = request()->file('picture')->getPathname();
+      if( $file = $request->file('picture') ){
+        $path = $file->getPathname();
         $data = file_get_contents($path);
         $base64 = 'data:image/png;base64,' . base64_encode($data);
         $visitor->addMedia( $request->file('picture') )->toMediaCollection('picture');

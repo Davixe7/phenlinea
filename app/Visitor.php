@@ -32,11 +32,17 @@ class Visitor extends Model implements HasMedia
 
   public function registerMediaConversions(?Media $media = null): void
   {
+      $this->addMediaConversion('medium')
+      ->width(500)
+      ->height(500)
+      ->crop('crop-center', 500, 500)
+      ->performOnCollections('picture');
+
       $this->addMediaConversion('thumb')
-            ->width(500)
-            ->height(500)
-            ->crop('crop-center', 500, 500)
-            ->performOnCollections('picture');
+      ->width(60)
+      ->height(60)
+      ->crop('crop-center', 60, 60)
+      ->performOnCollections('picture');
   }
 
   public function extension()

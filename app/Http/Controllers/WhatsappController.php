@@ -13,16 +13,8 @@ use Illuminate\Support\Str;
 
 class WhatsappController extends Controller
 {
-  protected $whatsapp;
-  protected $client;
 
-  public function __construct()
-  {
-    $this->client   = WhatsappClient::whereEnabled(1)->first();
-    $this->whatsapp = new Whatsapp($this->client);
-  }
-
-  public function getInstanceId(){
+  /* public function getInstanceId(){
     $instance_id = auth()->user()->whatsapp_instance_id ?: $this->whatsapp->getInstanceId();
     $this->whatsapp->setWebhook($instance_id, route('whatsapp.hook'));
     return response()->json(['data'=>$instance_id]);
@@ -46,6 +38,6 @@ class WhatsappController extends Controller
 
   public function logout(Request $request){
     $this->whatsapp->logout($request->instance_id);
-  }
+  } */
   
 }

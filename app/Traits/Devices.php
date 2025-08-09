@@ -248,13 +248,11 @@ class Devices
   //Visits
   function addFacialTempPwd(Visit $visit, $base64 = null)
   {
-    $usableCount = $visit->admin_id == 426 ? 2 : 1;
-    $devSns = $visit->admin_id == 426 ? '4284517926,4289723185,4280287354,4280324765' : 'V' . $visit->admin->device_serial_number;
     $query  = [
-      'devSns'              => $devSns,
+      'devSns'              => 'V' . $visit->admin->device_serial_number,
       'accStartdatetime'    => $visit->start_date,
       'accEnddatetime'      => $visit->end_date,
-      'accUsableCount'      => $usableCount,
+      'accUsableCount'      => 2,
       'name'                => $visit->visitor->name,
       'phone'               => $visit->visitor->phone,
       'uuid'                => $visit->visitor->id,
@@ -277,13 +275,11 @@ class Devices
 
   function addTempPwd(Visit $visit)
   {
-    $usableCount = $visit->admin_id == 426 ? 2 : 1;
-    $devSns = $visit->admin_id == 426 ? '4284517926,4289723185,4280287354,4280324765' : 'V' . $visit->admin->device_serial_number;
     $query = [
-      'devSns'      => $devSns,
+      'devSns'      => 'V' . $visit->admin->device_serial_number,
       'startDate'   => $visit->start_date,
       'endDate'     => $visit->end_date,
-      'usableCount' => $usableCount,
+      'usableCount' => 2,
     ];
 
     try {
@@ -320,12 +316,10 @@ class Devices
     }
 
     $devices = collect($data->list);
-    return $devices->map(function ($dev) {
-      return [
-        'devName' => property_exists($dev, 'positionFullName') ? $dev->positionFullName : 'Undefined',
-        'devSn'   => $dev->devSn,
-      ];
-    });
+    return $devices->map(fn ($dev) => [
+      'devName' => property_exists($dev, 'positionFullName') ? $dev->positionFullName : 'Undefined',
+      'devSn'   => $dev->devSn,
+    ]);
   }
 
   function getAccessLogs()

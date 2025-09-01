@@ -83,18 +83,11 @@ onMounted(() => {
         </div>
       </template>
       <template v-if="activeStep == 2">
-        <MessageForm
+        <TemplatesList :recepients="recepients" @success="enableStep(3)"/>
+        <!-- <MessageForm
           @storeMessage="storeMessage"
           v-model="message">
-        </MessageForm>
-        <div class="d-flex">
-          <!-- <button
-            @click="activeStep=3"
-            class="btn btn-primary ms-auto"
-            :class="{ disabled: !message.validated }" >
-            Continuar
-          </button> -->
-        </div>
+        </MessageForm> -->
       </template>
       <template v-if="activeStep == 3">
         <Confirm>

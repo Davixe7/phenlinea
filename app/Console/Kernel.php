@@ -5,7 +5,6 @@ namespace App\Console;
 use App\BatchMessage;
 use App\Jobs\SendBatchMessage;
 use App\Traits\Whatsapp;
-use App\WhatsappClient;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 

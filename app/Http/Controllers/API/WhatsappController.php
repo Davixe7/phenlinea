@@ -7,7 +7,10 @@ use App\Delivery;
 use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 use App\Notifications\DeliveryWANotification;
+use Illuminate\Support\Facades\Log;
+
 
 class WhatsappController extends Controller
 { 
@@ -21,10 +24,24 @@ class WhatsappController extends Controller
     
     if ( $request->hasFile('media') ) {
       try {
-        $delivery->addMedia( $request->file('media') )->toMediaCollection('picture');
-        $media_url = $delivery->getMedia('picture')->last()->getUrl(); 
+        $image = $request->file('media');
+
+        $resized = Image::make($image)->resize(500, 500, function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        });
+
+        $cropped = $resized->crop(500, 500, 
+            intval(($resized->width() - 500) / 2), 
+            intval(($resized->height() - 500) / 2)
+        );
+
+        $tempPath = storage_path('app/temp_cropped.jpg');
+        $cropped->save($tempPath);
+        $delivery->addMedia( $tempPath )->toMediaCollection('picture');
+        $media_url = $delivery->getFirstMediaUrl('picture');
       } catch(Exception $e){
-        Storage::append('deliveries.log', now() . ' ' . $e->getMessage() . ' ' . json_encode($request->all()) );
+	Log::error($e->getMessage());
       }
     }
 

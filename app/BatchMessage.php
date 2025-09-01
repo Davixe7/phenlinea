@@ -44,4 +44,18 @@ class BatchMessage extends Model implements HasMedia
 
     return trim($text);
   }
+
+  public function fields(){
+    return $this->belongsToMany(TemplateField::class)->withPivot('value');
+  }
+
+  public function getTemplateParamsAttribute(){
+    return $this->fields->map(function($param){
+      return [
+        'type' => 'text',
+        'parameter_name' => $param->name,
+        'text' => $param->pivot->value
+      ];
+    })->toArray();
+  }
 }

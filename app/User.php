@@ -44,10 +44,6 @@ class User extends Authenticatable
       return $this->email;
     }
 
-    public function whatsapp_clients(){
-      return $this->hasMany('App\WhatsappClient');
-    }
-
     public function getBatches(){
       $http     = new Client();
       $query    = ['user_id' => auth()->id(), 'type'=>'batch'];

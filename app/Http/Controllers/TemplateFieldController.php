@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\API\v2;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use App\TemplateField;
 use Illuminate\Http\Request;
-use App\Http\Resources\DeliveryResource;
 
-class DeliveryController extends Controller
+class TemplateFieldController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,11 +14,7 @@ class DeliveryController extends Controller
      */
     public function index()
     {
-        $deliveries = auth()->user()->deliveries()->with([
-            'apartment' => function($q){$q->select(['id', 'name']);},
-            'media'
-        ]);
-        return DeliveryResource::collection($deliveries);
+        //
     }
 
     /**
@@ -36,10 +31,10 @@ class DeliveryController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\TemplateField  $templateField
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(TemplateField $templateField)
     {
         //
     }
@@ -48,10 +43,10 @@ class DeliveryController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\TemplateField  $templateField
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, TemplateField $templateField)
     {
         //
     }
@@ -59,10 +54,10 @@ class DeliveryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\TemplateField  $templateField
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(TemplateField $templateField)
     {
         //
     }

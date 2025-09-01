@@ -12,6 +12,8 @@
 */
 
 use App\Http\Controllers\BatchMessageController;
+use App\Http\Controllers\MessageTemplateController;
+
 use App\ResidentInvoicePayment;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -96,9 +98,6 @@ Route::name('admin.')->prefix('admin')->middleware('auth:web')->group(function (
   Route::put('whatsapp_instances/{admin}', 'Admin\BatchMessageController@updateInstance')->name('whatsapp_instances.update');
   Route::get('whatsapp_instances', 'Admin\BatchMessageController@instances')->name('whatsapp_instances.index');
 
-  Route::get('whatsapp_clients', 'Admin\WhatsappClientController@index')->name('whatsapp_clients.index');
-  Route::get('whatsapp_clients/{whatsapp_client}/scan', 'Admin\WhatsappClientController@scan')->name('whatsapp_clients.scan');
-  Route::put('whatsapp_clients/{whatsapp_client}', 'Admin\WhatsappClientController@update')->name('whatsapp_clients.update');
   Route::get('users/list', 'Admin\UserController@list')->name('users.list');
   Route::get('admins/list', 'Admin\AdminController@list')->name('admins.list');
 
@@ -159,6 +158,9 @@ Route::middleware(['auth:admin', 'phoneverified', 'suspended'])->group(function 
   Route::resource('invoices', 'InvoiceController')->only(['index', 'show', 'update']);
   Route::resource('resident-invoice-batches', 'ResidentInvoiceBatchController');
   Route::resource('vehicles', App\Http\Controllers\VehicleController::class);
+
+  Route::resource('message-templates', App\Http\Controllers\MessageTemplateController::class);
+  Route::post('meta-messages', [App\Http\Controllers\MetaMessageController::class, 'store']);
 
   Route::post('batch-messages/authenticate', 'BatchMessageController@authenticate');
   Route::get('whatsapp/create_instance', 'WhatsappController@getInstanceId');

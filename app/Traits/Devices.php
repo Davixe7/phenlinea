@@ -261,6 +261,7 @@ class Devices
 
     try {
       $data     = $this->fetchZhyaf('visEmpVisitor/extapi/add', $query);
+      Log::info(json_encode($data));
       $tempPwd  = property_exists($data, 'tempPwd')  ? $data->tempPwd : '';
       $tempCode = property_exists($data, 'tempCode') ? $data->tempCode : '';
       $qrcode   = QrCode::format('png')->size(270)->generate($tempCode);

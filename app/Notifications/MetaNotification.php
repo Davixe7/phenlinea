@@ -2,26 +2,26 @@
 
 namespace App\Notifications;
 
+use App\BatchMessage;
 use App\Channels\MetaNotificationChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Log;
 
-class BatchMessageNotification extends Notification
+class MetaNotification extends Notification
 {
     use Queueable;
 
-    protected $title;
-    protected $content;
+    protected $batch;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(String $title, String $content)
+    public function __construct(BatchMessage $batch)
     {
-        $this->title = $title;
-        $this->content = $content;
+        $this->batch = $batch;
     }
 
     /**
@@ -37,29 +37,23 @@ class BatchMessageNotification extends Notification
 
     public function toMeta($notifiable){
         $from_number_id = '607278609139986';
-        $template_name = 'masivos_utilidad';
+        $template_name = $this->batch->media_url 
+        ? $this->batch->template_name . '_media'
+        : $this->batch->template_name;
 
-        $header = null;
+        $header = $this->batch->media_url
+        ? ['type' => 'header', 'parameters' => [['type'  => 'document', 'document' => ['link' => $this->batch->media_url]]]]
+        : null;
 
         $body = [
             'type' => 'body',
-            'parameters' => [
+            'parameters' => array_merge($this->batch->template_params, [
                 [
                     'type' => 'text',
-                    'parameter_name' => 'nombre1',
-                    'text' => $notifiable->admin->name,
-                ],
-                [
-                    'type' => 'text',
-                    'parameter_name' => 'titulo2',
-                    'text' => $this->title,
-                ],
-                [
-                    'type' => 'text',
-                    'parameter_name' => 'mensaje3',
-                    'text' => $this->content,
-                ],
-            ]
+                    'parameter_name' => 'numero_apartamento',
+                    'text' => $notifiable->name
+                ]
+            ])
         ];
 
         $components = array_values(array_filter([$header, $body]));

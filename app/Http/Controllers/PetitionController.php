@@ -8,7 +8,6 @@ use App\Http\Resources\Petition as PetitionResource;
 use App\Petition;
 use App\Admin;
 use App\Traits\Whatsapp;
-use App\WhatsappClient;
 use Exception;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use GuzzleHttp\Client;
@@ -17,21 +16,6 @@ class PetitionController extends Controller
 {
   protected $api;
   protected $client;
-
-  public function __construct()
-  {
-    try {
-      $this->client = WhatsappClient::where('enabled', 1)->firstOrFail();
-      //$this->middleware('modules:requests');
-      $this->api = new Client([
-        'base_uri' => $this->client->base_url,
-        'verify' => false
-      ]);
-    }
-    catch(Exception $e){
-      echo $e->getMessage();
-    }
-  }
 
   /**
    * Display a listing of the resource.

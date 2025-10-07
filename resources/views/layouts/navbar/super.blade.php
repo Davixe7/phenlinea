@@ -24,8 +24,5 @@
     <li>
       <a class="dropdown-item" href="{{ route('admin.whatsapp_instances.index') }}">Instancias</a>
     </li>
-    <li>
-      <a class="dropdown-item" href="{{ route('admin.whatsapp_clients.index') }}">Proveedores</a>
-    </li>
   </ul>
 </li>

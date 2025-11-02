@@ -72,9 +72,10 @@ class PetitionController extends Controller
       }
     }
 
-    $this->notifyPetitionUpdate($petition);
+    //$this->notifyPetitionUpdate($petition);
 
-    return redirect()->route('pqrs.create', ['admin' => $request->admin_id])->with(['message' => 'Petición creada con éxito']);
+    return redirect()->route('pqrs.create', ['admin' => $request->admin_id])
+    ->with(['message' => 'Su solicitud ha sido recibida exitosamente']);
   }
 
   public function markAsRead(Petition $petition)

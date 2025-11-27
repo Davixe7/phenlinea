@@ -9,6 +9,8 @@ class WhatsappClient extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
     public function instances(){
         return $this->hasMany(WhatsappInstance::class);
     }

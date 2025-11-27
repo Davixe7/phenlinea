@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\v1\admin\AdminController as AdminAdminController;
 use App\Http\Controllers\API\v1\admin\InvoiceController as v1InvoiceController;
 use App\Http\Controllers\API\v1\admin\PorteriaController as AdminPorteriaController;
+use App\Http\Controllers\API\v1\admin\WaziperController;
 use App\Http\Controllers\API\v1\admin\WhatsappClientController;
 use App\Http\Controllers\API\v2\ExtensionController;
 use App\Http\Controllers\API\v2\ResidentController;
@@ -41,6 +42,9 @@ Route::prefix('v1')->group(function(){
     Route::apiResource('porterias', AdminPorteriaController::class);
     Route::apiResource('invoices', v1InvoiceController::class);
     Route::apiResource('whatsapp-clients', WhatsappClientController::class);
+
+    Route::get('create_instance', [WaziperController::class, 'create_instance']);
+    Route::get('get_qrcode', [WaziperController::class, 'get_qrcode']);
   });
   Route::group(['middleware'=>['auth:api-admin']], function(){
     //Route::get('user', fn()=>auth()->user());

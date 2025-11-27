@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\API\v1\admin\AdminController as AdminAdminController;
+use App\Http\Controllers\API\v1\admin\InvoiceController as v1InvoiceController;
+use App\Http\Controllers\API\v1\admin\PorteriaController as AdminPorteriaController;
+use App\Http\Controllers\API\v1\admin\WhatsappClientController;
 use App\Http\Controllers\API\v2\ExtensionController;
 use App\Http\Controllers\API\v2\ResidentController;
 use App\Http\Controllers\API\v2\admin\AdminController;
@@ -26,7 +30,33 @@ use App\Services\PlatesService;
 |
 */
 
-Route::middleware('auth')->get('user', fn ()=>auth()->user());
+//Route::middleware('auth')->get('user', fn ()=>auth()->user());
+
+Route::prefix('v1')->group(function(){
+  Route::post('login', [LoginController::class, 'login']);
+  Route::post('admin-login', [LoginController::class, 'adminLogin']);
+  Route::group(['middleware'=>['auth:api']], function(){
+    Route::get('user', fn ()=>auth()->user());
+    Route::apiResource('admins', AdminAdminController::class);
+    Route::apiResource('porterias', AdminPorteriaController::class);
+    Route::apiResource('invoices', v1InvoiceController::class);
+    Route::apiResource('whatsapp-clients', WhatsappClientController::class);
+  });
+  Route::group(['middleware'=>['auth:api-admin']], function(){
+    //Route::get('user', fn()=>auth()->user());
+    Route::apiResource('extensions', ExtensionController::class);
+    Route::apiResource('residents', ResidentController::class);
+    Route::apiResource('vehicles', VehicleController::class);
+    Route::apiResource('visits', VisitController::class)->only(['index']);
+    Route::apiResource('batch_messages', V2BatchMessageController::class);
+    Route::apiResource('novelties', NoveltyController::class);
+    Route::apiResource('petitions', PetitionController::class);
+    //Route::apiResource('invoices', v1InvoiceController::class);
+    Route::apiResource('deliveries', DeliveryController::class);
+
+    Route::get('apartments/{extension}/residents', [ResidentController::class, 'index']);
+  });
+});
 
 Route::prefix('v2')->group(function(){
   Route::post('login', [LoginController::class, 'login']);
@@ -36,6 +66,7 @@ Route::prefix('v2')->group(function(){
     Route::apiResource('porterias', PorteriaController::class);
     Route::apiResource('invoices', InvoiceController::class);
     Route::apiResource('batch-messages', BatchMessageController::class);
+    Route::apiResource('whatsapp-clients', Whatsa::class);
   });
   Route::group(['middleware'=>['auth:api-admin']], function(){
     Route::get('user', fn()=>auth()->user());

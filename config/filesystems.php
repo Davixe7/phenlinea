@@ -55,6 +55,10 @@ return [
             'visibility' => 'public',
         ],
 
+'deliveries' => ['driver'=>'local', 'root'=>storage_path('app/public/deliveries'), 'url'=>env('APP_URL').'/storage/deliveries', 'visibility'=>'public'],
+
+
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

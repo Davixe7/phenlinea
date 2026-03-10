@@ -70,7 +70,6 @@ Route::prefix('v2')->group(function(){
     Route::apiResource('porterias', PorteriaController::class);
     Route::apiResource('invoices', InvoiceController::class);
     Route::apiResource('batch-messages', BatchMessageController::class);
-    Route::apiResource('whatsapp-clients', Whatsa::class);
   });
   Route::group(['middleware'=>['auth:api-admin']], function(){
     Route::get('user', fn()=>auth()->user());
@@ -90,9 +89,10 @@ Route::prefix('v2')->group(function(){
 
 Route::group(['middleware' => 'auth:porteria,api-admin'], function () {
   Route::get('extensions/{extension}/residents', 'API\ExtensionController@residents');
-  Route::post('extensions/delivery', 'API\WhatsappController@sendDelivery');
-  Route::post('extensions/{name?}/delivery', 'API\WhatsappController@sendDelivery');
-  Route::post('notifyDelivery', 'API\WhatsappController@sendDelivery');
+  Route::post('extensions/delivery', 'API\DeliveryController@sendDelivery');
+  Route::post('extensions/{name?}/delivery', 'API\DeliveryController@sendDelivery');
+  Route::post('extensions/{name?}/deliveryx', 'API\DeliveryController@send');
+  Route::post('notifyDelivery', 'API\DeliveryController@sendDelivery');
   Route::get('plates', [PlatesService::class, 'fetchPlates']);
   Route::apiResource('apartments', 'API\ApartmentController');
   Route::apiResource('extensions', 'API\ExtensionController');

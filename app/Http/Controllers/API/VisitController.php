@@ -8,11 +8,9 @@ use Illuminate\Http\Request;
 use App\Http\Resources\VisitPorteria;
 use App\Http\Controllers\Controller;
 use App\Notifications\VisitorCodeWANotification;
-use App\Traits\Devices;
 use App\Traits\Uploads;
 use Exception;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 
 class VisitController extends Controller
 {
@@ -77,15 +75,15 @@ class VisitController extends Controller
       }
 
       $visit = Visit::create([
-        "admin_id"     => auth()->user()->admin_id,
+        "admin_id"       => auth()->user()->admin_id,
         "extension_name" => $request->extension_name,
-        "visitor_id"    => $visitor->id,
-        "checkin"       => now(),
-        "start_date"    => now(),
-        "end_date"      => now()->addHours( auth()->user()->admin->visits_lifespan ?: 24 ),
-        "plate"         => $request->plate,
-        "authorized_by" => $request->authorized_by,
-        "note" 		      => $request->note
+        "visitor_id"     => $visitor->id,
+        "checkin"        => now(),
+        "start_date"     => now(),
+        "end_date"       => now()->addHours( auth()->user()->admin->visits_lifespan ?: 24 ),
+        "plate"          => $request->plate,
+        "authorized_by"  => $request->authorized_by,
+        "note" 		       => $request->note
       ]);
 
       if(!auth()->user()->admin->device_enabled){
@@ -100,7 +98,7 @@ class VisitController extends Controller
       }
       
       try {
-        $visit->notify( new VisitorCodeWANotification($visit) );
+        //$visit->notify( new VisitorCodeWANotification($visit) );
       }
       catch(Exception $e){
         Log::error($e->getMessage());

@@ -41,6 +41,16 @@ class Extension extends Authenticatable implements HasMedia
     return $phones;
   }
 
+  public function routeNotificationForTwilio(Notification $notification = null): array|string|null {
+    $phones = array_values($this->valid_whatsapp_phone_numbers);
+    $phones = array_map(function($p){
+      if( $p == '4147912134' ) return '584147912134';
+      return '57' . $p;
+    }, $phones);
+
+    return $phones;
+  }
+
 	public function registerMediaCollections(): void
 	{
 	    $this

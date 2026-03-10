@@ -3,9 +3,9 @@
 namespace App\Notifications;
 
 use App\Channels\MetaNotificationChannel;
+use App\Channels\TwilioNotificationChannel;
 use App\Visit;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class VisitorCodeWANotification extends Notification
@@ -34,7 +34,21 @@ class VisitorCodeWANotification extends Notification
      */
     public function via($notifiable)
     {
-        return [MetaNotificationChannel::class];
+        return [TwilioNotificationChannel::class];
+    }
+
+    public function toTwilio($notifiable){
+        $media    = $notifiable->getFirstMedia('qrcode');
+        $mediaUrl = $media->id . "/" . $media->file_name;
+
+        return [
+            'templateId'  => 'HX86bc8d50324882b554dd30c761317fcd',
+            'variables' => [
+                'unidad'   => $notifiable->admin->name,
+                'codigo'   => $notifiable->password,
+                'mediaUrl' => $mediaUrl
+            ]
+        ];
     }
 
     public function toMeta($notifiable){

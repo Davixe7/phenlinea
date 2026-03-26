@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Channels\HablameNotificationChannel;
 use App\Extension;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -35,7 +36,8 @@ class DeliveryWANotification extends Notification
      */
     public function via($notifiable)
     {
-        return [TwilioNotificationChannel::class];
+        //TwilioNotificationChannel::class
+        return [HablameNotificationChannel::class];
     }
 
     public function toTwilio($notifiable)

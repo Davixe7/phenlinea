@@ -101,6 +101,16 @@ class DeliveryWANotification extends Notification
                     ->line('Thank you for using our application!');
     }
 
+    public function toHablame($notifiable) {
+        return [
+            'template' => 'notifications.delivery',
+            'data' => [
+                'apto' => $notifiable->name,
+                'admin' => $notifiable->admin->name
+            ]
+        ];
+    }
+
     /**
      * Get the array representation of the notification.
      *

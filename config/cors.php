@@ -19,11 +19,20 @@ return [
 
     'allowed_methods' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
 
-    'allowed_origins' => ['http://localhost:5173', 'http://localhost:8080', 'http://localhost:9000', 'http://localhost:3000', '*.phenlinea.com', 'http://192.168.0.246:9001', 'https://192.168.0.246:9001'],
+    'allowed_origins' => [
+        'http://localhost:5173', 
+        'http://localhost:8080',
+        'http://localhost:9000',
+        'http://localhost:3000',
+        '*.phenlinea.com',
+        'http://192.168.0.246:9001',
+        'https://192.168.0.246:9001',
+        'https://porterias.phenlinea.com'
+    ],
 
     'allowed_origins_patterns' => [],
 
-    'allowed_headers' => ['X-Requested-With, Content-Type, X-Token-Auth, X-XSRF-TOKEN, Authorization'],
+    'allowed_headers' => ['X-Requested-With', 'Content-Type', 'X-Token-Auth', 'X-XSRF-TOKEN', 'Authorization'],
 
     'exposed_headers' => [],
 

@@ -132,7 +132,7 @@
       </ul>
       <button class="btn sidenav-toggler ml-auto"
         onclick="document.querySelector('.custom-sidenav').classList.toggle('active')">
-        <i class="material-symbols-outlined">menu</i>
+        <i class="material-icons">menu</i>
       </button>
     </div>
 
@@ -291,7 +291,7 @@
     <footer>
       <div class="container-fluid">
         <div class="row d-flex align-items-center">
-          <div class="col-md-4" style="border: 1px solid black;">
+          <div class="col-md-4">
             <div>&copy; PHENLINEA SAS</div>
             <ul style="list-style-type: none; margin: 0; padding: 0;">
               <li>
@@ -301,7 +301,7 @@
             </ul>
           </div>
 
-          <div class="col-md-4" style="border: 1px solid black;">
+          <div class="col-md-4">
             <div class="mobile-app-links">
               <a href="https://play.google.com/store/apps/details?id=com.phenlinea.inquilinos" target="_blank"
                 class="d-inline-block mr-2">
@@ -314,7 +314,7 @@
             </div>
           </div>
 
-          <div class="col-md-4" style="border: 1px solid #000">
+          <div class="col-md-4">
             <div class="contact-bar">
               <div>Contactanos</div>
               <div class="numbers">3053181323 | 3006050430</div>
@@ -328,7 +328,7 @@
           <span>Soporte via WhatsApp</span>
           <div class="ml-auto">
             <span onclick="document.querySelector('.whatsapp-card').classList.remove('active')">
-              <i class="material-symbols-outlined" style="color: #fff;">close</i>
+              <i class="material-icons text-white">close</i>
             </span>
           </div>
         </div>

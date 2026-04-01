@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es" dir="ltr">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -34,7 +35,7 @@
     }
 
     .custom-sidenav-nav li {
-      border-bottom: 1px solid rgba(0,0,0,.15);
+      border-bottom: 1px solid rgba(0, 0, 0, .15);
       padding: 10px;
       position: relative;
     }
@@ -45,6 +46,7 @@
       margin-top: 20px;
       padding: 10px 20px;
     }
+
     .custom-sidenav-nav li.divider:first-child {
       margin-top: 0;
     }
@@ -100,23 +102,17 @@
 <body>
   <div id="app">
     <div class="custom-navbar">
-      <a
-        href="/"
-        class="custom-navbar-brand">
+      <a href="/" class="custom-navbar-brand">
         <img src="{{ asset('img/logo.png') }}" alt="logo phenlinea">
       </a>
       <ul class="custom-navbar-nav" style="margin-left: 0;">
         <li>
-          <a
-            href="{{ route('invoices.index') }}"
-            class="btn btn-outline-primary d-none d-lg-flex">
+          <a href="{{ route('invoices.index') }}" class="btn btn-outline-primary d-none d-lg-flex">
             Consultar Factura
           </a>
         </li>
         <li>
-          <a
-            href="https://porterias.phenlinea.com"
-            class="btn btn-outline-primary d-none d-lg-flex">
+          <a href="https://porterias.phenlinea.com" class="btn btn-outline-primary d-none d-lg-flex">
             Porterias
           </a>
         </li>
@@ -124,22 +120,19 @@
 
       <ul class="custom-navbar-nav ml-auto d-none d-lg-flex">
         <li>
-          <a
-            href="{{ route('login') }}"
-            class="btn btn-outline-primary">
+          <a href="{{ route('login') }}" class="btn btn-outline-primary">
             Administrador
           </a>
         </li>
         <li>
-          <a
-            href="{{ false ? route('residents.login') : ''}}"
-            class="btn btn-outline-primary">
+          <a href="{{ false ? route('residents.login') : ''}}" class="btn btn-outline-primary">
             Propietario o Residente
           </a>
         </li>
       </ul>
-      <button class="btn sidenav-toggler ml-auto" onclick="document.querySelector('.custom-sidenav').classList.toggle('active')">
-        <i class="material-symbols-outlined">menu</i>
+      <button class="btn sidenav-toggler ml-auto"
+        onclick="document.querySelector('.custom-sidenav').classList.toggle('active')">
+        <i class="material-icons">menu</i>
       </button>
     </div>
 
@@ -162,16 +155,12 @@
           Otras Opciones
         </li>
         <li>
-          <a
-            href="{{ route('invoices.index') }}"
-            class="btn btn-link">
+          <a href="{{ route('invoices.index') }}" class="btn btn-link">
             Consulte su Factura
           </a>
         </li>
         <li>
-          <a
-            href="https://porterias.phenlinea.com"
-            class="btn btn-link">
+          <a href="https://porterias.phenlinea.com" class="btn btn-link">
             Control de Porteria
           </a>
         </li>
@@ -300,50 +289,63 @@
     </div><!-- ENDS MAIN -->
 
     <footer>
-      <div class="login-bar">
-        <ul class="custom-navbar-nav">
-          <li><a href="#" class="toggler active" data-target="#product-01">Citofonía</a></li>
-          <li><a href="#" class="toggler" data-target="#product-02">Propietarios & Residentes</a></li>
-        </ul>
-        <div class="mobile-app-links">
-          <a href="https://play.google.com/store/apps/details?id=com.phenlinea.inquilinos" target="_blank" class="d-inline-block mr-2">
-            <img src="{{ asset('/img/googleplay.svg')}}" style="width: 140px;" alt="">
-          </a>
-          <a href="#" class="d-inline-block text-left" style="color: #000;">
-            <span>Proximamente...</span><br />
-            <img src="{{ asset('/img/appstore.svg')}}" style="width: 140px;" alt="">
-          </a>
-        </div>
-        <div class="contact-bar">
-          <div>
-            <span>Contactanos</span>
-            <div class="numbers">3053181323 | 3006050430</div>
+      <div class="container-fluid">
+        <div class="row d-flex align-items-center">
+          <div class="col-md-4">
+            <div>&copy; PHENLINEA SAS</div>
+            <ul style="list-style-type: none; margin: 0; padding: 0;">
+              <li>
+                <a href="politica-de-privacidad">Politica de privacidad</a>
+              </li>
+              <li></li>
+            </ul>
           </div>
 
-          <!-- Whatsapp Card -->
-          <div class="card whatsapp-card">
-            <div class="card-header">
-              <span>Soporte via WhatsApp</span>
-              <div class="ml-auto">
-                <span onclick="document.querySelector('.whatsapp-card').classList.remove('active')">
-                  <i class="material-symbols-outlined" style="color: #fff;">close</i>
-                </span>
-              </div>
+          <div class="col-md-4">
+            <div class="mobile-app-links">
+              <a href="https://play.google.com/store/apps/details?id=com.phenlinea.inquilinos" target="_blank"
+                class="d-inline-block mr-2">
+                <img src="{{ asset('/img/googleplay.svg')}}" style="width: 140px;" alt="">
+              </a>
+              <a href="#" class="d-inline-block text-left" style="color: #000;">
+                <span>Proximamente...</span><br />
+                <img src="{{ asset('/img/appstore.svg')}}" style="width: 140px;" alt="">
+              </a>
             </div>
-            <div class="card-body">
-              <div class="message">¡Hola, somos PHEnlinea!<br> También brindamos asesoria personalizada gratuita!</div>
-              <div class="whatsapp-input text-right">
-                <img src="{{asset('/img/logo-whatsapp.svg')}}" class="logo-whatsapp" onclick="document.querySelector('.whatsapp-card').classList.add('active')">
-                <a href="https://api.whatsapp.com/send?phone=573053181323&text=Hola,%20estoy%20interesad@%20en%20PHEnLinea" title="contacto whatsapp" target="_blank">
-                  <span class="text">Contactar a PHEnlinea.com</span>
-                  <svg version="1.1" width="30px" height="25.714px" viewBox="625 347.143 30 25.714">
-                    <polygon fill="#FFFFFF" points="625.015,347.143 625,357.143 646.429,360 625,362.857 625.015,372.857 655,360 " />
-                  </svg>
-                </a>
-              </div>
-            </div>
-          </div><!-- Whatsapp Card -->
+          </div>
 
+          <div class="col-md-4">
+            <div class="contact-bar">
+              <div>Contactanos</div>
+              <div class="numbers">3053181323 | 3006050430</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card whatsapp-card" style="position: absolute; bottom: 30px; right: 30px;">
+        <div class="card-header">
+          <span>Soporte via WhatsApp</span>
+          <div class="ml-auto">
+            <span onclick="document.querySelector('.whatsapp-card').classList.remove('active')">
+              <i class="material-icons text-white">close</i>
+            </span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="message">¡Hola, somos PHEnlinea!<br> También brindamos asesoria personalizada gratuita!</div>
+          <div class="whatsapp-input text-right">
+            <img src="{{asset('/img/logo-whatsapp.svg')}}" class="logo-whatsapp"
+              onclick="document.querySelector('.whatsapp-card').classList.add('active')">
+            <a href="https://api.whatsapp.com/send?phone=573053181323&text=Hola,%20estoy%20interesad@%20en%20PHEnLinea"
+              title="contacto whatsapp" target="_blank">
+              <span class="text">Contactar a PHEnlinea.com</span>
+              <svg version="1.1" width="30px" height="25.714px" viewBox="625 347.143 30 25.714">
+                <polygon fill="#FFFFFF"
+                  points="625.015,347.143 625,357.143 646.429,360 625,362.857 625.015,372.857 655,360 " />
+              </svg>
+            </a>
+          </div>
         </div>
       </div>
     </footer>
@@ -355,11 +357,11 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Righteous&display=swap">
   <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
       const loginButton = $('a.btn-login')
       // Product togglers
       const togglers = $('.toggler')
-      togglers.click(function() {
+      togglers.click(function () {
         let target = $(this).attr('data-target')
         $('.toggler.active').removeClass('active')
         $('.row.active').removeClass('active')
@@ -368,7 +370,7 @@
       })
 
       // Login options
-      $('.login-options li label input').click(function(e) {
+      $('.login-options li label input').click(function (e) {
         loginButton.attr('href', $(this).val())
       })
     })

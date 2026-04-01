@@ -11,9 +11,6 @@
       @if( Auth::guard('admin')->check() )
       @include('layouts.navbar.admin')
       @endif
-      @if( Auth::guard('extension')->check() )
-      @include('layouts.navbar.resident')
-      @endif
     </ul>
 
     <ul class="ph-navbar-nav">

@@ -2,10 +2,6 @@
 
 namespace App\Providers;
 
-use App\Events\VisitCreatedEvent;
-use App\Listeners\CreateDeviceVisit;
-use App\Listeners\NotifyDeviceVisit;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -20,9 +16,6 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         Registered::class => [
           SendEmailVerificationNotification::class,
-        ],
-        VisitCreatedEvent::class => [
-          NotifyDeviceVisit::class,
         ]
     ];
 

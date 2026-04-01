@@ -3,10 +3,12 @@
 namespace App;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Invoice extends Model
 {
+    use HasFactory;
     protected $fillable = ['number','nit','total','date', 'status', 'paid_at'];
 
     public function admin(){

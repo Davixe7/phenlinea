@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Events\VisitCreatedEvent;
 use App\Visit;
 use App\Visitor;
 use Illuminate\Http\Request;
 use App\Http\Resources\VisitPorteria;
 use App\Http\Controllers\Controller;
 use App\Notifications\VisitorCodeWANotification;
-use App\Traits\Devices;
+use App\Notifications\VisitorNotification;
 use App\Traits\Uploads;
 use Exception;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 
 class VisitController extends Controller
 {
@@ -69,20 +67,24 @@ class VisitController extends Controller
         $visitorData
       );
 
-      if( $request->hasFile('picture') ){
+      $base64 = null;
+      if( $file = $request->file('picture') ){
+        $path = $file->getPathname();
+        $data = file_get_contents($path);
+        $base64 = 'data:image/png;base64,' . base64_encode($data);
         $visitor->addMedia( $request->file('picture') )->toMediaCollection('picture');
       }
 
       $visit = Visit::create([
-        "admin_id"     => auth()->user()->admin_id,
+        "admin_id"       => auth()->user()->admin_id,
         "extension_name" => $request->extension_name,
-        "visitor_id"    => $visitor->id,
-        "checkin"       => now(),
-        "start_date"    => now(),
-        "end_date"      => now()->addHours( auth()->user()->admin->visits_lifespan ?: 24 ),
-        "plate"         => $request->plate,
-        "authorized_by" => $request->authorized_by,
-        "note" 		      => $request->note
+        "visitor_id"     => $visitor->id,
+        "checkin"        => now(),
+        "start_date"     => now(),
+        "end_date"       => now()->addHours( auth()->user()->admin->visits_lifespan ?: 24 ),
+        "plate"          => $request->plate,
+        "authorized_by"  => $request->authorized_by,
+        "note" 		       => $request->note
       ]);
 
       if(!auth()->user()->admin->device_enabled){
@@ -90,14 +92,14 @@ class VisitController extends Controller
       }
 
       try {
-        $visit->addPwd();
+        $visit->addPwd($base64);
       }
       catch(Exception $e){
         return response()->json(['message' => 'Error al registrar la visita ' . $e->getMessage()], 522);
       }
       
       try {
-        $visit->notify( new VisitorCodeWANotification($visit) );
+        $visit->notify( new VisitorNotification($visit) );
       }
       catch(Exception $e){
         Log::error($e->getMessage());

@@ -2,17 +2,17 @@
 
 namespace App;
 
-use Exception;
+use App\Traits\HasZhyafRoom;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notification;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Log;
 
 class Extension extends Authenticatable implements HasMedia
 {
-  use InteractsWithMedia, Notifiable;
+  use HasFactory, InteractsWithMedia, Notifiable, HasZhyafRoom;
 
   protected $guarded = ['id'];
 
@@ -32,6 +32,16 @@ class Extension extends Authenticatable implements HasMedia
   ];
 
   public function routeNotificationForMeta(Notification $notification = null): array|string|null {
+    $phones = array_values($this->valid_whatsapp_phone_numbers);
+    $phones = array_map(function($p){
+      if( $p == '4147912134' ) return '584147912134';
+      return '57' . $p;
+    }, $phones);
+
+    return $phones;
+  }
+
+  public function routeNotificationForTwilio(Notification $notification = null): array|string|null {
     $phones = array_values($this->valid_whatsapp_phone_numbers);
     $phones = array_map(function($p){
       if( $p == '4147912134' ) return '584147912134';
@@ -123,6 +133,10 @@ class Extension extends Authenticatable implements HasMedia
   public function phoneOwner4()
   {
     return $this->belongsTo(Resident::class, 'resident_id_4', 'id')->withDefault(['name' => 'Desconocido']);;
+  }
+
+  public function deliveries(){
+    return $this->hasMany(Delivery::class);
   }
 
   public function getAdultsAttribute()

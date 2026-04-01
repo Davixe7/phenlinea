@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
-use Maatwebsite\Excel\Facades\Excel;
 
 class Devices
 {
@@ -31,7 +30,7 @@ class Devices
     $this->api = new Client([
       'base_uri' => config('zhyaf.v1.base_url'),
       'headers'  => [
-        'language' => 'en_ES',
+        'language' => 'es_ES',
         'timeZone' => 'America/Bogota'
       ]
     ]);
@@ -41,10 +40,10 @@ class Devices
   protected function setData()
   {
     $user = auth()->user();
-    if( $user instanceof Porteria ){
+    if ($user instanceof Porteria) {
       $this->user = auth()->user()->admin;
     }
-    if( $user instanceof Admin ){
+    if ($user instanceof Admin) {
       $this->user = auth()->user();
     }
 
@@ -59,7 +58,7 @@ class Devices
   {
     $this->setData();
 
-    return Cache::remember($this->zhyafCacheKey , 7200, function (){
+    return Cache::remember($this->zhyafCacheKey, 7200, function () {
       try {
         $response = $this->api->get('platCompany/extapi/getAccessToken', [
           'multipart' => [
@@ -111,7 +110,7 @@ class Devices
 
       return property_exists($body, 'data') ? $body->data : $body->msg;
     } catch (Exception $e) {
-      Storage::append('zhyaf.error.log', $endpoint . " " . $e->getCode() . " " . $e->getMessage());
+      Log::error("FetchZhyaf Exception: " . $e->getMessage());
       throw $e;
     }
   }
@@ -142,20 +141,26 @@ class Devices
   //Residents
   function addResident($resident, $picturePath)
   {
-    $query = [
-      'uuid'             => $resident->id,
-      'name'             => $resident->name,
-      'phone'            => $resident->email,
-      'cardNos'          => $resident->card,
-      'roomUuids'        => $resident->extension_id
-    ];
+    try {
+      $query = [
+        'uuid'             => $resident->id,
+        'name'             => $resident->name,
+        'phone'            => $resident->email,
+        'cardNos'          => $resident->card,
+        'roomUuids'        => $resident->extension_id
+      ];
 
-    if ($picturePath) {
-      $base64 = base64_encode(file_get_contents($picturePath));
-      $query['faceFileBase64Array'] = $base64;
+      if ($picturePath) {
+        $base64 = base64_encode(file_get_contents($picturePath));
+        $query['faceFileBase64Array'] = $base64;
+      }
+
+      $response = $this->fetchZhyaf('persEmpHousehold/extapi/add', $query);
+      return $response;
     }
-
-    return $this->fetchZhyaf('persEmpHousehold/extapi/add', $query);
+    catch (Exception $e) {
+      throw $e;
+    }
   }
 
   function updateResident($resident, $picturePath)
@@ -224,13 +229,6 @@ class Devices
     }
   }
 
-  function grantAccessToAllDoors($resident)
-  {
-    $devSns = $this->getUnitDevices($resident->extension->admin_id)->pluck('devSn')->toArray();
-    $devSns = implode(",", $devSns);
-    $this->addDeviceAuth($resident, $devSns);
-  }
-
   function deleteDeviceAuth($resident, $devSn)
   {
     $query = [
@@ -248,29 +246,29 @@ class Devices
   }
 
   //Visits
-  function addFacialTempPwd(Visit $visit)
+  function addFacialTempPwd(Visit $visit, $base64 = null)
   {
-    $usableCount = $visit->admin_id == 426 ? 2 : 1;
     $query  = [
       'devSns'              => 'V' . $visit->admin->device_serial_number,
       'accStartdatetime'    => $visit->start_date,
       'accEnddatetime'      => $visit->end_date,
-      'accUsableCount'      => $usableCount,
+      'accUsableCount'      => 2,
       'name'                => $visit->visitor->name,
       'phone'               => $visit->visitor->phone,
       'uuid'                => $visit->visitor->id,
-      'faceFileBase64'      => $visit->visitor->getFaceFileBase64()
+      'faceFileBase64'      => $base64 ?: $visit->visitor->getFaceFileBase64() 
     ];
 
     try {
       $data     = $this->fetchZhyaf('visEmpVisitor/extapi/add', $query);
+      Log::info(json_encode($data));
       $tempPwd  = property_exists($data, 'tempPwd')  ? $data->tempPwd : '';
       $tempCode = property_exists($data, 'tempCode') ? $data->tempCode : '';
       $qrcode   = QrCode::format('png')->size(270)->generate($tempCode);
       $visit->addMediaFromBase64(base64_encode($qrcode))->usingFileName(Str::random() . '.png')->toMediaCollection('qrcode');
       $visit->update(['password' => $tempPwd]);
     } catch (Exception $e) {
-      Log::error( 'Facial visit: ' . json_encode( $data ) );
+      Log::error('Facial visit: ' . json_encode($data));
       Log::error('Error al registrar la visita facial ' . $e->getMessage());
       throw $e;
     }
@@ -278,12 +276,11 @@ class Devices
 
   function addTempPwd(Visit $visit)
   {
-    $usableCount = $visit->admin_id == 426 ? 2 : 1;
     $query = [
       'devSns'      => 'V' . $visit->admin->device_serial_number,
       'startDate'   => $visit->start_date,
       'endDate'     => $visit->end_date,
-      'usableCount' => $usableCount,
+      'usableCount' => 2,
     ];
 
     try {
@@ -299,9 +296,9 @@ class Devices
         : QrCode::format('png')->size(270)->generate($tempCode);
 
       $visit
-      ->addMediaFromBase64(base64_encode($qrCode))
-      ->usingFileName($mediaFileName)
-      ->toMediaCollection('qrcode');
+        ->addMediaFromBase64(base64_encode($qrCode))
+        ->usingFileName($mediaFileName)
+        ->toMediaCollection('qrcode');
 
       return $data;
     } catch (Exception $e) {
@@ -320,12 +317,10 @@ class Devices
     }
 
     $devices = collect($data->list);
-    return $devices->map(function ($dev) {
-      return [
-        'devName' => property_exists($dev, 'positionFullName') ? $dev->positionFullName : 'Undefined',
-        'devSn'   => $dev->devSn,
-      ];
-    });
+    return $devices->map(fn ($dev) => [
+      'devName' => property_exists($dev, 'positionFullName') ? $dev->positionFullName : 'Undefined',
+      'devSn'   => $dev->devSn,
+    ]);
   }
 
   function getAccessLogs()
@@ -348,7 +343,7 @@ class Devices
       }
     });
   }
-  
+
   function getDoors()
   {
     $data = $this->fetchZhyaf('sqDoor/extapi/list', []);
@@ -370,6 +365,13 @@ class Devices
     $this->fetchZhyaf('sqDoor/extapi/update', $query);
   }
 
+  function grantAccessToAllDoors($resident)
+  {
+    $devSns = $this->getUnitDevices($resident->extension->admin_id)->pluck('devSn')->toArray();
+    $devSns = implode(",", $devSns);
+    $this->addDeviceAuth($resident, $devSns);
+  }
+
   //Root
   function syncDoors()
   {
@@ -382,7 +384,7 @@ class Devices
 
       $this
         ->getDoors($admin->id)
-        ->each(fn ($door) => $this->updateDoor($door, '0'));
+        ->each(fn($door) => $this->updateDoor($door, '0'));
 
       $residentIds = $admin->residents()->pluck('residents.id')->toArray();
       $devSns      = $this->getUnitDevices($admin->id)->pluck('devSn')->toArray();

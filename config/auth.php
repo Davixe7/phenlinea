@@ -15,7 +15,6 @@ return [
 
     'defaults' => [
         'guard' => 'web',
-        'passwords' => 'admins',
     ],
 
     /*
@@ -43,7 +42,6 @@ return [
         'api' => [
             'driver' => 'token',
             'provider' => 'users',
-            //'hash' => true
         ],
 
         'admin' => [
@@ -56,23 +54,9 @@ return [
         ],
 
         'porteria' => [
-            'driver' => 'session',
-            'provider' => 'porterias',
-        ],
-        'api-porteria' => [
             'driver' => 'jwt',
             'provider' => 'porterias',
         ],
-
-        'extension' => [
-            'driver' => 'session',
-            'provider' => 'extensions',
-        ],
-        'api-extension' => [
-            'driver' => 'token',
-            'provider' => 'extensions',
-        ],
-
     ],
 
     /*
@@ -107,16 +91,6 @@ return [
             'driver' => 'eloquent',
             'model' => App\Porteria::class,
         ],
-
-        'extensions' => [
-            'driver' => 'eloquent',
-            'model' => App\Extension::class,
-        ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
     ],
 
     /*
@@ -135,11 +109,6 @@ return [
     */
 
     'passwords' => [
-        // 'users' => [
-        //     'provider' => 'users',
-        //     'table' => 'password_resets',
-        //     'expire' => 60,
-        // ],
         'admins' => [
             'provider' => 'admins',
             'table' => 'password_resets',

@@ -1,5 +1,9 @@
 <?php
 
+use App\Admin;
+use App\BatchMessage;
+use App\Invoice;
+use App\Porteria;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -34,7 +38,7 @@ class DatabaseSeeder extends Seeder
       ]);
     }
 
-    App\Admin::create([
+    /* App\Admin::create([
       'name'     => 'Admin',
       'email'    => 'admin@phenlinea.com',
       'password' => bcrypt('123456'),
@@ -47,7 +51,13 @@ class DatabaseSeeder extends Seeder
       'name'     => 'Root',
       'email'    => 'root@phenlinea.com',
       'password' => bcrypt('123456'),
-    ]);
+    ]); */
+
+    Admin::factory(100)
+    ->has(Porteria::factory(1))
+    ->has(Invoice::factory(1))
+    ->has(BatchMessage::factory(1), 'batch_messages')
+    ->create();
 
     // DB::unprepared(file_get_contents(storage_path('app/ddbb.sql')));
   }

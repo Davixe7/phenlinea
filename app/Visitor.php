@@ -2,18 +2,15 @@
 
 namespace App;
 
-use App\Traits\Devices;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use Spatie\Image\Enums\Fit;
-use Spatie\MediaLibrary\MediaCollections\FileAdderFactory;
-use Spatie\MediaLibrary\MediaCollections\Jobs\PerformConversions;
 
 class Visitor extends Model implements HasMedia
 {
-  use InteractsWithMedia;
+  use InteractsWithMedia, HasFactory;
   
   protected $fillable = [
     'extension_id',
@@ -35,11 +32,17 @@ class Visitor extends Model implements HasMedia
 
   public function registerMediaConversions(?Media $media = null): void
   {
+      $this->addMediaConversion('medium')
+      ->width(500)
+      ->height(500)
+      ->crop('crop-center', 500, 500)
+      ->performOnCollections('picture');
+
       $this->addMediaConversion('thumb')
-            ->width(500)
-            ->height(500)
-            ->crop('crop-center', 500, 500)
-            ->performOnCollections('picture');
+      ->width(60)
+      ->height(60)
+      ->crop('crop-center', 60, 60)
+      ->performOnCollections('picture');
   }
 
   public function extension()
@@ -56,7 +59,7 @@ class Visitor extends Model implements HasMedia
     return $this->hasMany(Visit::class);
   }
 
-  public function getFaceFileBase64(){
+  public function getFaceFileBase64(){    
     $path = $this->getFirstMediaPath('picture');
     if( !file_exists($path) ){ return null; }
 

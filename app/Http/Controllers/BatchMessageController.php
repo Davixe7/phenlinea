@@ -2,26 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Admin;
 use App\BatchMessage;
-use App\Extension;
-use App\Traits\Whatsapp;
-use App\WhatsappClient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class BatchMessageController extends Controller
 {
-  protected $whatsapp;
-  protected $client;
-
-  public function __construct()
-  {
-    $this->client   = WhatsappClient::find(1);
-    $this->whatsapp = new Whatsapp($this->client);
-  }
-
   public function index(){
     $batch_messages = auth()->user()->batch_messages()->orderBy('created_at', 'desc')->get();
     $statuses       = [

@@ -29,7 +29,7 @@
   }
 
   .material-form .form-group .form-control:focus {
-    border-bottom: 1px solid var(--primary);
+    border-bottom: 1px solid var(--bs-primary);
     box-shadow: none;
   }
 
@@ -45,10 +45,15 @@
 @endsection
 @section('content')
 <div class="container">
+
   @if( session('message') )
-  {{ session('message') }}
+  <div class="alert alert-success d-flex align-items-center">
+    <i class="material-symbols-outlined me-2">done_all</i>
+    {{ session('message') }}
+  </div>
   @endif
-  <div class="table-responsive mt-5">
+
+  <div class="table-responsive">
     <h1>
       Peticiones, quejas o reclamos
     </h1>

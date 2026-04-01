@@ -2,13 +2,13 @@
 
 namespace App\Notifications;
 
-use App\Channels\MetaNotificationChannel;
+use App\Channels\HablameNotificationChannel;
 use App\Extension;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use NotifiableViaWhatsapp;
+use App\Channels\TwilioNotificationChannel;
 
 class DeliveryWANotification extends Notification
 {
@@ -36,7 +36,27 @@ class DeliveryWANotification extends Notification
      */
     public function via($notifiable)
     {
-        return [MetaNotificationChannel::class];
+        //TwilioNotificationChannel::class
+        return [HablameNotificationChannel::class];
+    }
+
+    public function toTwilio($notifiable)
+    {
+        $templateId = 'HX50bbf73f5401dbe86c2da2cc20a45b9b';
+        $variables = [
+            'unidad' => $notifiable->admin->name,
+            'apto'   => $notifiable->name,
+        ];
+
+        if( $this->media_url ){
+            $templateId = 'HX3fa13962a0f60c57c2706cdcda46fb58';
+            $variables['mediaUrl'] = str_replace("https://phenlinea.com//storage/", "", $this->media_url);
+        }
+
+        return [
+            'templateId' => $templateId,
+            'variables'  => $variables
+        ];
     }
 
     public function toMeta($notifiable){
@@ -79,6 +99,16 @@ class DeliveryWANotification extends Notification
                     ->line('The introduction to the notification.')
                     ->action('Notification Action', url('/'))
                     ->line('Thank you for using our application!');
+    }
+
+    public function toHablame($notifiable) {
+        return [
+            'template' => 'notifications.delivery',
+            'data' => [
+                'apto' => $notifiable->name,
+                'admin' => $notifiable->admin->name
+            ]
+        ];
     }
 
     /**

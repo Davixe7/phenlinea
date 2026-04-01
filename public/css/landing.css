@@ -286,7 +286,7 @@ footer {
 
   .contact-bar {
     order: 3;
-    display: inline-flex;
+    display: block;
     flex: 0 0 auto !important;
     margin-left: auto;
   }

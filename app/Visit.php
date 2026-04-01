@@ -4,6 +4,7 @@ namespace App;
 
 use App\Traits\Devices;
 use App\Traits\Whatsapp;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -12,7 +13,7 @@ use Illuminate\Notifications\Notification;
 
 class Visit extends Model implements HasMedia
 {
-  use InteractsWithMedia, Notifiable;
+  use InteractsWithMedia, Notifiable, HasFactory;
 
   protected $fillable = [
     'admin_id',
@@ -37,10 +38,16 @@ class Visit extends Model implements HasMedia
   ];
 
   public function routeNotificationForMeta(Notification $notification): string|null {
-    if( $this->admin_id == 1 || $this->visitor->dni == '30123456'){
+    /* if( $this->admin_id == 1 || $this->visitor->dni == '301231230'){
+      return '584147912134';
+    } */
+    return $this->visitor->phone ? '57' . $this->visitor->phone : null;
+  }
+
+  public function routeNotificationForTwilio(Notification $notification): string|null {
+    if( $this->admin_id == 1 || $this->visitor->dni == '301231230'){
       return '584147912134';
     }
-
     return $this->visitor->phone ? '57' . $this->visitor->phone : null;
   }
 
@@ -63,7 +70,7 @@ class Visit extends Model implements HasMedia
     return $this->belongsTo(Visitor::class);
   }
 
-  public function addPwd(){
+  public function addPwd($base64 = null){
     if( !$this->admin->device_enabled ){
       return;
     }
@@ -71,23 +78,10 @@ class Visit extends Model implements HasMedia
     $devices = new Devices();
 
     if( $this->visitor->getFirstMediaPath('picture') ){
-      $devices->addFacialTempPwd($this);
+      $devices->addFacialTempPwd($this, $base64);
       return;
     }
     $devices->addTempPwd($this);
-  }
-
-  public function _notifyDeviceVisit(){
-    if( !$this->admin->device_serial_number ){ return; }
-    if( !$this->visitor->phone ){ return; }
-
-    $whatsapp = new Whatsapp();
-    
-    $whatsapp->send([
-      'number'    => '57' . $this->visitor->phone,
-      'message'   => view('messages.visit', ['visit'=>$this])->render(),
-      'media_url' => $this->getFirstMediaUrl('qrcode')
-    ]);
   }
 
 }

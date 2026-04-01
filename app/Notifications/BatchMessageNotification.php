@@ -37,7 +37,7 @@ class BatchMessageNotification extends Notification
 
     public function toMeta($notifiable){
         $from_number_id = '607278609139986';
-        $template_name = 'mensaje_de_administracion';
+        $template_name = 'masivos_utilidad';
 
         $header = null;
 
@@ -46,17 +46,17 @@ class BatchMessageNotification extends Notification
             'parameters' => [
                 [
                     'type' => 'text',
-                    'parameter_name' => 'unidad',
+                    'parameter_name' => 'nombre1',
                     'text' => $notifiable->admin->name,
                 ],
                 [
                     'type' => 'text',
-                    'parameter_name' => 'titulo',
+                    'parameter_name' => 'titulo2',
                     'text' => $this->title,
                 ],
                 [
                     'type' => 'text',
-                    'parameter_name' => 'mensaje',
+                    'parameter_name' => 'mensaje3',
                     'text' => $this->content,
                 ],
             ]

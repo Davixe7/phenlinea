@@ -2,11 +2,13 @@
 /public/hot
 /public/storage
 /public/info
+/storage/media-library/
 /storage/logs/
 /storage/*.key
 /vendor
 .env
 .env.backup
+.env.testing
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml

@@ -12,6 +12,8 @@
 */
 
 use App\Http\Controllers\BatchMessageController;
+use App\Http\Controllers\MessageTemplateController;
+
 use App\ResidentInvoicePayment;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -19,7 +21,21 @@ use Illuminate\Support\Facades\Route;
 use App\Traits\Devices;
 use App\Extension;
 use App\Notifications\DeliveryWANotification;
+use Illuminate\Support\Facades\DB;
 use Rap2hpoutre\FastExcel\FastExcel;
+
+Route::get('historial', function(){
+  $a = App\Admin::find(426);
+  $e = $a->extensions()->pluck('id');
+  $d = DB::table('media')
+  ->where('model_type', 'App\Extension')
+  ->where('collection_name', 'deliveries')
+  ->whereBetween('created_at', ['2025-07-17 00:00:00', '2025-07-17 23:59:00'])
+  //->whereBetween('id', $e)
+  //->orderBy('created_at')
+  ->get();
+  return $d;
+});
 
 Route::get('codes', function(){
   $data = App\Extension::whereAdminId(68)->where('observation', '!=', null)->get(['admin_id', 'name', 'observation']);
@@ -82,9 +98,6 @@ Route::name('admin.')->prefix('admin')->middleware('auth:web')->group(function (
   Route::put('whatsapp_instances/{admin}', 'Admin\BatchMessageController@updateInstance')->name('whatsapp_instances.update');
   Route::get('whatsapp_instances', 'Admin\BatchMessageController@instances')->name('whatsapp_instances.index');
 
-  Route::get('whatsapp_clients', 'Admin\WhatsappClientController@index')->name('whatsapp_clients.index');
-  Route::get('whatsapp_clients/{whatsapp_client}/scan', 'Admin\WhatsappClientController@scan')->name('whatsapp_clients.scan');
-  Route::put('whatsapp_clients/{whatsapp_client}', 'Admin\WhatsappClientController@update')->name('whatsapp_clients.update');
   Route::get('users/list', 'Admin\UserController@list')->name('users.list');
   Route::get('admins/list', 'Admin\AdminController@list')->name('admins.list');
 
@@ -146,6 +159,9 @@ Route::middleware(['auth:admin', 'phoneverified', 'suspended'])->group(function 
   Route::resource('resident-invoice-batches', 'ResidentInvoiceBatchController');
   Route::resource('vehicles', App\Http\Controllers\VehicleController::class);
 
+  Route::resource('message-templates', App\Http\Controllers\MessageTemplateController::class);
+  Route::post('meta-messages', [App\Http\Controllers\MetaMessageController::class, 'store']);
+
   Route::post('batch-messages/authenticate', 'BatchMessageController@authenticate');
   Route::get('whatsapp/create_instance', 'WhatsappController@getInstanceId');
   Route::get('whatsapp/get_qrcode', 'WhatsappController@getQrCode');
@@ -162,6 +178,10 @@ Route::middleware(['auth:admin', 'phoneverified', 'suspended'])->group(function 
   });
 
   Route::view('accesslogs', 'admin.accesslogs')->name('visits.accesslogs');
+  Route::get('encomiendas', function(){
+    $deliveries = auth()->user()->deliveries;
+    return view('admin.deliveries', compact('deliveries'));
+  })->name('deliveries.index');
 });
 
 //Resident routes

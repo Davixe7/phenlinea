@@ -23,8 +23,6 @@ class CreateVisitorsTable extends Migration
             $table->string('company')->nullable();
             $table->string('arl')->nullable();
             $table->string('eps')->nullable();
-            $table->string('plate')->nullable();
-            //$table->foreign('extension_id')->references('id')->on('extensions')->onDelete('cascade');
         });
     }
 

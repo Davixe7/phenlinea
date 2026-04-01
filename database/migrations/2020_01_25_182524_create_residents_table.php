@@ -25,6 +25,7 @@ class CreateResidentsTable extends Migration
       $table->boolean('is_authorized')->default(false)->nullable();
       $table->boolean('disability')->default(false)->nullable();
       $table->string('card')->nullable();
+      $table->string('email')->nullable();
     });
   }
   

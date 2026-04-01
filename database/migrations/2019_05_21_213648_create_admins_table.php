@@ -30,20 +30,13 @@ class CreateAdminsTable extends Migration
       $table->unsignedInteger('status')->default(1);
       $table->string('api_token', 60)->nullable()->default(null);
       $table->timestamp('email_verified_at')->nullable();
-      $table->string('phone_verification', 6)->nullable();
-      $table->string('whatsapp_instance_id')->nullable();
-      $table->string('whatsapp_status')->default('offline');
-      $table->string('whatsapp_group_id')->nullable();
-      $table->string('whatsapp_group_url')->nullable();
-      
+      $table->string('device_serial_number')->nullable();
       $table->integer('visits_lifespan')->nullable();
-
+      $table->string('device_community_id')->nullable();
+      $table->string('device_2_serial_number')->nullable();
+      $table->string('device_building_id')->nullable();
       $table->string('device_api_version')->default('v1');
       $table->boolean('device_enabled')->default(false);
-      $table->string('device_serial_number')->nullable();
-      $table->string('device_2_serial_number')->nullable();
-      $table->string('device_community_id')->nullable();
-      $table->string('device_building_id')->nullable();
     });
   }
 

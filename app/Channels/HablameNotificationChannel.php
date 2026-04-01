@@ -30,7 +30,8 @@ class HablameNotificationChannel
 
         $response = Http::withHeaders(['X-Hablame-Key' => env('HABLAME_API_KEY')])
                     ->post('https://www.hablame.co/api/sms/v5/send', $data);
-        //Log::info($response->body());
+                    
+        Log::info($response->body());
 
         return $response;
     }

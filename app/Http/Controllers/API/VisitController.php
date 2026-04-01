@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Resources\VisitPorteria;
 use App\Http\Controllers\Controller;
 use App\Notifications\VisitorCodeWANotification;
+use App\Notifications\VisitorNotification;
 use App\Traits\Uploads;
 use Exception;
 use Illuminate\Support\Facades\Log;
@@ -98,7 +99,7 @@ class VisitController extends Controller
       }
       
       try {
-        //$visit->notify( new VisitorCodeWANotification($visit) );
+        $visit->notify( new VisitorNotification($visit) );
       }
       catch(Exception $e){
         Log::error($e->getMessage());
